@@ -1,3 +1,4 @@
 .config
 board/Kconfig
+libs/*.a
 

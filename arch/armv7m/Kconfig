@@ -1,0 +1,17 @@
+if ARCH_ARMV7M
+
+choice
+	prompt "CPU family"
+
+config ARCH_ARMV7M_STM32F4
+	bool "STM32F4"
+
+config ARCH_ARMV7M_STM32L4
+	bool "STM32L4"
+
+endchoice
+
+source arch/armv7m/stm32f4/Kconfig
+source arch/armv7m/stm32l4/Kconfig
+
+endif
