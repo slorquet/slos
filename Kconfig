@@ -1,0 +1,9 @@
+mainmenu "slos configuration"
+
+menu "Arch options"
+source arch/Kconfig
+endmenu
+
+menu "Board options"
+source board/Kconfig
+endmenu

@@ -1,0 +1,14 @@
+choice
+	prompt "CPU architecture"
+
+config ARCH_ARMV7M
+	bool "armv7m"
+
+endchoice
+
+config ARCH
+	string
+	default "armv7m" if ARCH_ARMV7M
+
+source arch/armv7m/Kconfig
+
