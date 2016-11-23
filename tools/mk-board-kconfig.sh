@@ -5,11 +5,23 @@ echo "choice" >>Kconfig
 echo "\tprompt \"Board selection\"" >> Kconfig
 
 for FILE in $FILES ; do
-
 	if [ -d $FILE ] ; then
 		echo "source board/$FILE/Kconfig" >> Kconfig
 		echo "Found board: $FILE"
 	fi
 done
-echo "endchoice">> Kconfig
+
+echo "endchoice" >> Kconfig
+echo "" >> Kconfig
+echo "config BOARD" >> Kconfig
+echo "\tstring" >> Kconfig
+
+for FILE in $FILES ; do
+	if [ -d $FILE ] ; then
+		unset BOARD_CONFIG
+		. $FILE/Board.defs
+		echo "\tdefault \"$FILE\" if $BOARD_CONFIG" >> Kconfig
+	fi
+done
+
 echo "Generated Kconfig for boards"

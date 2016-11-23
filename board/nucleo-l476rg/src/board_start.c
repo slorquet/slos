@@ -1,15 +1,11 @@
-#include "config.h"
-
 #include <stdint.h>
 
-#include "stm32.h"
-#include "stm32_clock.h"
-#include "stm32_gpio.h"
-#include "stm32_uart.h"
-#include "stm32_spi.h"
+#include "stm32l4_rcc.h"
+#include "stm32l4_gpio.h"
+#include "stm32l4_uart.h"
+#include "stm32l4_spi.h"
 
 /*for now, lock in case of exception*/
-void _except(void) { while(1); }
 
 uint8_t tx[8], rx[22];
 
@@ -21,7 +17,7 @@ void puthb(uint32_t uartid, uint8_t b)
   stm32_uart_send(uartid, hex[b&0xf]);
 }
 
-void main(void)
+void board_start(void)
 {
 	
     /*16 Mhz internal clock*/

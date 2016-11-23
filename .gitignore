@@ -2,4 +2,6 @@
 .config.old
 board/Kconfig
 libs/*.a
+slos
+board/*/src/*.o
 

@@ -1,0 +1,82 @@
+#ifndef STM32_UART
+#define STM32_UART
+
+#include <stdint.h>
+
+//reg offsets
+#define STM32_REGOFF_USART_SR     0x00
+#define STM32_REGOFF_USART_DR     0x04
+#define STM32_REGOFF_USART_BRR    0x08
+#define STM32_REGOFF_USART_CR1    0x0C
+#define STM32_REGOFF_USART_CR2    0x10
+#define STM32_REGOFF_USART_CR3    0x14
+
+//bits values
+#define STM32_REGMASK_USART_SR_CTS     (1<<9)
+#define STM32_REGMASK_USART_SR_LBD     (1<<8)
+#define STM32_REGMASK_USART_SR_TXE     (1<<7)
+#define STM32_REGMASK_USART_SR_TC      (1<<6)
+#define STM32_REGMASK_USART_SR_RXNE    (1<<5)
+#define STM32_REGMASK_USART_SR_IDLE    (1<<4)
+#define STM32_REGMASK_USART_SR_ORE     (1<<3)
+#define STM32_REGMASK_USART_SR_NF      (1<<2)
+#define STM32_REGMASK_USART_SR_FE      (1<<1)
+#define STM32_REGMASK_USART_SR_PE      (1<<0)
+
+#define STM32_REGMASK_USART_CR1_OVER8   (1<<15)
+#define STM32_REGMASK_USART_CR1_UE      (1<<13)
+#define STM32_REGMASK_USART_CR1_M       (1<<12)
+#define STM32_REGMASK_USART_CR1_WAKE    (1<<11)
+#define STM32_REGMASK_USART_CR1_PCE     (1<<10)
+#define STM32_REGMASK_USART_CR1_PS      (1<<9)
+#define STM32_REGMASK_USART_CR1_PEIE    (1<<8)
+#define STM32_REGMASK_USART_CR1_TXEIE   (1<<7)
+#define STM32_REGMASK_USART_CR1_TCIE    (1<<6)
+#define STM32_REGMASK_USART_CR1_RXNEIE  (1<<5)
+#define STM32_REGMASK_USART_CR1_IDLEIE  (1<<4)
+#define STM32_REGMASK_USART_CR1_TE      (1<<3)
+#define STM32_REGMASK_USART_CR1_RE      (1<<2)
+#define STM32_REGMASK_USART_CR1_RWU     (1<<1)
+#define STM32_REGMASK_USART_CR1_SBK     (1<<0)
+
+#define STM32_REGMASK_USART_CR2_LINEN   (1<<14)
+#define STM32_REGSHIFT_USART_CR2_STOP   12
+#define STM32_REGMASK_USART_CR2_CLKEN   (1<<11)
+#define STM32_REGMASK_USART_CR2_CPOL    (1<<10)
+#define STM32_REGMASK_USART_CR2_CPHA    (1<<9)
+#define STM32_REGMASK_USART_CR2_LBCL    (1<<8)
+#define STM32_REGMASK_USART_CR2_LBDIE   (1<<7)
+#define STM32_REGMASK_USART_CR2_LBDL    (1<<6)
+#define STM32_REGSHIFT_USART_CR2_ADD    0
+
+#define STM32_REGMASK_USART_CR3_ONEBIT  (1<<11)
+#define STM32_REGMASK_USART_CR3_CTSIE   (1<<10)
+#define STM32_REGMASK_USART_CR3_CTSE    (1<<9)
+#define STM32_REGMASK_USART_CR3_RTSE    (1<<8)
+#define STM32_REGMASK_USART_CR3_DMAT    (1<<7)
+#define STM32_REGMASK_USART_CR3_DMAR    (1<<6)
+#define STM32_REGMASK_USART_CR3_SCEN    (1<<5)
+#define STM32_REGMASK_USART_CR3_NACK    (1<<4)
+#define STM32_REGMASK_USART_CR3_HDSEL   (1<<3)
+#define STM32_REGMASK_USART_CR3_IRLP    (1<<2)
+#define STM32_REGMASK_USART_CR3_IREN    (1<<1)
+#define STM32_REGMASK_USART_CR3_EIE     (1<<0)
+
+//indices for API
+enum {
+    STM32_USART_1,
+    STM32_USART_2,
+    STM32_USART_3,
+    STM32_USART_4,
+    STM32_USART_5,
+    STM32_USART_6,
+    STM32_USART_7,
+    STM32_USART_8
+};
+
+void stm32_uart_init(uint32_t uartid);
+void stm32_uart_setbaud(uint32_t uartid, uint32_t baud);
+void stm32_uart_send(uint32_t uartid, int data);
+void stm32_uart_write_string(uint32_t uartid, const char *s);
+
+#endif //STM32_UART

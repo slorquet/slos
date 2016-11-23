@@ -7,7 +7,7 @@
 #define NR_INTERRUPTS 0 /* number of int vectors, not important yet*/
 
 void arch_start(void); /*system entry point*/
-void _except(void); /*exception entry point, in other file*/
+void _except(void) { while(1); }
 
 /*symbols defined in linker script*/
 extern uint32_t _stack_end;

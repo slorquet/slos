@@ -5,7 +5,7 @@ TOPDIR=$(shell pwd)
 
 BIN=slos
 
-LDFLAGS=
+LDFLAGS= -T board/$(CONFIG_BOARD)/scripts/$(CONFIG_BOARD_LDSCRIPT)
 LIBS=arch board
 
 LDLIBS=$(addprefix -l, $(LIBS))

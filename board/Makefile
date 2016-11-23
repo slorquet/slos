@@ -1,7 +1,7 @@
 -include $(TOPDIR)/.config
 -include $(TOPDIR)/Make.defs
 
-BOARDDIR=$(patsubst "%",%,$(CONFIG_BOARD_DIR))
+BOARDDIR=$(patsubst "%",%,$(CONFIG_BOARD))
 
 .PHONY: Kconfig
 

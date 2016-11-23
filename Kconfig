@@ -6,4 +6,8 @@ endmenu
 
 menu "Board options"
 source board/Kconfig
+
+config BOARD_LDSCRIPT
+	string "ld script for final linking"
+
 endmenu
