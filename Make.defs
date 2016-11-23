@@ -1,0 +1,10 @@
+RM=rm -f
+
+LD=arm-none-eabi-ld
+CC=arm-none-eabi-gcc -c
+AS=arm-none-eabi-as
+
+define DIR_template
+$(1)_$(2):
+	$(Q) $(MAKE) -C $(1) $(2) TOPDIR="$(TOPDIR)"
+endef
