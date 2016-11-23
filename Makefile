@@ -10,7 +10,7 @@ LIBS=arch board
 
 LDLIBS=$(addprefix -l, $(LIBS))
 
-#MAINOBJ:=arch/$(CONFIG_ARCH)/entry.o
+MAINOBJ=arch/$(CONFIG_ARCH)/arch_start.o
 
 LIBGCC=$(shell $(CC) --print-libgcc-file-name)
 
@@ -26,12 +26,15 @@ menuconfig: board/Kconfig
 
 $(foreach LIB, $(LIBS), $(eval $(call DIR_template,$(LIB),install)))
 
-$(BIN): $(MAINOBJ) $(foreach LIB, $(LIBS), $(LIB)_install)
-	$(LD) --entry=__start $(LDFLAGS) -Llib \
+$(BIN): $(foreach LIB, $(LIBS), $(LIB)_install)
+	$(LD) --entry=arch_start $(LDFLAGS) -Llibs \
 		-o $(BIN) $(MAINOBJ) --start-group $(LDLIBS) $(LIBGCC) --end-group
 
-distclean:
+clean:
+	$(MAKE) -C arch TOPDIR="$(TOPDIR)" clean
 	$(RM) libs/*.a
+
+distclean: clean
 	$(RM) board/Kconfig
 	$(RM) .config
 

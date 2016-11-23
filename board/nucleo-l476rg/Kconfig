@@ -1,0 +1,11 @@
+config BOARD_NUCLEO_L476RG
+	bool "nucleo-l476rg"
+	depends on ARCH_CHIP_STM32L476RG
+
+if BOARD_NUCLEO_L476RG
+
+config BOARD_NUCLEO_L476RG_DUMMY
+	bool "Dummy L476 setting for tests"
+
+endif
+

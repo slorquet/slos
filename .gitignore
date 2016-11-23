@@ -1,4 +1,5 @@
 .config
+.config.old
 board/Kconfig
 libs/*.a
 

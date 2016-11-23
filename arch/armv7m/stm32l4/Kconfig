@@ -1,10 +1,10 @@
-if ARCH_ARMV7M_STM32L4
+if ARCH_CHIP_FAMILY_STM32L4
 
 choice
 	prompt "L4 model"
 
-config ARCH_ARMV7M_STM32L4X6
-	bool "STM32F4x6"
+config ARCH_CHIP_STM32L476RG
+	bool "STM32L476RG"
 
 endchoice
 

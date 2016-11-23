@@ -1,12 +1,13 @@
-#include "config.h"
+//#include "config.h"
+
+#include "chip.h"
 
 #include <stdint.h>
 
 #define NR_INTERRUPTS 0 /* number of int vectors, not important yet*/
 
-void _startup(void); /*system entry point*/
+void arch_start(void); /*system entry point*/
 void _except(void); /*exception entry point, in other file*/
-void main(void); /*user entry point*/
 
 /*symbols defined in linker script*/
 extern uint32_t _stack_end;
@@ -23,7 +24,7 @@ uint32_t _vectors[] __attribute__((section(".armvectors"))) = {
 };
 
 /*fist code executed by the CPU!*/
-void __attribute__((noreturn)) arch_start(void)
+void arch_start(void)
 {
     uint32_t *addr;
     uint32_t *src;

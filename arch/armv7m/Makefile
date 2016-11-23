@@ -1,6 +1,20 @@
 -include $(TOPDIR)/.config
+CHIPDIR=$(patsubst "%",%,$(CONFIG_ARCH_CHIP_FAMILY))
 -include $(TOPDIR)/Make.defs
+include $(CHIPDIR)/Make.defs
 
-install:
-	touch $(TOPDIR)/libs/libarch.a
+VPATH += $(CHIPDIR)
+
+CSRCS=$(CHIP_CSRCS)
+MAINSRC=arch_start.c
+
+MAINOBJ=$(MAINSRC:.c=.o)
+
+CFLAGS+=-Iinclude
+
+install: $(OBJS) $(MAINOBJ) 
+	$(AR) rcs $(TOPDIR)/libs/libarch.a $(OBJS)
+
+clean:
+	$(RM) $(OBJS) $(MAINOBJ)
 

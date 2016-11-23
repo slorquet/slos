@@ -1,0 +1,12 @@
+config BOARD_NUCLEO_F411RE
+	bool "nucleo-f411re"
+	depends on ARCH_CHIP_STM32F411RE
+
+if BOARD_NUCLEO_F411RE
+
+config BOARD_NUCLEO_F411RE_DUMMY 
+	bool "Dummy F411 setting for tests"
+
+endif
+
+

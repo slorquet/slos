@@ -1,0 +1,1 @@
+CHIP_CSRCS=stm32f4_start.c
