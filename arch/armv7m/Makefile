@@ -10,7 +10,7 @@ MAINSRC=arch_start.c
 
 MAINOBJ=$(MAINSRC:.c=.o)
 
-CFLAGS+=-Iinclude
+CFLAGS+=-Iinclude -I$(CHIPDIR)
 
 install: $(OBJS) $(MAINOBJ) 
 	$(AR) rcs $(TOPDIR)/libs/libarch.a $(OBJS)
