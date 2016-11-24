@@ -8,4 +8,261 @@ config ARCH_CHIP_STM32L476RG
 
 endchoice
 
+menu "Peripheral enable"
+
+comment "--- APB1 ---"
+
+config ARCH_CHIP_STM32L4_TIM2
+	bool "TIM2 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_TIM3
+	bool "TIM3 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_TIM4
+	bool "TIM4 (unsupported)"
+	default n
+	
+config ARCH_CHIP_STM32L4_TIM5
+	bool "TIM5 (unsupported)"
+	default n
+	
+config ARCH_CHIP_STM32L4_TIM6
+	bool "TIM6 (unsupported)"
+	default n
+	
+config ARCH_CHIP_STM32L4_TIM7
+	bool "TIM7 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_LCD
+	bool "LCD (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_RTC
+	bool "RTC (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_WWDG
+	bool "WWDG (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_IWDG
+	bool "IWDG (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_SPI2
+	bool "SPI2 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_SPI3
+	bool "SPI3 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_USART2
+	bool "USART2 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_USART3
+	bool "USART3 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_UART4
+	bool "UART4 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_UART5
+	bool "UART5 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_I2C1
+	bool "I2C1 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_I2C2
+	bool "I2C2 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_I2C3
+	bool "I2C3 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_CAN1
+	bool "CAN1 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_PWR
+	bool "PWR"
+	default y
+
+config ARCH_CHIP_STM32L4_DAC1
+	bool "DAC1 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_OPAMP
+	bool "OPAMP (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_LPTIM1
+	bool "LPTIM1 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_LPUART1
+	bool "LPUART1 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_SWPMI1
+	bool "SWPMI1 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_LPTIM2
+	bool "LPTIM2 (unsupported)"
+	default n
+
+comment "--- APB2 ---"
+
+config ARCH_CHIP_STM32L4_SYSCFG
+	bool "SYSCFG (unsupported)"
+	default y
+
+config ARCH_CHIP_STM32L4_VREFBUF
+	bool "VREFBUF (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_COMP
+	bool "COMP (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_EXTI
+	bool "EXTI (unsupported)"
+	default n
+	
+config ARCH_CHIP_STM32L4_FIREWALL
+	bool "FIREWALL (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_SDMMC1
+	bool "SDMMC1 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_TIM1
+	bool "TIM1 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_SPI1
+	bool "SPI1 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_TIM8
+	bool "TIM8 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_USART1
+	bool "USART1 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_TIM15
+	bool "TIM15 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_TIM16
+	bool "TIM16 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_TIM17
+	bool "TIM17 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_SAI1
+	bool "SAI1 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_SAI2
+	bool "SAI2 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_DFSDM1
+	bool "DFSDM1 (unsupported)"
+	default n
+
+comment "--- AHB1 ---"
+
+config ARCH_CHIP_STM32L4_DMA1
+	bool "DMA1 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_DMA2
+	bool "DMA2 (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_RCC
+	bool "RCC"
+	default y
+
+config ARCH_CHIP_STM32L4_FLASH
+	bool "FLASH (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_CRC
+	bool "CRC (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_TSC
+	bool "TSC (unsupported)"
+	default n
+
+
+comment "--- AHB2 ---"
+
+config ARCH_CHIP_STM32L4_GPIOA
+	bool "GPIOA (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_GPIOB
+	bool "GPIOB (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_GPIOC
+	bool "GPIOC (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_GPIOD
+	bool "GPIOD (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_GPIOE
+	bool "GPIOE (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_GPIOF
+	bool "GPIOF (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_GPIOG
+	bool "GPIOG (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_GPIOH
+	bool "GPIOH (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_OTGFS
+	bool "OTGFS (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_ADC
+	bool "ADC (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_AES
+	bool "AES (unsupported)"
+	default n
+
+config ARCH_CHIP_STM32L4_RNG
+	bool "RNG (unsupported)"
+	default n
+
+endmenu
+
 endif
