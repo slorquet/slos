@@ -30,8 +30,9 @@ $(BIN): $(foreach LIB, $(LIBS), $(LIB)_install)
 	$(LD) --entry=arch_start $(LDFLAGS) -Llibs \
 		-o $(BIN) $(MAINOBJ) --start-group $(LDLIBS) $(LIBGCC) --end-group
 
-clean:
-	$(MAKE) -C arch TOPDIR="$(TOPDIR)" clean
+$(foreach LIB, $(LIBS), $(eval $(call DIR_template,$(LIB),clean)))
+
+clean: $(foreach LIB, $(LIBS), $(LIB)_clean)
 	$(RM) libs/*.a
 
 distclean: clean

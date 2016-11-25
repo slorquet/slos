@@ -13,4 +13,5 @@ $(1)_$(2):
 endef
 
 %.o:%.c
+	#echo compiling $<
 	$(CC) -c $(CFLAGS) -o $@ $<
