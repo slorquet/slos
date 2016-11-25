@@ -3,6 +3,7 @@
 #include "armv7m.h"
 #include "stm32l4_rcc.h"
 #include "stm32l4_spi.h"
+#include "bits/stm32l4_spi.h"
 
 struct spi_params {
 	uint32_t base;
@@ -11,30 +12,30 @@ struct spi_params {
 };
 
 static const struct spi_params g_spi[] = {
-#ifdef STM32_HAVE_SPI_1
-    [STM32_SPI_1] = {0x40013000, STM32_REG_RCC_APB2ENR, 12},
+#ifdef STM32L4_HAVE_SPI_1
+    [STM32L4_SPI_1] = {0x40013000, STM32L4_REG_RCC_APB2ENR, 12},
 #endif
-#ifdef STM32_HAVE_SPI_2
-    [STM32_SPI_2] = {0x40003800, STM32_REG_RCC_APB1ENR, 14},
+#ifdef STM32L4_HAVE_SPI_2
+    [STM32L4_SPI_2] = {0x40003800, STM32L4_REG_RCC_APB1ENR, 14},
 #endif
-#ifdef STM32_HAVE_SPI_3
-    [STM32_SPI_3] = {0x40003C00, STM32_REG_RCC_APB1ENR, 15},
+#ifdef STM32L4_HAVE_SPI_3
+    [STM32L4_SPI_3] = {0x40003C00, STM32L4_REG_RCC_APB1ENR, 15},
 #endif
-#ifdef STM32_HAVE_SPI_4
-    [STM32_SPI_4] = {0x40013400, STM32_REG_RCC_APB2ENR, 13},
+#ifdef STM32L4_HAVE_SPI_4
+    [STM32L4_SPI_4] = {0x40013400, STM32L4_REG_RCC_APB2ENR, 13},
 #endif
-#ifdef STM32_HAVE_SPI_5
-    [STM32_SPI_5] = {0x40015000, STM32_REG_RCC_APB2ENR, 20},
+#ifdef STM32L4_HAVE_SPI_5
+    [STM32L4_SPI_5] = {0x40015000, STM32L4_REG_RCC_APB2ENR, 20},
 #endif
 };
 
-void stm32_spi_init(uint32_t spiid, uint32_t flags)
+void stm32l4_spi_init(uint32_t spiid, uint32_t flags)
 {
     uint32_t base;
     uint32_t reg;
     uint32_t val;
 
-    if(spiid>STM32_SPI_5) return;
+    if(spiid>STM32L4_SPI_5) return;
     base = g_spi[spiid].base;
     if(base==0) return;
 
@@ -47,33 +48,33 @@ void stm32_spi_init(uint32_t spiid, uint32_t flags)
     //configure registers for a simple spi, 8 bits values
 
     //CR1: BIDI=0, no bidioe, CRCEN=0, CRCNEXT=0, DFF=0, RXONLY=0, SSM=1, SSI=1 (software SS), lsbfirst as given, SPE=1, BR as given, MSTR=1, cpol, cpha as given
-    reg  = base + STM32_REGOFF_SPI_CR1;
-    val  = STM32_REGMASK_SPI_CR1_SPE | STM32_REGMASK_SPI_CR1_MSTR | STM32_REGMASK_SPI_CR1_SSM | STM32_REGMASK_SPI_CR1_SSI;
-    val |= ((flags & STM32_SPI_FLAGS_MASK_LSBFIRST) >> STM32_SPI_FLAGS_SHIFT_LSBFIRST) ? STM32_REGMASK_SPI_CR1_LSBFIRST : 0;
-    val |= ((flags & STM32_SPI_FLAGS_MASK_CPOL) >> STM32_SPI_FLAGS_SHIFT_CPOL) ? STM32_REGMASK_SPI_CR1_CPOL : 0;
-    val |= ((flags & STM32_SPI_FLAGS_MASK_CPHA) >> STM32_SPI_FLAGS_SHIFT_CPHA) ? STM32_REGMASK_SPI_CR1_CPHA : 0;
-    val |= ((flags & STM32_SPI_FLAGS_MASK_BAUDDIV) >> STM32_SPI_FLAGS_SHIFT_BAUDDIV) << STM32_REGSHIFT_SPI_CR1_BR;
+    reg  = base + STM32L4_REGOFF_SPI_CR1;
+    val  = STM32L4_REGMASK_SPI_CR1_SPE | STM32L4_REGMASK_SPI_CR1_MSTR | STM32L4_REGMASK_SPI_CR1_SSM | STM32L4_REGMASK_SPI_CR1_SSI;
+    val |= ((flags & STM32L4_SPI_FLAGS_MASK_LSBFIRST) >> STM32L4_SPI_FLAGS_SHIFT_LSBFIRST) ? STM32L4_REGMASK_SPI_CR1_LSBFIRST : 0;
+    val |= ((flags & STM32L4_SPI_FLAGS_MASK_CPOL) >> STM32L4_SPI_FLAGS_SHIFT_CPOL) ? STM32L4_REGMASK_SPI_CR1_CPOL : 0;
+    val |= ((flags & STM32L4_SPI_FLAGS_MASK_CPHA) >> STM32L4_SPI_FLAGS_SHIFT_CPHA) ? STM32L4_REGMASK_SPI_CR1_CPHA : 0;
+    val |= ((flags & STM32L4_SPI_FLAGS_MASK_BAUDDIV) >> STM32L4_SPI_FLAGS_SHIFT_BAUDDIV) << STM32L4_REGSHIFT_SPI_CR1_BR;
     putreg32(reg, val);
 
     //CR2: no ints, FRF=0, SSOE=0, no DMA
-    putreg32(base + STM32_REGOFF_SPI_CR2, 0x00000000);
+    putreg32(base + STM32L4_REGOFF_SPI_CR2, 0x00000000);
 
     //I2SCFGR: No I2S, all zero.
-    putreg32(base + STM32_REGOFF_SPI_I2SCFGR, 0x00000000);
+    putreg32(base + STM32L4_REGOFF_SPI_I2SCFGR, 0x00000000);
 
 }
 
-void stm32_spi_transac8_base(uint32_t spiid, uint32_t len, uint8_t *mosi, uint8_t *miso)
+void stm32l4_spi_transac8_base(uint32_t spiid, uint32_t len, uint8_t *mosi, uint8_t *miso)
 {
   int index=0;
   uint8_t data;
   uint32_t reg,sreg;
 
-  if(spiid>STM32_SPI_5) return;
+  if(spiid>STM32L4_SPI_5) return;
   reg = g_spi[spiid].base;
   if(reg==0) return;
-  sreg = reg + STM32_REGOFF_SPI_SR;
-  reg += STM32_REGOFF_SPI_DR;
+  sreg = reg + STM32L4_REGOFF_SPI_SR;
+  reg += STM32L4_REGOFF_SPI_DR;
 
   while(index<len)
     {
@@ -86,9 +87,9 @@ void stm32_spi_transac8_base(uint32_t spiid, uint32_t len, uint8_t *mosi, uint8_
           data = 0xFF;
         }
 
-      while( !(getreg32(sreg) & STM32_REGMASK_SPI_SR_TXE) );
+      while( !(getreg32(sreg) & STM32L4_REGMASK_SPI_SR_TXE) );
       putreg32(reg, data);
-      while( !(getreg32(sreg) & STM32_REGMASK_SPI_SR_RXNE) );
+      while( !(getreg32(sreg) & STM32L4_REGMASK_SPI_SR_RXNE) );
       data = getreg32(reg);
 
       if(miso)
@@ -104,22 +105,22 @@ void stm32_spi_transac8_base(uint32_t spiid, uint32_t len, uint8_t *mosi, uint8_
 }
 
 /*this version seems optimized but is not modular*/
-void stm32_spi_transac8(uint32_t spiid, uint32_t len, uint8_t *mosi, uint8_t *miso)
+void stm32l4_spi_transac8(uint32_t spiid, uint32_t len, uint8_t *mosi, uint8_t *miso)
 {
     uint32_t reg,sreg;
     uint32_t txid=0,rxid=0;
     uint32_t data;
-    if(spiid>STM32_SPI_5) return;
+    if(spiid>STM32L4_SPI_5) return;
     reg = g_spi[spiid].base;
     if(reg==0) return;
-    sreg = reg + STM32_REGOFF_SPI_SR;
-    reg += STM32_REGOFF_SPI_DR;
+    sreg = reg + STM32L4_REGOFF_SPI_SR;
+    reg += STM32L4_REGOFF_SPI_DR;
     //see RM0090 (docid 018909) page 871, figure 253
     //tx write and rx read must be managed concurrently,
     //because the tx buffer is empty before the char is sent, so we can write in advance.
     while(rxid<len) {
         uint32_t stat = getreg32(sreg);
-        if( txid<len && (stat & STM32_REGMASK_SPI_SR_TXE) ) {
+        if( txid<len && (stat & STM32L4_REGMASK_SPI_SR_TXE) ) {
             if(mosi) {
                 data=mosi[txid];
             } else {
@@ -130,7 +131,7 @@ void stm32_spi_transac8(uint32_t spiid, uint32_t len, uint8_t *mosi, uint8_t *mi
         }
         //as soon as RXNE is set, read and store
         stat = getreg32(sreg);
-        if( rxid<len && (stat & STM32_REGMASK_SPI_SR_RXNE)) {
+        if( rxid<len && (stat & STM32L4_REGMASK_SPI_SR_RXNE)) {
             data = getreg32(reg); //this clears TXNE
             if(miso) {
                 miso[rxid] = data;
@@ -139,7 +140,7 @@ void stm32_spi_transac8(uint32_t spiid, uint32_t len, uint8_t *mosi, uint8_t *mi
         }
     }
     //All data was now sent, wait until the spi transaction is not busy anymore
-    while( (getreg32(sreg) & STM32_REGMASK_SPI_SR_BSY) );
+    while( (getreg32(sreg) & STM32L4_REGMASK_SPI_SR_BSY) );
 
 }
 

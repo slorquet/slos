@@ -1,6 +1,8 @@
 #include <stdint.h>
 
 #include "armv7m.h"
+#include "bits/stm32l4_rcc.h"
+#include "bits/stm32l4_uart.h"
 #include "stm32l4_rcc.h"
 #include "stm32l4_uart.h"
 
@@ -12,22 +14,22 @@ struct uart_params {
 
 static const struct uart_params g_uart[] = {
 #ifdef STM32_HAVE_USART_1
-    [0] = {0x40011000, STM32_REG_RCC_APB2ENR, 4},
+    [0] = {STM32L4_REGBASE_USART1, STM32L4_REGOFF_RCC_APB2ENR, 4},
 #endif
 #ifdef STM32_HAVE_USART_2
-    [1] = {0x40004400, STM32_REG_RCC_APB1ENR, 17},
+    [1] = {STM32L4_REGBASE_USART2, STM32L4_REGOFF_RCC_APB1ENR, 17},
 #endif
 #ifdef STM32_HAVE_USART_3
-    [2] = {0x40004800, STM32_REG_RCC_APB1ENR, 18},
+    [2] = {0x40004800, STM32L4_REGOFF_RCC_APB1ENR, 18},
 #endif
 #ifdef STM32_HAVE_UART_4
-    [3] = {0x40004C00, STM32_REG_RCC_APB1ENR, 19},
+    [3] = {0x40004C00, STM32L4_REGOFF_RCC_APB1ENR, 19},
 #endif
 #ifdef STM32_HAVE_UART_5
-    [4] = {0x40005000, STM32_REG_RCC_APB1ENR, 20},
+    [4] = {0x40005000, STM32L4_REGOFF_RCC_APB1ENR, 20},
 #endif
 #ifdef STM32_HAVE_USART_6
-    [5] = {0x40011400, STM32_REG_RCC_APB2ENR, 5},
+    [5] = {0x40011400, STM32L4_REGOFF_RCC_APB2ENR, 5},
 #endif
 #ifdef STM32_HAVE_UART_7
     [6] = {0x40007800, XXX,XXX}
@@ -37,7 +39,7 @@ static const struct uart_params g_uart[] = {
 #endif
 };
 
-void stm32_uart_init(uint32_t uartid)
+void stm32l4_uart_init(uint32_t uartid)
 {
     uint32_t base;
     uint32_t reg;
@@ -71,7 +73,7 @@ void stm32_uart_init(uint32_t uartid)
  * Fclk      baud      float     int(16times) hex   int part   frac part      approximated
  * 16 MHz    115200    8,68055   138          0x8A  8          10/16 = 0.625  8.625
  */
-void stm32_uart_setbaud(uint32_t uartid, uint32_t baud)
+void stm32l4_uart_setbaud(uint32_t uartid, uint32_t baud)
 {
     uint32_t base;
     if(uartid>8) return;
@@ -86,13 +88,13 @@ void stm32_uart_setbaud(uint32_t uartid, uint32_t baud)
     // DIVint   = fclk / BAUD (DIV is a INT with 4-bit frac part)
 
     //divide
-    baud = stm32_clock_get() / baud;
+    baud = stm32l4_clock_get() / baud;
     //mask high bits
     baud &= 0xFFFF;
     putreg32(base + STM32_REGOFF_USART_BRR, baud);
 }
 
-void stm32_uart_send(uint32_t uartid, int data)
+void stm32l4_uart_send(uint32_t uartid, int data)
 {
     uint32_t reg;
     if(uartid>8) return;
@@ -105,8 +107,8 @@ void stm32_uart_send(uint32_t uartid, int data)
     putreg32(g_uart[uartid].base + STM32_REGOFF_USART_DR, data&0xFF);
 }
 
-void stm32_uart_write_string(uint32_t uartid, const char *s)
+void stm32l4_uart_write_string(uint32_t uartid, const char *s)
 {
-    while(*s) stm32_uart_send(uartid, *s++);
+    while(*s) stm32l4_uart_send(uartid, *s++);
 }
 
