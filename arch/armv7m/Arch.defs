@@ -1,0 +1,9 @@
+#architecture compilation options
+
+CFLAGS+=-mthumb
+
+ifeq ($(CONFIG_ARCH_ARMV7EM),y)
+CFLAGS+=-march=armv7e-m
+else
+CFLAGS+=-march=armv7-m
+endif
