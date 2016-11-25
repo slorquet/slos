@@ -1,1 +1,2 @@
-CHIP_CSRCS=stm32f4_start.c
+CHIP_CSRCS=stm32f4_start.c stm32f4_flash.c stm32f4_gpio.c stm32f4_rcc.c stm32f4_spi.c stm32f4_uart.c
+
