@@ -114,7 +114,7 @@ enum {
 };
 
 
-void stm32_gpio_init(uint32_t gpiodesc);
-void stm32_gpio_write(uint32_t gpio, int state);
+void stm32l4_gpio_init(uint32_t gpiodesc);
+void stm32l4_gpio_write(uint32_t gpio, int state);
 
 #endif //STM32L4_GPIO

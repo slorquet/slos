@@ -6,7 +6,7 @@ MEMORY
 }
 
 /* Definition de la fonction a executer au demarrage */
-ENTRY(_startup)
+ENTRY(_arch_start)
 
 /* definir la taille de la pile systeme */
 STACK_SIZE = 4096;
