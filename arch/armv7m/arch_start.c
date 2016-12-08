@@ -26,23 +26,32 @@ uint32_t _vectors[] __attribute__((section(".armvectors"))) = {
     [16 ... 16 + ARCH_CHIP_NIRQS] = (uint32_t)chip_irq,
 };
 
+/*----------------------------------------------------------------------------*/
 /*fist code executed by the CPU!*/
 void arch_start(void)
 {
-    uint32_t *addr;
-    uint32_t *src;
+  uint32_t *addr;
+  uint32_t *src;
 
-    /* clear bss segment */
-    for(addr = &_bss_start; addr < &_bss_end; addr++) {
-        *addr = 0;
+  /* Clear BSS Segment */
+
+  for(addr = &_bss_start; addr < &_bss_end; addr++)
+    {
+      *addr = 0;
     }
 
-    /* copy initialized data */
-    src = &_data_init_start;
-    for(addr = &_data_start; addr < &_data_end; addr++) {
-        *addr = *src++;
+  /* Copy Initialized Data */
+
+  src = &_data_init_start;
+  for(addr = &_data_start; addr < &_data_end; addr++)
+    {
+      *addr = *src++;
     }
 
-    /* call user code */
-    chip_start();
+  /* Initialize common armv7m IRQs */
+
+  armv7m_irq_init();
+
+  /* CPU core is initialized, now jump to SoC initialization */
+  chip_start();
 }
