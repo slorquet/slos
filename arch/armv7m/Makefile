@@ -9,7 +9,7 @@ include $(CHIPDIR)/Chip.defs
 VPATH += $(CHIPDIR)
 
 CSRCS=$(CHIP_CSRCS)
-CSRCS+=arch_irq.c
+CSRCS+=armv7m_nvic.c
 MAINSRC=arch_start.c
 
 MAINOBJ=$(MAINSRC:.c=.o)
