@@ -1,0 +1,11 @@
+config BOARD_STM32F103MINIMUM
+	bool "stm32f103minimum"
+	depends on ARCH_CHIP_STM32F103C8
+
+if BOARD_STM32F103MINIMUM
+
+config BOARD_STM32F103MINIMUM_DUMMY
+	bool "Dummy STM32F103 Minimum setting for tests"
+
+endif
+

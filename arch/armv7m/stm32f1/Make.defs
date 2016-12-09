@@ -1,0 +1,2 @@
+CHIP_CSRCS=stm32f1_start.c stm32f1_rcc.c stm32f1_uart.c
+

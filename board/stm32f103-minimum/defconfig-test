@@ -1,0 +1,44 @@
+#
+# Automatically generated file; DO NOT EDIT.
+# slos configuration
+#
+
+#
+# Arch options
+#
+CONFIG_ARCH_ARMV7M=y
+CONFIG_ARCH="armv7m"
+# CONFIG_ARCH_ARMV7EM is not set
+CONFIG_ARCH_CHIP_FAMILY_STM32F1=y
+# CONFIG_ARCH_CHIP_FAMILY_STM32F4 is not set
+# CONFIG_ARCH_CHIP_FAMILY_STM32L4 is not set
+CONFIG_ARCH_CHIP_FAMILY="stm32f1"
+CONFIG_ARCH_CHIP_STM32F103C8=y
+
+#
+# Peripherals enable
+#
+
+#
+# --- APB1 TODO ---
+#
+
+#
+# --- APB2 TODO ---
+#
+
+#
+# --- AHB1 TODO ---
+#
+
+#
+# --- AHB2 TODO ---
+#
+
+#
+# Board options
+#
+CONFIG_BOARD_STM32F103MINIMUM=y
+# CONFIG_BOARD_STM32F103MINIMUM_DUMMY is not set
+CONFIG_BOARD="stm32f103-minimum"
+CONFIG_BOARD_LDSCRIPT="stm32f1_64k.ld"

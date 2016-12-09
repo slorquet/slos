@@ -10,21 +10,27 @@ config ARCH_ARMV7EM
 choice
 	prompt "CPU family"
 
+config ARCH_CHIP_FAMILY_STM32F1
+	bool "STM32F1 (Cortex M3)"
+
 config ARCH_CHIP_FAMILY_STM32F4
-	bool "STM32F4"
+	bool "STM32F4 (Cortex M4)"
 	select ARCH_ARMV7EM
 
 config ARCH_CHIP_FAMILY_STM32L4
-	bool "STM32L4"
+	bool "STM32L4 (Cortex M4)"
 	select ARCH_ARMV7EM
 
 endchoice
 
+#this is the name of the subdir
 config ARCH_CHIP_FAMILY
 	string
+	default "stm32f1" if ARCH_CHIP_FAMILY_STM32F1
 	default "stm32f4" if ARCH_CHIP_FAMILY_STM32F4
 	default "stm32l4" if ARCH_CHIP_FAMILY_STM32L4
 
+source arch/armv7m/stm32f1/Kconfig
 source arch/armv7m/stm32f4/Kconfig
 source arch/armv7m/stm32l4/Kconfig
 

@@ -1,0 +1,23 @@
+if ARCH_CHIP_FAMILY_STM32F1
+
+choice
+	prompt "F1 model"
+
+config ARCH_CHIP_STM32F103C8
+	bool "STM32F103C8 (TQFP48, 64k flash)"
+
+endchoice
+
+menu "Peripherals enable"
+
+comment "--- APB1 TODO ---"
+
+comment "--- APB2 TODO ---"
+
+comment "--- AHB1 TODO ---"
+
+comment "--- AHB2 TODO ---"
+
+endmenu
+
+endif
