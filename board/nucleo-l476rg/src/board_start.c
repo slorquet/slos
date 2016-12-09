@@ -20,36 +20,33 @@ void puthb(uint32_t uartid, uint8_t b)
 void board_start(void)
 {
 	
-    /*16 Mhz internal clock*/
-    stm32l4_clock_default();
-
     /* setup standard GPIO pins for uart 2*/
-    stm32l4_gpio_init(STM32L4_GPIO_PORT_A | STM32L4_GPIO_PIN_2 | STM32L4_GPIO_MODE_ALT | STM32L4_GPIO_ALT_7 | STM32L4_GPIO_PULL_UP | STM32L4_GPIO_TYPE_PP ); /*TX PIN ON A2*/
-    stm32l4_gpio_init(STM32L4_GPIO_PORT_A | STM32L4_GPIO_PIN_3 | STM32L4_GPIO_MODE_ALT | STM32L4_GPIO_ALT_7 | STM32L4_GPIO_PULL_UP | STM32L4_GPIO_TYPE_PP ); /*RX PIN ON A3*/
+    stm32l4_gpio_init(GPIO_PORT_A | GPIO_PIN_2 | GPIO_MODE_ALT | GPIO_ALT_7 | GPIO_PULL_UP | GPIO_TYPE_PP ); /*TX PIN ON A2*/
+    stm32l4_gpio_init(GPIO_PORT_A | GPIO_PIN_3 | GPIO_MODE_ALT | GPIO_ALT_7 | GPIO_PULL_UP | GPIO_TYPE_PP ); /*RX PIN ON A3*/
 
     /*init uart 2*/
-    stm32l4_uart_init(STM32L4_USART_2);
+    stm32l4_uart_setup(STM32L4_USART_2);
     stm32l4_uart_setbaud(STM32L4_USART_2, 115200);
 
     /*write something*/
     stm32l4_uart_write_string(STM32L4_USART_2,"Hello world\r\n");
 	
     /*switch the LED on (it's on PA5)*/
-    stm32l4_gpio_init(STM32L4_GPIO_PORT_A | STM32L4_GPIO_PIN_5 | STM32L4_GPIO_MODE_OUT | STM32L4_GPIO_PULL_UP | STM32L4_GPIO_TYPE_PP ); /*LED PIN ON A5*/
-    stm32l4_gpio_write(STM32L4_GPIO_PORT_A | STM32L4_GPIO_PIN_5, 1);
+    stm32l4_gpio_init(GPIO_PORT_A | GPIO_PIN_5 | GPIO_MODE_OUT | GPIO_PULL_UP | GPIO_TYPE_PP ); /*LED PIN ON A5*/
+    stm32l4_gpio_write(GPIO_PORT_A | GPIO_PIN_5, 1);
 	
 #if STM32L4_CHIP == STM32F407V
-#define GPIO_SPI_CS (STM32L4_GPIO_PORT_B | STM32L4_GPIO_PIN_12)
+#define GPIO_SPI_CS (GPIO_PORT_B | GPIO_PIN_12)
     /*configure SPI2 (AF5) on pins:
       PB12(ncs)
       PB13(sclk)
       PB14(miso)
       PB15(mosi)
 */
-    stm32l4_gpio_init(GPIO_SPI_CS                             | STM32L4_GPIO_MODE_OUT |                    STM32L4_GPIO_PULL_UP   | STM32L4_GPIO_TYPE_PP ); /* NCS2 ON PB12, default high (pullup) */
-    stm32l4_gpio_init(STM32L4_GPIO_PORT_B | STM32L4_GPIO_PIN_13   | STM32L4_GPIO_MODE_ALT | STM32L4_GPIO_ALT_5 | STM32L4_GPIO_PULL_DOWN | STM32L4_GPIO_TYPE_PP | STM32L4_GPIO_SPD_MED); /*SCLK2 ON PB13, default low (pulldn) */
-    stm32l4_gpio_init(STM32L4_GPIO_PORT_B | STM32L4_GPIO_PIN_14   | STM32L4_GPIO_MODE_ALT | STM32L4_GPIO_ALT_5 | STM32L4_GPIO_PULL_UP   | STM32L4_GPIO_TYPE_PP | STM32L4_GPIO_SPD_MED); /*MISO2 ON PB14 */
-    stm32l4_gpio_init(STM32L4_GPIO_PORT_B | STM32L4_GPIO_PIN_15   | STM32L4_GPIO_MODE_ALT | STM32L4_GPIO_ALT_5 | STM32L4_GPIO_PULL_UP   | STM32L4_GPIO_TYPE_PP | STM32L4_GPIO_SPD_MED); /*MOSI2 ON PB15*/
+    stm32l4_gpio_init(GPIO_SPI_CS | GPIO_MODE_OUT | GPIO_PULL_UP | GPIO_TYPE_PP ); /* NCS2 ON PB12, default high (pullup) */
+    stm32l4_gpio_init(GPIO_PORT_B | GPIO_PIN_13   | GPIO_MODE_ALT | GPIO_ALT_5 | GPIO_PULL_DOWN | GPIO_TYPE_PP | GPIO_SPEED_MED); /*SCLK2 ON PB13, default low (pulldn) */
+    stm32l4_gpio_init(GPIO_PORT_B | GPIO_PIN_14   | GPIO_MODE_ALT | GPIO_ALT_5 | GPIO_PULL_UP   | GPIO_TYPE_PP | GPIO_SPEED_MED); /*MISO2 ON PB14 */
+    stm32l4_gpio_init(GPIO_PORT_B | GPIO_PIN_15   | GPIO_MODE_ALT | GPIO_ALT_5 | GPIO_PULL_UP   | GPIO_TYPE_PP | GPIO_SPEED_MED); /*MOSI2 ON PB15*/
     /*initial value*/
     stm32l4_gpio_write(GPIO_SPI_CS, 1);
 #endif

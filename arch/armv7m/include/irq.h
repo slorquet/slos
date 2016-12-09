@@ -7,7 +7,9 @@
 typedef void (*armv7m_irqhandler_t)(void *arg);
 
 void armv7m_irq_init(void);
+void armv7m_irq_enable(void);
+void armv7m_irq_disable(void);
 void armv7m_irq_attach(uint8_t irqno, armv7m_irqhandler_t handler);
-void armv7m_irq_enable(uint8_t irqno, bool state);
+void armv7m_irq_activate(uint8_t irqno, bool state);
 
 #endif

@@ -19,6 +19,20 @@ void armv7m_irq_init(void)
 }
 
 /*----------------------------------------------------------------------------*/
+void armv7m_irq_disable(void)
+{
+  asm("mov r0, #0\n\t"
+      "msr PRIMASK, r0" ::: "r0");
+}
+
+/*----------------------------------------------------------------------------*/
+void armv7m_irq_enable(void)
+{
+  asm("mov r0, #1\n\t"
+      "msr PRIMASK, r0" ::: "r0");
+}
+
+/*----------------------------------------------------------------------------*/
 void armv7m_irq_attach(uint8_t irqno, armv7m_irqhandler_t handler)
 {
   if(irqno < 2 || irqno > 15)
@@ -29,7 +43,7 @@ void armv7m_irq_attach(uint8_t irqno, armv7m_irqhandler_t handler)
 }
 
 /*----------------------------------------------------------------------------*/
-void armv7m_irq_enable(uint8_t irqno, bool state)
+void armv7m_irq_activate(uint8_t irqno, bool state)
 {
   if(irqno < 2 || irqno > 15)
     {

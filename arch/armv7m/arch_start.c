@@ -26,6 +26,8 @@ uint32_t _vectors[] __attribute__((section(".armvectors"))) = {
     [16 ... 16 + ARCH_CHIP_NIRQS] = (uint32_t)chip_irq,
 };
 
+void board_start(void);
+
 /*----------------------------------------------------------------------------*/
 /*fist code executed by the CPU!*/
 void arch_start(void)
@@ -52,6 +54,16 @@ void arch_start(void)
 
   armv7m_irq_init();
 
-  /* CPU core is initialized, now jump to SoC initialization */
+  /* Initialize peripherals */
+
   chip_start();
+
+  /* Enable IRQs */
+
+  armv7m_irq_enable();
+
+  /* Initialize board specific peripherals */
+
+  board_start();
+
 }

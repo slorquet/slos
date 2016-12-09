@@ -1,7 +1,11 @@
-void board_start(void);
+#include "stm32l4_rcc.h"
+#include "stm32l4_gpio.h"
+#include "stm32l4_uart.h"
 
 void chip_start(void)
 {
-  board_start();
+  stm32l4_clock_setup();
+
+  stm32l4_uart_earlysetup();
 }
 
