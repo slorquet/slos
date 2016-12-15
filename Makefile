@@ -29,6 +29,7 @@ $(foreach LIB, $(LIBS), $(eval $(call DIR_template,$(LIB),install)))
 $(BIN): $(foreach LIB, $(LIBS), $(LIB)_install)
 	$(LD) --entry=arch_start $(LDFLAGS) -Llibs \
 		-o $(BIN) $(MAINOBJ) --start-group $(LDLIBS) $(LIBGCC) --end-group
+	@size -A $(BIN)
 
 $(foreach LIB, $(LIBS), $(eval $(call DIR_template,$(LIB),clean)))
 
