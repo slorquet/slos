@@ -1,5 +1,5 @@
-#ifndef __ARCH__ARMV6M__STM32F1__BITS__IRQ__H__
-#define __ARCH__ARMV6M__STM32F1__BITS__IRQ__H__
+#ifndef __ARCH__ARMV6M__STM32F1__BITS__IRQ__CONNECTIVITY__H__
+#define __ARCH__ARMV6M__STM32F1__BITS__IRQ__CONNECTIVITY__H__
 
 #include <assert.h>
 

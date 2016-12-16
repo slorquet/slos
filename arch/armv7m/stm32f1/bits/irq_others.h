@@ -1,5 +1,5 @@
-#ifndef __ARCH__ARMV6M__STM32F1__BITS__IRQ__H__
-#define __ARCH__ARMV6M__STM32F1__BITS__IRQ__H__
+#ifndef __ARCH__ARMV6M__STM32F1__BITS__IRQ__OTHERS__H__
+#define __ARCH__ARMV6M__STM32F1__BITS__IRQ__OTHERS__H__
 
 #include <assert.h>
 
@@ -56,7 +56,7 @@ enum IRQS
   STM32F1_IRQ_FSMC,
   STM32F1_IRQ_SDIO,
   STM32F1_IRQ_TIM5,
-  STM32F1_IRQ_SPI3
+  STM32F1_IRQ_SPI3,
   STM32F1_IRQ_UART4,
   STM32F1_IRQ_UART5,
   STM32F1_IRQ_TIM6,
@@ -69,6 +69,6 @@ enum IRQS
   ARCH_CHIP_NIRQS
 };
 
-static_assert(ARCH_CHIP_NIRQS==68);
+static_assert(ARCH_CHIP_NIRQS==60);
 
 #endif

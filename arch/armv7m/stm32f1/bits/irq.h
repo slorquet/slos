@@ -3,11 +3,11 @@
 
 #include "config.h"
 #if defined( CONFIG_STM32F1_LINE_CONNECTIVITY )
-#include "irq_connectivity.h"
+#include "bits/irq_connectivity.h"
 #elif defined( CONFIG_STM32F1_LINE_XLDENSITY )
-#include "irq_xldensity.h"
+#include "bits/irq_xldensity.h"
 #else
-#include "irq_others.h"
+#include "bits/irq_others.h"
 #endif
 
 void armv7m_irq_init(void);

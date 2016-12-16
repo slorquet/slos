@@ -1,5 +1,5 @@
-#ifndef __ARCH__ARMV6M__STM32F1__BITS__IRQ__H__
-#define __ARCH__ARMV6M__STM32F1__BITS__IRQ__H__
+#ifndef __ARCH__ARMV6M__STM32F1__BITS__IRQ__XLDENSITY__H__
+#define __ARCH__ARMV6M__STM32F1__BITS__IRQ__XLDENSITY__H__
 
 #include <assert.h>
 
@@ -69,6 +69,6 @@ enum IRQS
   ARCH_CHIP_NIRQS
 };
 
-static_assert(ARCH_CHIP_NIRQS==68);
+static_assert(ARCH_CHIP_NIRQS==60);
 
 #endif

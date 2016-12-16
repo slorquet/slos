@@ -1,6 +1,6 @@
 RM=rm -f
 
-LD=arm-none-eabi-ld
+LD=arm-none-eabi-ld -nostdlib
 CC=arm-none-eabi-gcc -nostdinc -nostdlib
 AS=arm-none-eabi-as
 AR=arm-none-eabi-ar
@@ -13,5 +13,6 @@ $(1)_$(2):
 endef
 
 %.o:%.c
-	#echo compiling $<
-	$(CC) -c $(CFLAGS) -o $@ $<
+	@echo compiling $<
+	@$(CC) -c $(CFLAGS) -o $@ $<
+
