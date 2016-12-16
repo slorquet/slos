@@ -4,7 +4,7 @@ CFLAGS+=-I$(TOPDIR)/arch/$(CONFIG_ARCH)/include
 CFLAGS+=-I$(TOPDIR)/arch/$(CONFIG_ARCH)/$(CONFIG_ARCH_CHIP_FAMILY)
 
 install: $(OBJS) $(MAINOBJ) 
-	$(AR) rcs $(TOPDIR)/libs/libboard.a $(OBJS)
+	$(AR) rcs $(TOPDIR)/libboard.a $(OBJS)
 
 clean:
 	$(RM) $(OBJS)

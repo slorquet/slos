@@ -1,5 +1,6 @@
 .config
 .config.old
+include/config.h
 board/Kconfig
 libs/*.a
 slos

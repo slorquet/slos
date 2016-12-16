@@ -1,11 +1,34 @@
 if ARCH_CHIP_FAMILY_STM32F1
 
+#stm32f1 has multiple 'lines' which define features such as interrupts
+
+#connectivity groups all f105 and f107 devinces
+config STM32F1_LINE_CONNECTIVITY
+  bool
+  
+#f101,f102,f103 with 16-32k flash
+config STM32F1_LINE_LOWDENSITY
+  bool
+
+#f101,f102,f103 with 64-128k flash
+config STM32F1_LINE_MEDDENSITY
+  bool
+
+#f101,f103 with 256-512 flash
+config STM32F1_LINE_HIGHDENSITY
+  bool
+
+#f101,f103 with 768-1024k flash
+config STM32F1_LINE_XLDENSITY
+  bool
+  
 choice
 	prompt "F1 model"
 
 config ARCH_CHIP_STM32F103C8
 	bool "STM32F103C8 (TQFP48, 64k flash)"
-
+  select STM32F1_LINE_MEDDENSITY
+  
 endchoice
 
 menu "Peripherals enable"

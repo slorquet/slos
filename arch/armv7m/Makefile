@@ -17,7 +17,7 @@ MAINOBJ=$(MAINSRC:.c=.o)
 CFLAGS+=-isystem $(TOPDIR)/include -Iinclude -I$(CHIPDIR)
 
 install: $(OBJS) $(MAINOBJ) 
-	$(AR) rcs $(TOPDIR)/libs/libarch.a $(OBJS)
+	$(AR) rcs $(TOPDIR)/libarch.a $(OBJS)
 
 clean:
 	$(RM) $(OBJS) $(MAINOBJ)
