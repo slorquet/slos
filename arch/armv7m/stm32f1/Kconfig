@@ -31,15 +31,253 @@ config ARCH_CHIP_STM32F103C8
   
 endchoice
 
+if STM32F1_LINE_LOWDENSITY
+comment "-- Info: Peripheral family: Low-density"
+endif
+
+if STM32F1_LINE_MEDDENSITY
+comment "-- Info: Peripheral family: Med-density"
+endif
+
+if STM32F1_LINE_HIGHDENSITY
+comment "-- Info: Peripheral family: High-density"
+endif
+
+if STM32F1_LINE_XLDENSITY
+comment "-- Info: Peripheral family: Extra-High-density"
+endif
+
+if STM32F1_LINE_CONNECTIVITY
+comment "-- Info: Peripheral family: Connectivity line"
+endif
+
 menu "Peripherals enable"
 
-comment "--- APB1 TODO ---"
+comment "--- APB1 ---"
 
-comment "--- APB2 TODO ---"
+config STM32F1_TIM2
+  bool "TIM2"
+  default n
+  
+config STM32F1_TIM3
+  bool "TIM3"
+  default n
 
-comment "--- AHB1 TODO ---"
+config STM32F1_TIM4
+  bool "TIM4"
+  default n
 
-comment "--- AHB2 TODO ---"
+config STM32F1_TIM5
+  bool "TIM5"
+  default n
+
+config STM32F1_TIM6
+  bool "TIM6"
+  default n
+
+config STM32F1_TIM7
+  bool "TIM7"
+  default n
+
+config STM32F1_TIM12
+  bool "TIM12"
+  default n
+
+config STM32F1_TIM13
+  bool "TIM13"
+  default n
+
+config STM32F1_TIM14
+  bool "TIM14"
+  default n
+
+config STM32F1_RTC
+  bool "RTC"
+  default n
+
+config STM32F1_WWDG
+  bool "WWDG"
+  default n
+
+config STM32F1_IWDG
+  bool "IWDG"
+  default n
+
+config STM32F1_SPI2
+  bool "SPI2"
+  default n
+
+config STM32F1_SPI3
+  bool "SPI3"
+  default n
+
+config STM32F1_USART2
+  bool "USART2"
+  default n
+
+config STM32F1_USART3
+  bool "USART3"
+  default n
+
+config STM32F1_UART4
+  bool "UART4"
+  default n
+
+config STM32F1_UART5
+  bool "UART5"
+  default n
+
+config STM32F1_I2C1
+  bool "I2C1"
+  default n
+
+config STM32F1_I2C2
+  bool "I2C2"
+  default n
+
+config STM32F1_USBFS
+  bool "USBFS"
+  default n
+
+config STM32F1_SHRAM
+  bool "SHRAM"
+  default n
+
+config STM32F1_CAN1
+  bool "CAN1"
+  default n
+
+config STM32F1_CAN2
+  bool "CAN2"
+  default n
+
+config STM32F1_BKP
+  bool "BKP"
+  default n
+
+config STM32F1_PWR
+  bool "PWR"
+  default n
+
+config STM32F1_DAC
+  bool "DAC"
+  default n
+
+comment "--- APB2 ---"
+
+config STM32F1_AFIO
+  bool "AFIO"
+  default n
+
+config STM32F1_EXTI
+  bool "EXTI"
+  default n
+
+config STM32F1_GPIOA
+  bool "GPIOA"
+  default n
+
+config STM32F1_GPIOB
+  bool "GPIOB"
+  default n
+
+config STM32F1_GPIOC
+  bool "GPIOC"
+  default n
+
+config STM32F1_GPIOD
+  bool "GPIOD"
+  default n
+
+config STM32F1_GPIOE
+  bool "GPIOE"
+  default n
+
+config STM32F1_GPIOF
+  bool "GPIOF"
+  default n
+
+config STM32F1_GPIOG
+  bool "GPIOG"
+  default n
+
+config STM32F1_ADC1
+  bool "ADC1"
+  default n
+
+config STM32F1_ADC2
+  bool "ADC2"
+  default n
+
+config STM32F1_TIM1
+  bool "TIM1"
+  default n
+
+config STM32F1_SPI1
+  bool "SPI1"
+  default n
+
+config STM32F1_TIM8
+  bool "TIM8"
+  default n
+
+config STM32F1_USART1
+  bool "USART1"
+  default n
+
+config STM32F1_ADC3
+  bool "ADC3"
+  default n
+
+config STM32F1_TIM9
+  bool "TIM9"
+  default n
+
+config STM32F1_TIM10
+  bool "TIM10"
+  default n
+
+config STM32F1_TIM11
+  bool "TIM11"
+  default n
+
+comment "--- AHB ---"
+
+config STM32F1_SDIO
+  bool "SDIO"
+  default n
+
+config STM32F1_DMA1
+  bool "DMA1"
+  default n
+
+config STM32F1_DMA2
+  bool "DMA2"
+  default n
+
+config STM32F1_RCC
+  bool "RCC"
+  default n
+
+config STM32F1_FLASH
+  bool "FLASH"
+  default n
+
+config STM32F1_CRC
+  bool "CRC"
+  default n
+
+config STM32F1_ETH
+  bool "ETH"
+  default n
+
+config STM32F1_OTGFS
+  bool "OTGFS"
+  default n
+
+config STM32F1_FSMC
+  bool "FSMC"
+  default n
 
 endmenu
 
