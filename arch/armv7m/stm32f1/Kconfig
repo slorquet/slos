@@ -21,14 +21,23 @@ config STM32F1_LINE_HIGHDENSITY
 #f101,f103 with 768-1024k flash
 config STM32F1_LINE_XLDENSITY
   bool
-  
+
+#f103xx is performance line
+config STM32F1_LINE_PERFORMANCE
+  bool
+
+#f102xx is access line
+config STM32F1_LINE_USBACCESS
+  bool
+
 choice
 	prompt "F1 model"
 
 config ARCH_CHIP_STM32F103C8
 	bool "STM32F103C8 (TQFP48, 64k flash)"
   select STM32F1_LINE_MEDDENSITY
-  
+  select STM32F1_LINE_PERFORMANCE
+
 endchoice
 
 if STM32F1_LINE_LOWDENSITY
@@ -138,10 +147,7 @@ config STM32F1_I2C2
 config STM32F1_USBFS
   bool "USBFS"
   default n
-
-config STM32F1_SHRAM
-  bool "SHRAM"
-  default n
+  depends on STM32F1_LINE_PERFORMANCE | STM32F1_LINE_USBACCESS
 
 config STM32F1_CAN1
   bool "CAN1"
@@ -150,6 +156,7 @@ config STM32F1_CAN1
 config STM32F1_CAN2
   bool "CAN2"
   default n
+  depends on STM32F1_LINE_CONNECTIVITY | STM32F1_LINE_PERFORMANCE
 
 config STM32F1_BKP
   bool "BKP"
@@ -196,10 +203,12 @@ config STM32F1_GPIOE
 config STM32F1_GPIOF
   bool "GPIOF"
   default n
+  depends on !STM32F1_LINE_CONNECTIVITY
 
 config STM32F1_GPIOG
   bool "GPIOG"
   default n
+  depends on !STM32F1_LINE_CONNECTIVITY
 
 config STM32F1_ADC1
   bool "ADC1"
@@ -246,6 +255,7 @@ comment "--- AHB ---"
 config STM32F1_SDIO
   bool "SDIO"
   default n
+  depends on STM32F1_LINE_HIGHDENSITY | STM32F1_LINE_XLDENSITY
 
 config STM32F1_DMA1
   bool "DMA1"
@@ -274,6 +284,7 @@ config STM32F1_ETH
 config STM32F1_OTGFS
   bool "OTGFS"
   default n
+  depends on STM32F1_LINE_CONNECTIVITY
 
 config STM32F1_FSMC
   bool "FSMC"

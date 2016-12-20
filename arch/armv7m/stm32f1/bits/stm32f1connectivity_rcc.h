@@ -167,8 +167,8 @@
 
 #define RCC_AHBENR_DMA1EN     (1 <<  0)
 #define RCC_AHBENR_DMA2EN     (1 <<  1)
-#define RCC_AHBENR_SRAMEN     (1 <<  2)
-#define RCC_AHBENR_FLITFEN    (1 <<  4)
+#define RCC_AHBENR_SRAMEN     (1 <<  2) /* Applies in sleep mode */
+#define RCC_AHBENR_FLITFEN    (1 <<  4) /* Applies in sleep mode */
 #define RCC_AHBENR_CRCEN      (1 <<  6)
 #define RCC_AHBENR_OTGFSEN    (1 << 12)
 #define RCC_AHBENR_ETHMACEN   (1 << 14)

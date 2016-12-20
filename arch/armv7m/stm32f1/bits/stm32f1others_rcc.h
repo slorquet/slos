@@ -126,6 +126,7 @@
 #define RCC_APB2RSTR_SPI1RST   (1 << 12)
 #define RCC_APB2RSTR_TIM8RST   (1 << 13)
 #define RCC_APB2RSTR_USART1RST (1 << 14)
+#define RCC_APB2RSTR_ADC3RST   (1 << 15)
 #define RCC_APB2RSTR_TIM9RST   (1 << 19)
 #define RCC_APB2RSTR_TIM10RST  (1 << 20)
 #define RCC_APB2RSTR_TIM11RST  (1 << 21)
@@ -159,9 +160,9 @@
 /* RCC_AHBENR */
 
 #define RCC_AHBENR_DMA1EN     (1 <<  0)
-#definS RCC_AHBENR_DMA2EN     (1 <<  1)
-#define RCC_AHBENR_SRAMEN     (1 <<  2)
-#define RCC_AHBENR_FLITFEN    (1 <<  4)
+#define RCC_AHBENR_DMA2EN     (1 <<  1)
+#define RCC_AHBENR_SRAMEN     (1 <<  2) /* Applies in sleep mode */
+#define RCC_AHBENR_FLITFEN    (1 <<  4) /* Applies in sleep mode */
 #define RCC_AHBENR_CRCEN      (1 <<  6)
 #define RCC_AHBENR_FSMCEN     (1 <<  8)
 #define RCC_AHBENR_SDIOEN     (1 << 10)
@@ -180,7 +181,12 @@
 #define RCC_APB2ENR_ADC2EN   (1 << 10)
 #define RCC_APB2ENR_TIM1EN   (1 << 11)
 #define RCC_APB2ENR_SPI1EN   (1 << 12)
+#define RCC_APB2ENR_TIM8EN   (1 << 13)
 #define RCC_APB2ENR_USART1EN (1 << 14)
+#define RCC_APB2ENR_ADC3EN   (1 << 15)
+#define RCC_APB2ENR_TIM9EN   (1 << 19)
+#define RCC_APB2ENR_TIM10EN  (1 << 20)
+#define RCC_APB2ENR_TIM11EN  (1 << 21)
 
 /* RCC_APB1ENR */
 
@@ -190,6 +196,9 @@
 #define RCC_APB1ENR_TIM5EN   (1 <<  3)
 #define RCC_APB1ENR_TIM6EN   (1 <<  4)
 #define RCC_APB1ENR_TIM7EN   (1 <<  5)
+#define RCC_APB1ENR_TIM12EN  (1 <<  6)
+#define RCC_APB1ENR_TIM13EN  (1 <<  7)
+#define RCC_APB1ENR_TIM14EN  (1 <<  8)
 #define RCC_APB1ENR_WWDGEN   (1 << 11)
 #define RCC_APB1ENR_SPI2EN   (1 << 14)
 #define RCC_APB1ENR_SPI3EN   (1 << 15)
