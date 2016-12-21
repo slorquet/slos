@@ -1,7 +1,9 @@
 #include <stdint.h>
 
-#include <bits/stm32f1_periphs.h>
-#include <bits/stm32f1_rcc.h>
+#include "armv7m.h"
+
+#include "bits/stm32f1_periphs.h"
+#include "bits/stm32f1_rcc.h"
 
 static uint32_t g_stm32f1_clock; /* current system clock frequency */
 

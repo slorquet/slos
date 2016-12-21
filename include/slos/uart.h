@@ -1,6 +1,8 @@
 #ifndef __INCLUDE__SLOS__UART__H__
 #define __INCLUDE__SLOS__UART__H__
 
+struct uart_s;
+
 struct uart_ops_s
 {
   int (*init)(struct uart_s *uart); /*setup baud rate and port params, enable uart*/

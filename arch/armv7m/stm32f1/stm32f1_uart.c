@@ -2,6 +2,9 @@
 #include <errno.h>
 #include <slos/uart.h>
 
+#include "bits/stm32f1_periphs.h"
+#include "bits/stm32f1_rcc.h"
+
 static int stm32f1_uart_init (struct uart_s *uart);
 static int stm32f1_uart_fini (struct uart_s *uart);
 static int stm32f1_uart_write(struct uart_s *uart, uint8_t *buf, int len);
@@ -34,7 +37,7 @@ static const struct stm32f1_uart_s g_usart1 =
   .uart =
     {
       .ops = &g_stm32f1_uartops,
-    };
+    },
   .regbase    = STM32F1_REGBASE_USART1,
   .rccreg     = STM32F1_RCC_APB2ENR,
   .rccbitmask = RCC_APB2ENR_USART1EN,
@@ -89,8 +92,9 @@ static int stm32f1_uart_ioctl(struct uart_s *uart, int command, void* params)
   return -ENOSYS;
 }
 
+/*----------------------------------------------------------------------------*/
 void stm32f1_uart_earlysetup()
 {
-  g_usart1.uart->ops->init(&g_usart1);
+  g_usart1.uart.ops->init(&g_usart1);
 }
 

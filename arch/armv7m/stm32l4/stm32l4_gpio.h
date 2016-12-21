@@ -8,10 +8,10 @@
    0     4    LINE   (0-15)
    4     4    PORT   (0-10)
    8     4    ALT    (0-15)
-  12     2    MODE   (0-3)
-  14     2    PULL   (0-2)
-  16     2    SPEED  (0-3)
-  18     1    TYPE   (0-1)
+  12     2    MODE   (0- 3)
+  14     2    PULL   (0- 2)
+  16     2    SPEED  (0- 3)
+  18     1    TYPE   (0- 1)
 */
 
 #define GPIO_PORT_COUNT 11

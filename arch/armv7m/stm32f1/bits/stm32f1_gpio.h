@@ -26,10 +26,10 @@
 #define GPIO_CNF_ALT     0x02 /* 0x00 is GP */
 #define GPIO_CNF_OD      0x01 /* 0x00 is PP */
 
-#define GPIO_MODE_MASK   0x03
-#define GPIO_MODE_INPUT  0x00
-#define GPIO_MODE_10MHZ  0x01
-#define GPIO_MODE_2MHZ   0x02
-#define GPIO_MODE_50MHZ  0x03
+#define GPIO_MODE_MASK     (0x03 << 2)
+#define GPIO_MODE_INPUT    (0x00 << 2)
+#define GPIO_MODE_OUT10MHZ (0x01 << 2)
+#define GPIO_MODE_OUT2MHZ  (0x02 << 2)
+#define GPIO_MODE_OUT50MHZ (0x03 << 2)
 
 #endif
