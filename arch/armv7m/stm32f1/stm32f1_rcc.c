@@ -133,7 +133,7 @@ void stm32f1_rcc_enableperipherals(void)
   reg |= RCC_APB1ENR_DACEN;
 #endif
 
-  putreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_APB2ENR, reg);
+  putreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_APB1ENR, reg);
   
   /* Enable APB2 peripherals */
 
@@ -148,31 +148,31 @@ void stm32f1_rcc_enableperipherals(void)
 #endif
 
 #ifdef CONFIG_STM32F1_GPIOA
-  reg |= RCC_APB2ENR_IOAEN;
+  reg |= RCC_APB2ENR_IOPAEN;
 #endif
 
 #ifdef CONFIG_STM32F1_GPIOB
-  reg |= RCC_APB2ENR_IOBEN;
+  reg |= RCC_APB2ENR_IOPBEN;
 #endif
 
 #ifdef CONFIG_STM32F1_GPIOC
-  reg |= RCC_APB2ENR_IOCEN;
+  reg |= RCC_APB2ENR_IOPCEN;
 #endif
 
 #ifdef CONFIG_STM32F1_GPIOD
-  reg |= RCC_APB2ENR_IODEN;
+  reg |= RCC_APB2ENR_IOPDEN;
 #endif
 
 #ifdef CONFIG_STM32F1_GPIOE
-  reg |= RCC_APB2ENR_IOEEN;
+  reg |= RCC_APB2ENR_IOPEEN;
 #endif
 
 #ifdef CONFIG_STM32F1_GPIOF
-  reg |= RCC_APB2ENR_IOFEN;
+  reg |= RCC_APB2ENR_IOPFEN;
 #endif
 
 #ifdef CONFIG_STM32F1_GPIOG
-  reg |= RCC_APB2ENR_IOGEN;
+  reg |= RCC_APB2ENR_IOPGEN;
 #endif
 
 #ifdef CONFIG_STM32F1_ADC1
