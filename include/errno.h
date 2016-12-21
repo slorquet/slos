@@ -3,167 +3,174 @@
 #ifndef __ERRNO__H__
 #define __ERRNO__H__
 
-#define E2BIG              1
-#define E2BIG_STR          "Argument list too long."
-#define EACCES             2
-#define EACCES_STR         "Permission denied."
-#define EADDRINUSE         3
-#define EADDRINUSE_STR     "Address in use."
-#define EADDRNOTAVAIL      4
-#define EADDRNOTAVAIL_STR  "Address not available."
-#define EAFNOSUPPORT       5
-#define EAFNOSUPPORT_STR   "Address family not supported."
-#define EAGAIN             6
-#define EAGAIN_STR         "Resource unavailable, try again"
-#define EALREADY           7
-#define EALREADY_STR       "Connection already in progress.
-#define EBADF              8
-#define EBADF_STR          "Bad file descriptor."
-#define EBADMSG            9
-#define EBADMSG_STR        "Bad message."
-#define EBUSY              10
-#define EBUSY_STR          "Device or resource busy."
-#define ECANCELED          11
-#define ECANCELED_STR      "Operation canceled."
-#define ECHILD             12
-#define ECHILD_STR         "No child processes."
-#define ECONNABORTED       13
-#define ECONNABORTED_STR   "Connection aborted."
-#define ECONNREFUSED       14
-#define ECONNREFUSED_STR   "Connection refused."
-#define ECONNRESET         15
-#define ECONNRESET_STR     "Connection reset."
-#define EDEADLK            16
-#define EDEADLK_STR        "Resource deadlock would occur."
-#define EDESTADDRREQ       17
-#define EDESTADDRREQ_STR   "Destination address required.
-#define EDOM               18
-#define EDOM_STR           "Mathematics argument out of domain of function."
-#define EDQUOT             19
-#define EDQUOT             "Reserved."
-#define EEXIST             20
-#define EEXIST_STR         "File exists."
-#define EFAULT    21
-"Bad address."
-#define EFBIG    22
-"File too large."
-#define EHOSTUNREACH    23
-"Host is unreachable."
-#define EIDRM    24
-"Identifier removed."
-#define EILSEQ    25
-"Illegal byte sequence."
-#define EINPROGRESS    26
-"Operation in progress."
-#define EINTR    27
-"Interrupted function."
-#define EINVAL    28
-"Invalid argument."
-#define EIO    29
-"I/O error."
-#define EISCONN    30
-"Socket is connected."
-#define EISDIR    31
-"Is a directory."
-#define ELOOP    32
-"Too many levels of symbolic links."
-#define EMFILE    33
-"File descriptor value too large."
-#define EMLINK    34
-"Too many links."
-#define EMSGSIZE    35
-"Message too large."
-#define EMULTIHOP    36
-"Reserved."
-#define ENAMETOOLONG    37
-"Filename too long."
-#define ENETDOWN    38
-"Network is down."
-#define ENETRESET    39
-"Connection aborted by network."
-#define ENETUNREACH    40
-"Network unreachable."
-#define ENFILE    41
-"Too many files open in system."
-#define ENOBUFS    42
-"No buffer space available."
-#define ENODATA    43
-"No message is available on the STREAM head read queue."
-#define ENODEV    44
-"No such device."
-#define ENOENT    45
-"No such file or directory."
-#define ENOEXEC    46
-"Executable file format error."
-#define ENOLCK    47
-"No locks available."
-#define ENOLINK    48
-"Reserved."
-#define ENOMEM    49
-"Not enough space."
-#define ENOMSG    50
-"No message of the desired type."
-#define ENOPROTOOPT    51
-"Protocol not available."
-#define ENOSPC    52
-"No space left on device."
-#define ENOSR    53
-"#define OB XSR     #define Option Start     No STREAM resources. #define Option End    "
-#define ENOSTR    54
-"#define OB XSR     #define Option Start     Not a STREAM. #define Option End    "
-#define ENOSYS    55
-"Functionality not supported."
-#define ENOTCONN    56
-"The socket is not connected."
-#define ENOTDIR    57
-"Not a directory or a symbolic link to a directory."
-#define ENOTEMPTY    58
-"Directory not empty."
-#define ENOTRECOVERABLE   59
-"State not recoverable."
-#define ENOTSOCK    60
-"Not a socket."
-#define ENOTSUP    61
-"Not supported (may be the same value as #define EOPNOTSUPP    )."
-#define ENOTTY    62
-"Inappropriate I/O control operation."
-#define ENXIO    63
-"No such device or address."
-#define EOPNOTSUPP    64
-"Operation not supported on socket (may be the same value as #define ENOTSUP    )."
-#define EOVERFLOW    65
-"Value too large to be stored in data type."
-#define EOWNERDEAD    66
-"Previous owner died."
-#define EPERM    67
-"Operation not permitted."
-#define EPIPE    68
-"Broken pipe."
-#define EPROTO    69
-"Protocol error."
-#define EPROTONOSUPPORT    70
-"Protocol not supported."
-#define EPROTOTYPE    71
-"Protocol wrong type for socket."
-#define ERANGE    72
-"Result too large."
-#define EROFS    73
-"Read-only file system."
-#define ESPIPE    74
-"Invalid seek."
-#define ESRCH    75
-"No such process."
-#define ESTALE    76
-"Reserved."
-#define ETIME    77
-"#define OB XSR     #define Option Start     Stream ioctl() timeout. #define Option End  "  
-#define ETIMEDOUT  78  
-"Connection timed out."
-#define ETXTBSY    79
-"Text file busy."
-#define EWOULDBLOCK  EAGAIN  
-"Operation would block (may be the same value as #define EAGAIN    )."
-#define EXDEV    80
-"Cross-device link. "
+/* Generic errors */
+
+#define E2BIG               1
+#define E2BIG_STR           "Argument list too long."
+#define EACCES              2
+#define EACCES_STR          "Permission denied."
+#define EAGAIN              3
+#define EWOULDBLOCK         EAGAIN   
+#define EAGAIN_STR          "Resource unavailable, try again"
+#define EBUSY               4
+#define EBUSY_STR           "Device or resource busy."
+#define ECANCELED           5
+#define ECANCELED_STR       "Operation canceled."
+#define ECHILD              6
+#define ECHILD_STR          "No child processes."
+#define EDEADLK             7
+#define EDEADLK_STR         "Resource deadlock would occur."
+#define EDOM                8
+#define EDOM_STR            "Mathematics argument out of domain of function."
+#define EFAULT              9
+#define EFAULT_STR          "Bad address."
+#define EIDRM               10
+#define EIDRM_STR           "Identifier removed."
+#define EILSEQ              11
+#define EILSEQ_STR          "Illegal byte sequence."
+#define EINPROGRESS         12
+#define EINPROGRESS_STR     "Operation in progress."
+#define EINTR               13
+#define EINTR_STR           "Interrupted function."
+#define EINVAL              14
+#define EINVAL_STR          "Invalid argument."
+#define EIO                 15
+#define EIO_STR             "I/O error."
+#define ENOBUFS             16
+#define ENOBUFS_STR         "No buffer space available."
+#define ENODATA             17
+#define ENODATA_STR         "No message is available on the STREAM head read queue."
+#define ENODEV              18
+#define ENODEV_STR          "No such device."
+#define ENOLCK              19
+#define ENOLCK_STR          "No locks available."
+#define ENOLINK             20
+#define ENOLINK_STR         "Reserved."
+#define ENOMEM              21
+#define ENOMEM_STR          "Not enough space."
+#define ENOSR               22
+#define ENOSR_STR           "No STREAM resources."
+#define ENOSTR              23
+#define ENOSTR_STR          "Not a STREAM."
+#define ENOSYS              24
+#define ENOSYS_STR          "Functionality not supported."
+#define ENOTRECOVERABLE     25
+#define ENOTRECOVERABLE_STR "State not recoverable."
+#define ENOTSUP             26
+#define ENOTSUP_STR         "Not supported."
+#define ENOTTY              27
+#define ENOTTY_STR          "Inappropriate I/O control operation."
+#define ENXIO               28
+#define ENXIO_STR           "No such device or address."
+#define EOVERFLOW           29
+#define EOVERFLOW_STR       "Value too large to be stored in data type."
+#define EOWNERDEAD          30
+#define EOWNERDEAD_STR      "Previous owner died."
+#define EPERM               31
+#define EPERM_STR           "Operation not permitted."
+#define EPIPE               32
+#define EPIPE_STR           "Broken pipe."
+#define ERANGE              33
+#define ERANGE_STR          "Result too large."
+#define ESRCH               34
+#define ESRCH_STR           "No such process."
+#define ESTALE              35
+#define ESTALE_STR          "Reserved."
+#define ETIME               36
+#define ETIME_STR           "Stream ioctl() timeout."  
+
+/* VFS errors */
+
+#define EBADF               50
+#define EBADF_STR           "Bad file descriptor."
+#define EDQUOT              51
+#define EDQUOT              "Reserved."
+#define EEXIST              52
+#define EEXIST_STR          "File exists."
+#define EFBIG               53
+#define EFBIG_STR           "File too large."
+#define EISDIR              54
+#define EISDIR_STR          "Is a directory."
+#define ELOOP               55
+#define ELOOP_STR           "Too many levels of symbolic links."
+#define EMFILE              56
+#define EMFILE_STR          "File descriptor value too large."
+#define EMLINK              57
+#define EMLINK_STR          "Too many links."
+#define ENAMETOOLONG        58
+#define ENAMETOOLONG_STR    "Filename too long."
+#define ENFILE              59
+#define ENFILE_STR          "Too many files open in system."
+#define ENOENT              60
+#define ENOENT_STR          "No such file or directory."
+#define ENOEXEC             61
+#define ENOEXEC_STR         "Executable file format error."
+#define ENOSPC              62
+#define ENOSPC_STR          "No space left on device."
+#define ENOTDIR             63
+#define ENOTDIR_STR         "Not a directory or a symbolic link to a directory."
+#define ENOTEMPTY           64
+#define ENOTEMPTY_STR       "Directory not empty."
+#define EROFS               65
+#define EROFS_STR           "Read-only file system."
+#define ESPIPE              66
+#define ESPIPE_STR          "Invalid seek."
+#define ETXTBSY             67
+#define ETXTBSY_STR         "Text file busy."
+#define EXDEV               68
+#define EXDEV_STR           "Cross-device link. "
+
+/* Network errors */
+
+#define EADDRINUSE          100
+#define EADDRINUSE_STR      "Address in use."
+#define EADDRNOTAVAIL       101
+#define EADDRNOTAVAIL_STR   "Address not available."
+#define EAFNOSUPPORT        102
+#define EAFNOSUPPORT_STR    "Address family not supported."
+#define EALREADY            103
+#define EALREADY_STR        "Connection already in progress.
+#define EBADMSG             104
+#define EBADMSG_STR         "Bad message."
+#define ECONNABORTED        105
+#define ECONNABORTED_STR    "Connection aborted."
+#define ECONNREFUSED        106
+#define ECONNREFUSED_STR    "Connection refused."
+#define ECONNRESET          107
+#define ECONNRESET_STR      "Connection reset."
+#define EDESTADDRREQ        108
+#define EDESTADDRREQ_STR    "Destination address required.
+#define EHOSTUNREACH        109
+#define EHOSTUNREACH_STR    "Host is unreachable."
+#define EISCONN             110
+#define EISCONN_STR         "Socket is connected."
+#define EMSGSIZE            111
+#define EMSGSIZE_STR        "Message too large."
+#define EMULTIHOP           112
+#define EMULTIHOP_STR       "Reserved."
+#define ENETDOWN            113
+#define ENETDOWN_STR        "Network is down."
+#define ENETRESET           114
+#define ENETRESET_STR       "Connection aborted by network."
+#define ENETUNREACH         115
+#define ENETUNREACH_STR     "Network unreachable."
+#define ENOMSG              116
+#define ENOMSG_STR          "No message of the desired type."
+#define ENOPROTOOPT         117
+#define ENOPROTOOPT_STR     "Protocol not available."
+#define ENOTCONN            118
+#define ENOTCONN_STR        "The socket is not connected."
+#define ENOTSOCK            119
+#define ENOTSOCK_STR        "Not a socket."
+#define EOPNOTSUPP          120
+#define EOPNOTSUPP_STR      "Operation not supported on socket."
+#define EPROTO              121
+#define EPROTO_STR          "Protocol error."
+#define EPROTONOSUPPORT     122
+#define EPROTONOSUPPORT_STR "Protocol not supported."
+#define EPROTOTYPE          123
+#define EPROTOTYPE_STR      "Protocol wrong type for socket."
+#define ETIMEDOUT           124
+#define ETIMEDOUT_STR       "Connection timed out."
 
 #endif /* __ERRNO__H__ */
