@@ -3,6 +3,6 @@
 include/config.h
 board/Kconfig
 *.a
-slos
+./slos
 board/*/src/*.o
 
