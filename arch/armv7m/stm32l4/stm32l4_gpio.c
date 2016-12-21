@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stddef.h>
+#include <config.h>
 
 #include "armv7m.h"
 #include "stm32l4_rcc.h"

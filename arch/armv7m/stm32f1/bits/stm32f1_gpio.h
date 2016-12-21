@@ -1,0 +1,35 @@
+#ifndef __ARCH__ARMV7M__STM32F1__BITS__STM32F1__GPIO__H__
+#define __ARCH__ARMV7M__STM32F1__BITS__STM32F1__GPIO__H__
+
+#define STM32F1_GPIO_CRL  0x00
+#define STM32F1_GPIO_CRH  0x04
+#define STM32F1_GPIO_IDR  0x08
+#define STM32F1_GPIO_ODR  0x0C
+#define STM32F1_GPIO_BSRR 0x10
+#define STM32F1_GPIO_BRR  0x14
+#define STM32F1_GPIO_LCKR 0x18
+
+#define STM32F1_AFIO_EVCR    0x00
+#define STM32F1_AFIO_MAPR    0x04
+#define STM32F1_AFIO_EXTICR1 0x08
+#define STM32F1_AFIO_EXTICR2 0x0C
+#define STM32F1_AFIO_EXTICR3 0x10
+#define STM32F1_AFIO_EXTICR4 0x14
+#define STM32F1_AFIO_MAPR2   0x18
+
+/* GPIO conf registers */
+#define GPIO_CNF_MASK    0x03
+#define GPIO_CNF_ANALOG  0x00
+#define GPIO_CNF_INFLOAT 0x01
+#define GPIO_CNF_INPULL  0x02
+
+#define GPIO_CNF_ALT     0x02 /* 0x00 is GP */
+#define GPIO_CNF_OD      0x01 /* 0x00 is PP */
+
+#define GPIO_MODE_MASK   0x03
+#define GPIO_MODE_INPUT  0x00
+#define GPIO_MODE_10MHZ  0x01
+#define GPIO_MODE_2MHZ   0x02
+#define GPIO_MODE_50MHZ  0x03
+
+#endif
