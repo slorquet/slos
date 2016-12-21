@@ -27,7 +27,7 @@ void stm32f1_rcc_enableperipherals(void)
   
   /* Enable APB1 peripherals */
 
-  reg = getreg32(STM32F1_RCC_APB1ENR);
+  reg = getreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_APB1ENR);
 
 #ifdef CONFIG_STM32F1_TIM2
   reg |= RCC_APB1ENR_TIM2EN;
@@ -133,11 +133,11 @@ void stm32f1_rcc_enableperipherals(void)
   reg |= RCC_APB1ENR_DACEN;
 #endif
 
-  putreg32(STM32F1_RCC_APB2ENR, reg);
+  putreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_APB2ENR, reg);
   
   /* Enable APB2 peripherals */
 
-  reg = getreg32(STM32F1_RCC_APB2ENR);
+  reg = getreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_APB2ENR);
 
 #ifdef CONFIG_STM32F1_AFIO
   reg |= RCC_APB2ENR_AFIOEN;
@@ -215,11 +215,11 @@ void stm32f1_rcc_enableperipherals(void)
   reg |= RCC_APB2ENR_TIM11EN;
 #endif
 
-  putreg32(STM32F1_RCC_APB2ENR, reg);
+  putreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_APB2ENR, reg);
   
   /* Enable AHB peripherals */
 
-  reg = getreg32(STM32F1_RCC_AHBENR);
+  reg = getreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_AHBENR);
 
 #ifdef CONFIG_STM32F1_SDIO
   reg |= RCC_AHBENR_SDIOEN;
@@ -253,7 +253,7 @@ void stm32f1_rcc_enableperipherals(void)
   reg |= RCC_AHBENR_FSMCEN;
 #endif
 
-  putreg32(STM32F1_RCC_AHBENR, reg);
+  putreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_AHBENR, reg);
   
 }
 

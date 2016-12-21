@@ -13,7 +13,7 @@ static int stm32f1_uart_avail(struct uart_s *uart);
 static int stm32f1_uart_read (struct uart_s *uart, uint8_t *buf, int len);
 static int stm32f1_uart_ioctl(struct uart_s *uart, int command, void* params);
 
-struct uart_ops_s g_stm32f1_uartops =
+static const struct uart_ops_s g_stm32f1_uartops =
 {
   stm32f1_uart_init,
   stm32f1_uart_fini,
@@ -32,7 +32,7 @@ struct stm32f1_uart_s
   uint32_t rccbitmask;
 };
 
-static const struct stm32f1_uart_s g_usart1 =
+static const struct stm32f1_uart_s g_stm32f1_usart1 =
 {
   .uart =
     {
@@ -95,6 +95,6 @@ static int stm32f1_uart_ioctl(struct uart_s *uart, int command, void* params)
 /*----------------------------------------------------------------------------*/
 void stm32f1_uart_earlysetup()
 {
-  g_usart1.uart.ops->init(&g_usart1);
+  g_stm32f1_usart1.uart.ops->init(&g_stm32f1_usart1);
 }
 
