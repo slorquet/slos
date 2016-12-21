@@ -13,7 +13,7 @@ STACK_SIZE = 4096;
 SECTIONS
 {
     .armvectors : {
-        *(.armvectors)      /* ARM interrupt vectors /
+        *(.armvectors)      /* ARM interrupt vectors */
     } > FLASH
 
     .text ALIGN(4) : {
