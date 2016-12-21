@@ -9,37 +9,37 @@
 
 static const uint32_t g_stm32f1_gpioaddr[] =
 {
-#ifdef STM32F1_GPIOA
+#ifdef CONFIG_STM32F1_GPIOA
   STM32F1_REGBASE_GPIOA,
 #else
   0,
 #endif
-#ifdef STM32F1_GPIOB
+#ifdef CONFIG_STM32F1_GPIOB
   STM32F1_REGBASE_GPIOB,
 #else
   0,
 #endif
-#ifdef STM32F1_GPIOC
+#ifdef CONFIG_STM32F1_GPIOC
   STM32F1_REGBASE_GPIOC,
 #else
   0,
 #endif
-#ifdef STM32F1_GPIOD
+#ifdef CONFIG_STM32F1_GPIOD
   STM32F1_REGBASE_GPIOD,
 #else
   0,
 #endif
-#ifdef STM32F1_GPIOE
+#ifdef CONFIG_STM32F1_GPIOE
   STM32F1_REGBASE_GPIOE,
 #else
   0,
 #endif
-#ifdef STM32F1_GPIOF
+#ifdef CONFIG_STM32F1_GPIOF
   STM32F1_REGBASE_GPIOF,
 #else
   0,
 #endif
-#ifdef STM32F1_GPIOG
+#ifdef CONFIG_STM32F1_GPIOG
   STM32F1_REGBASE_GPIOG,
 #else
   0,

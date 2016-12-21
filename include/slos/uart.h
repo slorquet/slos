@@ -7,7 +7,7 @@ struct uart_ops_s
 {
   int (*init)(struct uart_s *uart); /*setup baud rate and port params, enable uart*/
   int (*fini)(struct uart_s *uart); /*disable uart*/
-  int (*write)(struct uart_s *uart, uint8_t *buf, int len); /*write some bytes to buffer*/
+  int (*write)(struct uart_s *uart, const uint8_t *buf, int len); /*write some bytes to buffer*/
   int (*flush)(struct uart_s *uart); /*finish buffer transmission*/
   int (*avail)(struct uart_s *uart); /*tell how many bytes can be read*/
   int (*read )(struct uart_s *uart, uint8_t *buf, int len); /*read some bytes from port*/
@@ -16,7 +16,7 @@ struct uart_ops_s
 
 struct uart_s
 {
-  struct uart_ops_s *ops;
+  const struct uart_ops_s *ops;
   uint8_t bits;
   uint8_t parity;
   uint8_t stopbits;
