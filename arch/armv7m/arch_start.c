@@ -1,6 +1,7 @@
 //#include "config.h"
 
 #include "chip.h"
+#include "irq.h"
 #include "bits/irq.h"
 
 #include <stdint.h>
@@ -58,12 +59,11 @@ void arch_start(void)
 
   chip_start();
 
-  /* Enable IRQs */
-
-  armv7m_irq_enable();
-
   /* Initialize board specific peripherals */
 
   board_start();
 
+  /* Enable IRQs */
+
+  armv7m_irq_enable();
 }

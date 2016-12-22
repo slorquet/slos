@@ -11,6 +11,5 @@
 #endif
 
 void armv7m_irq_init(void);
-void armv7m_irq_enable(void);
 
 #endif
