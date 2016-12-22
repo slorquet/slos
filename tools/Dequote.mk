@@ -1,0 +1,2 @@
+CONFIG_ARCH_CHIP_FAMILY:=$(patsubst "%",%,$(CONFIG_ARCH_CHIP_FAMILY))
+CONFIG_ARCH:=$(patsubst "%",%,$(CONFIG_ARCH))

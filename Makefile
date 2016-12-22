@@ -1,6 +1,7 @@
 TOPDIR=$(shell pwd)
 
 -include .config
+include tools/Dequote.mk
 -include Make.defs
 
 BIN=slos

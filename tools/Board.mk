@@ -1,3 +1,7 @@
+include $(TOPDIR)/.config
+include $(TOPDIR)/tools/Dequote.mk
+include $(TOPDIR)/arch/$(CONFIG_ARCH)/Arch.defs
+
 CFLAGS+=-isystem $(TOPDIR)/include
 CFLAGS+=-I../include
 CFLAGS+=-I$(TOPDIR)/arch/$(CONFIG_ARCH)/include
