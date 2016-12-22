@@ -18,6 +18,6 @@ void board_start(void)
     {
       stm32f1_gpio_write(PC13, state);
       state = !state;
-      for(i=0;i<800000;i++) {};
+      for(i=0;i<100000;i++) {};
     }
 }
