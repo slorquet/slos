@@ -46,7 +46,7 @@ static const uint32_t g_stm32f1_gpioaddr[] =
 #endif
 };
 
-#define G_STM32F1_PORTCOUNT (sizeof(g_stm32f1_gpioaddr)/sizeof(g_stm32f1_gpioaddr[0]))
+#define STM32F1_PORTCOUNT (sizeof(g_stm32f1_gpioaddr)/sizeof(g_stm32f1_gpioaddr[0]))
 
 /*----------------------------------------------------------------------------*/
 static inline void stm32f1_gpio_putreg(const uint32_t base, uint32_t regoff, uint32_t value)
@@ -76,7 +76,7 @@ void stm32f1_gpio_init(uint32_t gpiodesc)
   uint32_t base,reg,val;
   uint32_t line = (gpiodesc & GPIO_FLAGS_LINE_MASK) >> GPIO_FLAGS_LINE_SHIFT;
   uint32_t port = (gpiodesc & GPIO_FLAGS_PORT_MASK) >> GPIO_FLAGS_PORT_SHIFT;
-  if (port >= G_STM32F1_PORTCOUNT)
+  if (port >= STM32F1_PORTCOUNT)
     {
       return;
     }
@@ -110,7 +110,7 @@ void stm32f1_gpio_init(uint32_t gpiodesc)
         {
           stm32f1_gpio_updatereg(base, STM32F1_GPIO_ODR, 1<<line, 0);
         }
-      else if ((gpiodesc & GPIO_FLAGS_PULL_MASK) == GPIO_STATE_CLEAR)
+      else if ((gpiodesc & GPIO_FLAGS_STATE_MASK) == GPIO_STATE_CLEAR)
         {
           stm32f1_gpio_updatereg(base, STM32F1_GPIO_ODR, 0, 1<<line);
         }
@@ -127,7 +127,7 @@ void stm32f1_gpio_init(uint32_t gpiodesc)
   else
     {
       reg = STM32F1_GPIO_CRH;
-      line -= 16;
+      line -= 8;
     }
 
   line <<= 2; /* transform to bit shift */
@@ -135,7 +135,7 @@ void stm32f1_gpio_init(uint32_t gpiodesc)
   /* erase bits that will be set later */
 
   val  = stm32f1_gpio_getreg(base, reg);
-  val &= ~(GPIO_CNF_MASK | GPIO_MODE_MASK) << line;
+  val &= ~((GPIO_CNF_MASK | GPIO_MODE_MASK) << line);
 
   if ((gpiodesc & GPIO_FLAGS_MODE_MASK) == GPIO_MODE_IN)
     {
@@ -146,11 +146,11 @@ void stm32f1_gpio_init(uint32_t gpiodesc)
       /* set pull mode */
       if((gpiodesc & GPIO_FLAGS_PULL_MASK) == 0)
         {
-          val |= (GPIO_CNF_INFLOAT) << line;
+          val |= GPIO_CNF_INFLOAT << line;
         }
       else
         {
-          val |= (GPIO_CNF_INPULL) << line;
+          val |= GPIO_CNF_INPULL << line;
         }
 
     }
@@ -159,15 +159,15 @@ void stm32f1_gpio_init(uint32_t gpiodesc)
     {
       if ((gpiodesc & GPIO_FLAGS_SPEED_MASK) == GPIO_SPEED_LOW)
         {
-          val |= GPIO_MODE_OUT2MHZ;
+          val |= GPIO_MODE_OUT2MHZ << line;
         }
       else if ((gpiodesc & GPIO_FLAGS_SPEED_MASK) == GPIO_SPEED_MED)
         {
-          val |= GPIO_MODE_OUT10MHZ;
+          val |= GPIO_MODE_OUT10MHZ << line;
         }
       else if ((gpiodesc & GPIO_FLAGS_SPEED_MASK) == GPIO_SPEED_HIGH)
         {
-          val |= GPIO_MODE_OUT50MHZ;
+          val |= GPIO_MODE_OUT50MHZ << line;
         }
 
      /* set output type */
@@ -206,7 +206,7 @@ void stm32f1_gpio_write(uint32_t gpio, int state)
   uint32_t base,reg,val;
   uint32_t line = (gpio & GPIO_FLAGS_LINE_MASK) >> GPIO_FLAGS_LINE_SHIFT;
   uint32_t port = (gpio & GPIO_FLAGS_PORT_MASK) >> GPIO_FLAGS_PORT_SHIFT;
-  if (port >= G_STM32F1_PORTCOUNT)
+  if (port >= STM32F1_PORTCOUNT)
     {
       return;
     }

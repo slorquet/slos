@@ -30,26 +30,38 @@ uint32_t _vectors[] __attribute__((section(".armvectors"))) = {
 void board_start(void);
 
 /*----------------------------------------------------------------------------*/
-/*fist code executed by the CPU!*/
-void arch_start(void)
+static inline void clearbss(void)
 {
   uint32_t *addr;
   uint32_t *src;
-
-  /* Clear BSS Segment */
 
   for(addr = &_bss_start; addr < &_bss_end; addr++)
     {
       *addr = 0;
     }
+}
 
-  /* Copy Initialized Data */
+/*----------------------------------------------------------------------------*/
+static inline void copydata(void)
+{
+  uint32_t *addr;
+  uint32_t *src;
 
   src = &_data_init_start;
   for(addr = &_data_start; addr < &_data_end; addr++)
     {
       *addr = *src++;
     }
+}
+
+/*----------------------------------------------------------------------------*/
+/*fist code executed by the CPU!*/
+void arch_start(void)
+{
+
+  clearbss();
+
+  copydata();
 
   /* Initialize common armv7m IRQs */
 

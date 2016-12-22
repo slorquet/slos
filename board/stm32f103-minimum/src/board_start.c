@@ -8,7 +8,7 @@
 
 void board_start(void)
 {
-  uint32_t state = 0;
+  uint32_t state = 1;
   volatile int i;
 
   /* configure pc13 as output to blink the led */
