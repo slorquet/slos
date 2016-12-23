@@ -65,9 +65,9 @@ enum {
 };
 
 enum {
-    GPIO_MODE_IN     = 0<<GPIO_FLAGS_MODE_SHIFT,
+    GPIO_MODE_IN     = 0<<GPIO_FLAGS_MODE_SHIFT, /* Also for alt inputs */
     GPIO_MODE_OUT    = 1<<GPIO_FLAGS_MODE_SHIFT,
-    GPIO_MODE_ALT    = 2<<GPIO_FLAGS_MODE_SHIFT,
+    GPIO_MODE_ALT    = 2<<GPIO_FLAGS_MODE_SHIFT, /* Alt outputs */
     GPIO_MODE_ANALOG = 3<<GPIO_FLAGS_MODE_SHIFT,
 };
 

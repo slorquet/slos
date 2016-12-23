@@ -296,21 +296,32 @@ menu "UART config"
 
 if STM32F1_USART1
 
+choice
+  prompt "IO remap config"
+
+config STM32F1_USART1_REMAP_NONE
+  bool "Normal : TX=PA9 TX=PA10"
+
+config STM32F1_USART1_REMAP
+  bool "Remapped : TX=PB6 RX=PB7"
+
+endchoice
+
 config STM32F1_USART1_BAUDRATE
   int "USART1 default baud rate"
   default 115200
 
 choice
-	prompt "USART1 default parity"
+  prompt "USART1 default parity"
 
 config STM32F1_USART1_PARITY_NONE
-	bool "None"
+  bool "None"
 
 config STM32F1_USART1_PARITY_ODD
-	bool "Odd"
+  bool "Odd"
 
 config STM32F1_USART1_PARITY_EVEN
-	bool "Even"
+  bool "Even"
 
 endchoice
 
