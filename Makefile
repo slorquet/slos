@@ -40,9 +40,11 @@ $(BIN): include/config.h $(foreach SUBDIR, $(SUBDIRS), $(SUBDIR)_install)
 $(foreach SUBDIR, $(SUBDIRS), $(eval $(call DIR_template,$(SUBDIR),clean)))
 
 clean: $(foreach SUBDIR, $(SUBDIRS), $(SUBDIR)_clean)
-	$(RM) $(addsuffix .a, $(LIBS))
+	$(RM) $(addsuffix .a, $(addprefix lib, $(LIBS)))
 
 distclean: clean
 	$(RM) board/Kconfig
 	$(RM) .config
+	$(RM) $(BIN)
+
 
