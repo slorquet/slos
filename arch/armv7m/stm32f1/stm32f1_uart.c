@@ -5,17 +5,30 @@
 #include "armv7m.h"
 #include "bits/stm32f1_periphs.h"
 #include "bits/stm32f1_rcc.h"
+#include "bits/stm32f1_gpio.h"
 #include "bits/irq.h"
+#include "stm32f1_gpio.h"
+
+/*==============================================================================
+ * Definitions
+ *==============================================================================
+ */
+
+/*==============================================================================
+ * Types
+ *==============================================================================
+ */
 
 struct stm32f1_uartparams_s
 {
   uint32_t regbase;
   uint32_t rccreg;
   uint32_t rccbit;
-  uint32_t  remapreg;  /* IO remap register */
-  uint32_t  remapbit;  /* IO remap bit */
-  uint32_t  txpin;
-  uint32_t  rxpin;
+  uint32_t remapreg;   /* IO remap register  */
+  uint32_t remapmask;  /* IO remap bit mask  */
+  uint32_t remapbit;   /* IO remap bit value */
+  uint32_t txpin;
+  uint32_t rxpin;
   uint8_t  irq;    /* irq line */
 };
 
@@ -27,6 +40,11 @@ struct stm32f1_uart_s
   uint8_t                            drivemode; /* none, irq, dma */
 };
 
+/*==============================================================================
+ * Function Prototypes
+ *==============================================================================
+ */
+
 static int stm32f1_uart_init (struct uart_s *uart);
 static int stm32f1_uart_fini (struct uart_s *uart);
 static int stm32f1_uart_write(struct uart_s *uart, const uint8_t *buf, int len);
@@ -34,6 +52,11 @@ static int stm32f1_uart_flush(struct uart_s *uart);
 static int stm32f1_uart_avail(struct uart_s *uart);
 static int stm32f1_uart_read (struct uart_s *uart, uint8_t *buf, int len);
 static int stm32f1_uart_ioctl(struct uart_s *uart, int command, void* params);
+
+/*==============================================================================
+ * Variables and constants
+ *==============================================================================
+ */
 
 static const struct uart_ops_s g_stm32f1_uartops =
 {
@@ -54,15 +77,15 @@ static const struct stm32f1_uartparams_s g_stm32f1_usart1params =
   .rccbit     = RCC_APB2ENR_USART1EN,
   .irq        = STM32F1_IRQ_USART1,
   .remapreg   = STM32F1_AFIO_MAPR,
-  .remapmask  = AFIO_USART1_REMAP,
+  .remapmask  = AFIO_MAPR_USART1_REMAP,
 #ifdef CONFIG_STM32F1_USART1_REMAP
-  .remapbit   = AFIO_MAPR_USART1REMAP
-  .txpin      = GPIO_PORT_B | GPIO_PIN_6 | GPIO_MODE_ALT | GPIO_SPEED_MED | GPIO_TYPE_PP;
-  .rxpin      = GPIO_PORT_B | GPIO_PIN_7 | GPIO_MODE_IN  | GPIO_SPEED_MED | GPIO_PULL_UP;
+  .remapbit   = AFIO_MAPR_USART1_REMAP,
+  .txpin      = GPIO_PORT_B | GPIO_PIN_6 | GPIO_MODE_ALT | GPIO_SPEED_MED | GPIO_TYPE_PP,
+  .rxpin      = GPIO_PORT_B | GPIO_PIN_7 | GPIO_MODE_IN  | GPIO_SPEED_MED | GPIO_PULL_UP,
 #else
-  .remapbit   = 0
-  .txpin      = GPIO_PORT_A | GPIO_PIN_9  | GPIO_MODE_ALT | GPIO_SPEED_MED | GPIO_TYPE_PP;
-  .rxpin      = GPIO_PORT_A | GPIO_PIN_10 | GPIO_MODE_IN  | GPIO_SPEED_MED | GPIO_PULL_UP;
+  .remapbit   = 0,
+  .txpin      = GPIO_PORT_A | GPIO_PIN_9  | GPIO_MODE_ALT | GPIO_SPEED_MED | GPIO_TYPE_PP,
+  .rxpin      = GPIO_PORT_A | GPIO_PIN_10 | GPIO_MODE_IN  | GPIO_SPEED_MED | GPIO_PULL_UP,
 #endif
 };
 
@@ -89,6 +112,11 @@ static struct stm32f1_uart_s g_stm32f1_usart1 =
 };
 #endif
 
+/*==============================================================================
+ * Functions
+ *==============================================================================
+ */
+
 /*----------------------------------------------------------------------------*/
 /*setup baud rate and port params, enable uart*/
 static int stm32f1_uart_init(struct uart_s *uart)
@@ -98,9 +126,9 @@ static int stm32f1_uart_init(struct uart_s *uart)
   
   /* Power up device */
 
-  val  = getreg32(STM32F1_BASEREG_RCC + dev->params->rccreg;
+  val  = getreg32(STM32F1_REGBASE_RCC + dev->params->rccreg);
   val |= dev->params->rccbit;
-  putreg(STM32F1_REGBASE_RCC + dev->params->rccreg, val);
+  putreg32(STM32F1_REGBASE_RCC + dev->params->rccreg, val);
   
   /* Enable GPIOs and alternate settings */
 
@@ -124,6 +152,7 @@ static int stm32f1_uart_init(struct uart_s *uart)
 /*disable uart*/
 static int stm32f1_uart_fini (struct uart_s *uart)
 {
+  uint32_t val;
   struct stm32f1_uart_s *dev = (struct stm32f1_uart_s *)uart;
 
   /* Disable uart */
@@ -136,9 +165,9 @@ static int stm32f1_uart_fini (struct uart_s *uart)
 
   /* Power down device */
 
-  val  = getreg32(STM32F1_BASEREG_RCC + dev->params->rccreg;
+  val  = getreg32(STM32F1_REGBASE_RCC + dev->params->rccreg);
   val &= ~dev->params->rccbit;
-  putreg(STM32F1_REGBASE_RCC + dev->params->rccreg, val);
+  putreg32(STM32F1_REGBASE_RCC + dev->params->rccreg, val);
 
   return -ENOSYS;
 }
