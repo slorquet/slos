@@ -1,0 +1,3 @@
+VPATH+=string
+
+CSRCS+=strlen.c

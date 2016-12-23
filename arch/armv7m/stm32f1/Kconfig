@@ -294,10 +294,21 @@ endmenu
 
 menu "UART config"
 
+choice
+  prompt "UART to use as kernel console"
+
+config STM32F1_USART1_KCONSOLE
+  bool "USART1"
+  depends on STM32F1_USART1
+
+endchoice
+
 if STM32F1_USART1
 
+comment "--- USART1 ---"
+
 choice
-  prompt "IO remap config"
+  prompt "USART IO remap config"
 
 config STM32F1_USART1_REMAP_NONE
   bool "Normal : TX=PA9 TX=PA10"

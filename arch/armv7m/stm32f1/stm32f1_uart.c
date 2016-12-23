@@ -1,4 +1,6 @@
+#include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 #include <errno.h>
 #include <slos/uart.h>
 
@@ -30,6 +32,7 @@ struct stm32f1_uartparams_s
   uint32_t txpin;
   uint32_t rxpin;
   uint8_t  irq;    /* irq line */
+  uint8_t  is_kconsole:1; /* set to one if this uart is the kernel console */
 };
 
 struct stm32f1_uart_s
@@ -76,6 +79,11 @@ static const struct stm32f1_uartparams_s g_stm32f1_usart1params =
   .rccreg     = STM32F1_RCC_APB2ENR,
   .rccbit     = RCC_APB2ENR_USART1EN,
   .irq        = STM32F1_IRQ_USART1,
+#ifdef CONFIG_STM32F1_USART1_KCONSOLE
+  .is_kconsole = 1,
+#else
+  .is_kconsole = 0,
+#endif
   .remapreg   = STM32F1_AFIO_MAPR,
   .remapmask  = AFIO_MAPR_USART1_REMAP,
 #ifdef CONFIG_STM32F1_USART1_REMAP
@@ -111,6 +119,24 @@ static struct stm32f1_uart_s g_stm32f1_usart1 =
     .drivemode = 0
 };
 #endif
+
+static struct stm32f1_uart_s * const g_stm32f1_uarts[] = 
+{
+#ifdef CONFIG_STM32F1_USART1
+  &g_stm32f1_usart1
+#endif
+};
+
+static struct stm32f1_uart_s *g_stm32f1_kconsole;
+
+/* Create an enum to count uarts, because sizeof(uarts[0]) will not work if there are no uarts */
+enum
+{
+#ifdef CONFIG_STM32F1_USART1
+  STM32F1_INDEX_USART1,
+#endif
+  STM32F1_UARTCOUNT
+};
 
 /*==============================================================================
  * Functions
@@ -220,6 +246,33 @@ static int stm32f1_uart_ioctl(struct uart_s *uart, int command, void* params)
 /*----------------------------------------------------------------------------*/
 void stm32f1_uart_earlysetup()
 {
-  g_stm32f1_usart1.uart.ops->init(&g_stm32f1_usart1.uart);
+  int i;
+
+  g_stm32f1_kconsole = NULL;
+
+  /* Find the kconsole */
+  for (i=0; i<STM32F1_UARTCOUNT; i++)
+    {
+      if(g_stm32f1_uarts[i]->params->is_kconsole)
+        {
+          g_stm32f1_kconsole = g_stm32f1_uarts[i];
+          break;
+        }
+    }
+  if(g_stm32f1_kconsole != NULL)
+    {
+      g_stm32f1_kconsole->uart.ops->init(&g_stm32f1_kconsole->uart);
+    }
+
+}
+
+void stm321f_kputs(const char *data)
+{
+  if(g_stm32f1_kconsole == NULL)
+    {
+      return;
+    }
+
+  g_stm32f1_kconsole->uart.ops->write(&g_stm32f1_kconsole->uart, data, strlen(data));
 }
 

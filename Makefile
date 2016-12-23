@@ -7,7 +7,9 @@ include tools/Dequote.mk
 BIN=slos
 
 LDFLAGS= -T board/$(CONFIG_BOARD)/scripts/$(CONFIG_BOARD_LDSCRIPT)
-LIBS=arch board
+
+LIBS=arch board c
+SUBDIRS=arch board libc
 
 LDLIBS=$(addprefix -l, $(LIBS))
 
@@ -25,19 +27,19 @@ board/Kconfig:
 menuconfig: board/Kconfig
 	$(Q) kconfig-mconf Kconfig
 
-$(foreach LIB, $(LIBS), $(eval $(call DIR_template,$(LIB),install)))
+$(foreach SUBDIR, $(SUBDIRS), $(eval $(call DIR_template,$(SUBDIR),install)))
 
 include/config.h: .config
 	tools/mkconfig.sh .config $@
 
-$(BIN): include/config.h $(foreach LIB, $(LIBS), $(LIB)_install)
+$(BIN): include/config.h $(foreach SUBDIR, $(SUBDIRS), $(SUBDIR)_install)
 	$(LD) --entry=arch_start $(LDFLAGS) -L. \
 		-o $(BIN) $(MAINOBJ) --start-group $(LDLIBS) $(LIBGCC) --end-group
 	@size -A $(BIN)
 
-$(foreach LIB, $(LIBS), $(eval $(call DIR_template,$(LIB),clean)))
+$(foreach SUBDIR, $(SUBDIRS), $(eval $(call DIR_template,$(SUBDIR),clean)))
 
-clean: $(foreach LIB, $(LIBS), $(LIB)_clean)
+clean: $(foreach SUBDIR, $(SUBDIRS), $(SUBDIR)_clean)
 	$(RM) $(addsuffix .a, $(LIBS))
 
 distclean: clean
