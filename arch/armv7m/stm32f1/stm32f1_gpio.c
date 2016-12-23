@@ -47,7 +47,6 @@ static const struct stm32f1_gpio_s g_stm32f1_gpios[] =
   {0,0,0},
 #endif
 #ifdef CONFIG_STM32F1_GPIOC
-#warning enabled
   {STM32F1_REGBASE_GPIOC, STM32F1_RCC_APB2ENR, RCC_APB2ENR_IOPCEN},
 #else
   {0,0,0},

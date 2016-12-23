@@ -12,7 +12,17 @@ $(1)_$(2):
 	$(Q) $(MAKE) -C $(1) $(2) TOPDIR="$(TOPDIR)"
 endef
 
+#http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
+DEPDIR=.d
+$(shell mkdir -p $(DEPDIR) >/dev/null)
+DEPFLAGS = -MT $@ -MD -MP -MF $(DEPDIR)/$*.Td
+
 %.o:%.c
+%.o:%.c $(DEPDIR)/%.d
 	#@echo compiling $<
-	$(CC) -c $(CFLAGS) -o $@ $<
+	$(CC) $(DEPFLAGS) -c $(CFLAGS) -o $@ $<
+	mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d
+
+$(DEPDIR)/%.d: ;
+.PRECIOUS: $(DEPDIR)/%.d
 

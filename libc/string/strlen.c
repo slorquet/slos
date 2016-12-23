@@ -1,5 +1,6 @@
 /* http://pubs.opengroup.org/onlinepubs/9699919799/functions/strlen.html */
 
+#include "config.h"
 #include <stddef.h>
 
 size_t strlen(const char *str)

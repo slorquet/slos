@@ -20,5 +20,6 @@ install: $(OBJS) $(MAINOBJ)
 	$(AR) rcs $(TOPDIR)/libarch.a $(OBJS)
 
 clean:
-	$(RM) $(OBJS) $(MAINOBJ)
+	$(RM) -rf $(OBJS) $(MAINOBJ) $(DEPDIR)
 
+include $(TOPDIR)/tools/Depends.mk

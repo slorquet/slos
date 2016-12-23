@@ -11,5 +11,7 @@ install: $(OBJS) $(MAINOBJ)
 	$(AR) rcs $(TOPDIR)/libboard.a $(OBJS)
 
 clean:
-	$(RM) $(OBJS)
+	$(RM) -rf $(OBJS) $(DEPDIR)
+
+include $(TOPDIR)/tools/Depends.mk
 
