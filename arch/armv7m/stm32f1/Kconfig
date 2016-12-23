@@ -292,4 +292,38 @@ config STM32F1_FSMC
 
 endmenu
 
+menu "UART config"
+
+if STM32F1_USART1
+
+config STM32F1_USART1_BAUDRATE
+  int "USART1 default baud rate"
+  default 115200
+
+choice
+	prompt "USART1 default parity"
+
+config STM32F1_USART1_PARITY_NONE
+	bool "None"
+
+config STM32F1_USART1_PARITY_ODD
+	bool "Odd"
+
+config STM32F1_USART1_PARITY_EVEN
+	bool "Even"
+
+endchoice
+
+config STM32F1_USART1_DATABITS
+  int "USART1 default data bits"
+  default 8
+
+config STM32F1_USART1_STOPBITS
+  int "USART1 default stop bits"
+  default 1
+
+endif
+
+endmenu
+
 endif

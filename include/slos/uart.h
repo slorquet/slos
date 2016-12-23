@@ -17,10 +17,10 @@ struct uart_ops_s
 struct uart_s
 {
   const struct uart_ops_s *ops;
-  uint8_t bits;
+  uint32_t baudrate;
   uint8_t parity;
+  uint8_t databits;
   uint8_t stopbits;
-  
 };
 
 #endif /* __INCLUDE__SLOS__UART__H__ */
