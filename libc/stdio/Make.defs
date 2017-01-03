@@ -1,0 +1,3 @@
+VPATH+=stdio
+
+CSRCS+=streamprintf.c kprintf.c

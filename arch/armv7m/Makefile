@@ -1,3 +1,5 @@
+#arch/armv7m/Makefile
+
 -include $(TOPDIR)/.config
 include $(TOPDIR)/tools/Dequote.mk
 -include $(TOPDIR)/Make.defs
@@ -14,7 +16,10 @@ MAINSRC=arch_start.c
 
 MAINOBJ=$(MAINSRC:.c=.o)
 
-CFLAGS+=-isystem $(TOPDIR)/include -Iinclude -I$(CONFIG_ARCH_CHIP_FAMILY)
+#sysincludes must be last system include dir.
+SYSINCLUDES=$(shell $(CC) --print-file-name=include)
+CFLAGS+=-Iinclude -I$(CONFIG_ARCH_CHIP_FAMILY)
+CFLAGS+=-isystem $(TOPDIR)/include -isystem$(SYSINCLUDES)
 
 install: $(OBJS) $(MAINOBJ) 
 	$(AR) rcs $(TOPDIR)/libarch.a $(OBJS)

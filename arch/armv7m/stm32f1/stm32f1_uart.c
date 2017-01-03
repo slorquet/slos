@@ -3,6 +3,7 @@
 #include <string.h>
 #include <errno.h>
 #include <slos/uart.h>
+#include <slos/stdio.h>
 
 #include "armv7m.h"
 #include "bits/stm32f1_periphs.h"
@@ -244,6 +245,7 @@ static int stm32f1_uart_ioctl(struct uart_s *uart, int command, void* params)
 }
 
 /*----------------------------------------------------------------------------*/
+/* Low level debug output initialization */
 void stm32f1_uart_earlysetup()
 {
   int i;
@@ -255,18 +257,15 @@ void stm32f1_uart_earlysetup()
     {
       if(g_stm32f1_uarts[i]->params->is_kconsole)
         {
+          /* Console was found */
           g_stm32f1_kconsole = g_stm32f1_uarts[i];
+          g_stm32f1_kconsole->uart.ops->init(&g_stm32f1_kconsole->uart);
           break;
         }
     }
-  if(g_stm32f1_kconsole != NULL)
-    {
-      g_stm32f1_kconsole->uart.ops->init(&g_stm32f1_kconsole->uart);
-    }
-
 }
 
-void stm321f_kputs(const char *data)
+static void kputs(const char *data, void *arg)
 {
   if(g_stm32f1_kconsole == NULL)
     {
@@ -276,3 +275,18 @@ void stm321f_kputs(const char *data)
   g_stm32f1_kconsole->uart.ops->write(&g_stm32f1_kconsole->uart, data, strlen(data));
 }
 
+static void kputc(const char data, void *arg)
+{
+  if(g_stm32f1_kconsole == NULL)
+    {
+      return;
+    }
+
+  g_stm32f1_kconsole->uart.ops->write(&g_stm32f1_kconsole->uart, &data, 1);
+}
+
+struct printf_stream_s konsole =
+{
+  .putchar = kputc,
+  .puts    = kputs
+};

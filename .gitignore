@@ -5,4 +5,5 @@ board/Kconfig
 *.a
 /slos
 board/*/src/*.o
+/**/.d
 
