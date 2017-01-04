@@ -57,6 +57,9 @@ static int stm32f1_uart_avail(struct uart_s *uart);
 static int stm32f1_uart_read (struct uart_s *uart, uint8_t *buf, int len);
 static int stm32f1_uart_ioctl(struct uart_s *uart, int command, void* params);
 
+static void kputs(const char *data, void *arg);
+static void kputc(const char data, void *arg);
+
 /*==============================================================================
  * Variables and constants
  *==============================================================================
@@ -128,8 +131,6 @@ static struct stm32f1_uart_s * const g_stm32f1_uarts[] =
 #endif
 };
 
-static struct stm32f1_uart_s *g_stm32f1_kconsole;
-
 /* Create an enum to count uarts, because sizeof(uarts[0]) will not work if there are no uarts */
 enum
 {
@@ -137,6 +138,15 @@ enum
   STM32F1_INDEX_USART1,
 #endif
   STM32F1_UARTCOUNT
+};
+
+static struct stm32f1_uart_s *g_stm32f1_kconsole;
+
+/* Stream structure used by the kprintf function in libc */
+const struct printf_stream_s konsole =
+{
+  .putchar = kputc,
+  .puts    = kputs
 };
 
 /*==============================================================================
@@ -265,6 +275,7 @@ void stm32f1_uart_earlysetup()
     }
 }
 
+/*----------------------------------------------------------------------------*/
 static void kputs(const char *data, void *arg)
 {
   if(g_stm32f1_kconsole == NULL)
@@ -275,6 +286,7 @@ static void kputs(const char *data, void *arg)
   g_stm32f1_kconsole->uart.ops->write(&g_stm32f1_kconsole->uart, data, strlen(data));
 }
 
+/*----------------------------------------------------------------------------*/
 static void kputc(const char data, void *arg)
 {
   if(g_stm32f1_kconsole == NULL)
@@ -285,8 +297,3 @@ static void kputc(const char data, void *arg)
   g_stm32f1_kconsole->uart.ops->write(&g_stm32f1_kconsole->uart, &data, 1);
 }
 
-struct printf_stream_s konsole =
-{
-  .putchar = kputc,
-  .puts    = kputs
-};

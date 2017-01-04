@@ -12,7 +12,7 @@ struct printf_stream_s
   void *context;
 };
 
-extern struct printf_stream_s konsole;
+extern const struct printf_stream_s konsole;
 
 /* kernel debug */
 int kprintf(const char *fmt, ...);

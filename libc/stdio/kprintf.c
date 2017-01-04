@@ -1,6 +1,7 @@
 #include <stdarg.h>
 #include <slos/stdio.h>
 
+/*----------------------------------------------------------------------------*/
 int kprintf(const char *fmt, ...)
 {
   int ret;
