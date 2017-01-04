@@ -1,6 +1,8 @@
 #ifndef __ARCH__ARMV7M__STM32F1__BITS__STM32F1__GPIO__H__
 #define __ARCH__ARMV7M__STM32F1__BITS__STM32F1__GPIO__H__
 
+/* Register offsets */
+
 #define STM32F1_GPIO_CRL  0x00
 #define STM32F1_GPIO_CRH  0x04
 #define STM32F1_GPIO_IDR  0x08

@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
@@ -9,9 +11,22 @@
 #include "bits/stm32f1_periphs.h"
 #include "bits/stm32f1_rcc.h"
 #include "bits/stm32f1_gpio.h"
+#include "bits/stm32f1_uart.h"
 #include "bits/irq.h"
 #include "stm32f1_gpio.h"
 
+/* Possible UART modes:
+ *
+ * - Normal
+ * - Normal/RS-485 with gpio txen
+ * - Half-Duplex on TX
+ * - Smart Card
+ * - LIN
+ * - IRDA
+ * - Multiprocessor
+ * - Synchronous
+ */
+ 
 /*==============================================================================
  * Definitions
  *==============================================================================
@@ -20,6 +35,15 @@
 #define DRIVEMODE_BASIC 0 /* No interrupt at all, for early boot logs. */
 #define DRIVEMODE_IRQ   1 /* IRQ driven tx/rx, still requires CPU for each char, usable when DMA not available. */
 #define DRIVEMODE_DMA   2 /* Preprogrammed DMA, does not require CPU for each char. */
+
+#define STOBITS_0_5     0
+#define STOPBITS_1      1
+#define STOPBITS_2      2
+#define STOPBITS_1_5    3
+
+#define PARITY_NONE     0
+#define PARITY_ODD      1
+#define PARITY_EVEN     2
 
 /*==============================================================================
  * Types
@@ -112,11 +136,11 @@ static struct stm32f1_uart_s g_stm32f1_usart1 =
       .ops = &g_stm32f1_uartops,
       .baudrate = CONFIG_STM32F1_USART1_BAUDRATE,
 #if defined( CONFIG_STM32F1_USART1_PARITY_NONE )
-      .parity   = 0,
+      .parity   = PARITY_NONE,
 #elif defined( CONFIG_STM32F1_USART1_PARITY_ODD )
-      .parity   = 1,
+      .parity   = PARITY_ODD,
 #elif defined( CONFIG_STM32F1_USART1_PARITY_EVEN )
-      .parity   = 2,
+      .parity   = PARITY_EVEN,
 #else
 #error undefined USART1 parity
 #endif
@@ -157,6 +181,18 @@ const struct printf_stream_s konsole =
  * Functions
  *==============================================================================
  */
+
+/*----------------------------------------------------------------------------*/
+static inline uint32_t stm32f1_uart_getreg(struct stm32f1_uart_s *uart, int regoff)
+{
+  return getreg32(uart->params->regbase + regoff);
+}
+
+/*----------------------------------------------------------------------------*/
+static inline void stm32f1_uart_putreg(struct stm32f1_uart_s *uart, int regoff, uint32_t val)
+{
+  putreg32(uart->params->regbase + regoff, val);
+}
 
 /*----------------------------------------------------------------------------*/
 /*setup baud rate and port params, enable uart*/
@@ -226,6 +262,7 @@ static int stm32f1_uart_write(struct uart_s *uart, const uint8_t *buf, int len)
       for(i=0; i<len; i++)
         {
           /* Wait for TXE set */
+          while((stm32f1_uart_getreg(dev) & TXE) != TXE);
           /* Write TX data reg */
         }
       return len;
