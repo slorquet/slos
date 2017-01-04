@@ -17,6 +17,10 @@
  *==============================================================================
  */
 
+#define DRIVEMODE_BASIC 0 /* No interrupt at all, for early boot logs. */
+#define DRIVEMODE_IRQ   1 /* IRQ driven tx/rx, still requires CPU for each char, usable when DMA not available. */
+#define DRIVEMODE_DMA   2 /* Preprogrammed DMA, does not require CPU for each char. */
+
 /*==============================================================================
  * Types
  *==============================================================================
@@ -120,7 +124,7 @@ static struct stm32f1_uart_s g_stm32f1_usart1 =
       .stopbits = CONFIG_STM32F1_USART1_STOPBITS,
     },
     .params = &g_stm32f1_usart1params,
-    .drivemode = 0
+    .drivemode = DRIVEMODE_BASIC
 };
 #endif
 
@@ -213,8 +217,20 @@ static int stm32f1_uart_fini (struct uart_s *uart)
 /*write some bytes to buffer*/
 static int stm32f1_uart_write(struct uart_s *uart, const uint8_t *buf, int len)
 {
+  int i;
+
   struct stm32f1_uart_s *dev = (struct stm32f1_uart_s *)uart;
-  
+
+  if(dev->drivemode == DRIVEMODE_BASIC)
+    {
+      for(i=0; i<len; i++)
+        {
+          /* Wait for TXE set */
+          /* Write TX data reg */
+        }
+      return len;
+    } 
+ 
   return -ENOSYS;
 }
 
@@ -223,6 +239,11 @@ static int stm32f1_uart_write(struct uart_s *uart, const uint8_t *buf, int len)
 static int stm32f1_uart_flush(struct uart_s *uart)
 {
   struct stm32f1_uart_s *dev = (struct stm32f1_uart_s *)uart;
+
+  if(dev->drivemode == DRIVEMODE_BASIC)
+    {
+      return 0;
+    }
   
   return -ENOSYS;
 }
@@ -233,6 +254,12 @@ static int stm32f1_uart_avail(struct uart_s *uart)
 {
   struct stm32f1_uart_s *dev = (struct stm32f1_uart_s *)uart;
   
+  if(dev->drivemode == DRIVEMODE_BASIC)
+    {
+      /* Return 1 if RXNE, else zero */
+      return 0;
+    }
+  
   return -ENOSYS;
 }
 
@@ -241,6 +268,12 @@ static int stm32f1_uart_avail(struct uart_s *uart)
 static int stm32f1_uart_read (struct uart_s *uart, uint8_t *buf, int len)
 {
   struct stm32f1_uart_s *dev = (struct stm32f1_uart_s *)uart;
+  
+  if(dev->drivemode == DRIVEMODE_BASIC)
+    {
+      /* Always read one byte if possible, but never more*/
+      return 0;
+    }
   
   return -ENOSYS;
 }
