@@ -195,6 +195,12 @@ static inline void stm32f1_uart_putreg(struct stm32f1_uart_s *uart, int regoff, 
 }
 
 /*----------------------------------------------------------------------------*/
+static void stm32f1_uart_setbaudrate(struct stm32f1_uart_s *uart)
+{
+  
+}
+
+/*----------------------------------------------------------------------------*/
 /*setup baud rate and port params, enable uart*/
 static int stm32f1_uart_init(struct uart_s *uart)
 {
@@ -215,12 +221,75 @@ static int stm32f1_uart_init(struct uart_s *uart)
   val &= ~dev->params->remapmask;
   val |= dev->params->remapbit;
   putreg32(STM32F1_REGBASE_AFIO + dev->params->remapreg, val);
-  
+
   /* Define port parameters */
+
+  val  = stm32f1_uart_getreg(dev, STM32F1_USART_CR1);
+  val &= ~(USART_CR1_RWU | USART_CR1_WAKE);
+  val &= ~(USART_CR1_IDLEIE | USART_CR1_RXNEIE |  USART_CR1_TCIE | USART_CR1_TXEIE | USART_CR1_PEIE);
+  val |= USART_CR1_RE | USART_CR1_TE;
+  
+  if (dev->uart.parity == PARITY_NONE)
+    {
+      val &= ~USART_CR1_PCE;
+      val &= ~USART_CR1_M; /* 8-bit frame */
+    }
+  else
+    {
+      val |= USART_CR1_PCE;
+      val |= USART_CR1_M; /* 9-bit frame */
+      if (dev->uart.parity == PARITY_ODD)
+        {
+          val |= USART_CR1_PS;
+        }
+      else
+        {
+          val &= ~USART_CR1_PS;
+        }
+    }
+
+  val  = stm32f1_uart_getreg(dev,STM32F1_USART_CR2;
+  val &= ~USART_CR2_ADD_MASK;
+  val &= ~(USART_CR2_LBDL | USART_CR2_LBDIE | USART_CR2_LINEN);
+  val &= ~(USART_CR2_LBCL | USART_CR2_CPHA | USART_CR2_CPOL | USART_CR2_CLKEN);
+
+  val &≃ ~USART_CR2_STOP_MASK;  
+  if (dev->uart.stopbits==STOPBITS_1)
+    {
+      val |= USART_CR2_STOP_1;
+    }
+  else if (dev->uart.stopbits==STOPBITS_2)
+    {
+      val |= USART_CR2_STOP_2;
+    }
+  else if (dev->uart.stopbits==STOPBITS_15)
+    {
+      val |= USART_CR2_STOP_15;
+    }
+  else if (dev->uart.stopbits==STOPBITS_05)
+    {
+      val |= USART_CR2_STOP_05;
+    }
+  
+  stm32f1_uart_putreg(dev, STM32F1_USART_CR2, val);
+  
+  val  = stm32f1_uart_getreg(dev,STM32F1_USART_CR3;
+  val &= ~(USART_CR3_EIE | USART_CR3_CTSIE);
+  val &= ~(USART_CR3_IREN | USART_CR3_IRLP);
+  val &= ~(USART_CR3_HDSEL);
+  val &= ~(USART_CR3_NACK | USART_CR3_SCEN);
+  val &= ~(USART_CR3_DMAR | USART_CR3_DMAT);
+  val &= ~(USART_CR3_RTSE | USART_CR3_CTSE);
+  stm32f1_uart_putreg(dev, STM32F1_USART_CR3, val);
+  
+  stm32f1_uart_setbaudrate(dev);
   
   /* Optionally enable IRQ and DMA */
   
   /* Enable uart */
+  val = stm32f1_uart_getreg(dev, STM32F1_USART_CR1);
+  val |= USART_CR1_UE;
+  stm32f1_uart_putreg(dev, STM32F1_USART_CR1, val);
   
   return -ENOSYS;
 }
@@ -233,10 +302,14 @@ static int stm32f1_uart_fini (struct uart_s *uart)
   struct stm32f1_uart_s *dev = (struct stm32f1_uart_s *)uart;
 
   /* Disable uart */
+  val = stm32f1_uart_getreg(dev, STM32F1_USART_CR1);
+  val &= ~USART_CR1_UE;
+  stm32f1_uart_putreg(dev, STM32F1_USART_CR1, val);
 
   /* Disable IRQ or DMA */
 
   /* Disable GPIOs */
+
   stm32f1_gpio_init( (dev->params->txpin & (GPIO_FLAGS_LINE_MASK | GPIO_FLAGS_PORT_MASK)) | GPIO_MODE_IN | GPIO_PULL_NONE);
   stm32f1_gpio_init( (dev->params->rxpin & (GPIO_FLAGS_LINE_MASK | GPIO_FLAGS_LINE_MASK)) | GPIO_MODE_IN | GPIO_PULL_NONE);
 
@@ -262,8 +335,9 @@ static int stm32f1_uart_write(struct uart_s *uart, const uint8_t *buf, int len)
       for(i=0; i<len; i++)
         {
           /* Wait for TXE set */
-          while((stm32f1_uart_getreg(dev) & TXE) != TXE);
+          while((stm32f1_uart_getreg(dev, STM32F1_USART_SR) & USART_SR_TXE) != USART_SR_TXE);
           /* Write TX data reg */
+          stm32f1_uart_putreg(dev, STM32F1_USART_DR, buf[i]);
         }
       return len;
     } 

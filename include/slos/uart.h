@@ -19,7 +19,6 @@ struct uart_s
   const struct uart_ops_s *ops;
   uint32_t baudrate;
   uint8_t parity;
-  uint8_t databits;
   uint8_t stopbits;
 };
 
