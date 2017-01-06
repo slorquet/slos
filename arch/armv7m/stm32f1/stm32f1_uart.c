@@ -14,6 +14,7 @@
 #include "bits/stm32f1_uart.h"
 #include "bits/irq.h"
 #include "stm32f1_gpio.h"
+#include "stm32f1_rcc.h"
 
 /* Possible UART modes:
  *
@@ -144,7 +145,6 @@ static struct stm32f1_uart_s g_stm32f1_usart1 =
 #else
 #error undefined USART1 parity
 #endif
-      .databits = CONFIG_STM32F1_USART1_DATABITS,
       .stopbits = CONFIG_STM32F1_USART1_STOPBITS,
     },
     .params = &g_stm32f1_usart1params,
@@ -195,9 +195,23 @@ static inline void stm32f1_uart_putreg(struct stm32f1_uart_s *uart, int regoff, 
 }
 
 /*----------------------------------------------------------------------------*/
-static void stm32f1_uart_setbaudrate(struct stm32f1_uart_s *uart)
+static void stm32f1_uart_setbaudrate(struct stm32f1_uart_s *dev)
 {
-  
+  uint32_t fclk;
+  struct stm32f1_clocks_s * clocks = stm32f1_clock_getinfo();
+  if(dev == &g_stm32f1_usart1)
+    {
+      fclk = clocks->pclk2;
+    }
+  else
+    {
+      fclk = clocks->pclk1;    
+    }
+  /*                baud = fclk / (16 * usartdiv)
+   * Hence 16 * usartdiv = fclk / baud
+   * And        usartdiv = fclk / (16 * baud)
+   */
+  stm32f1_uart_putreg(dev, STM32F1_USART_BRR, fclk / (16 * dev->uart.baudrate));
 }
 
 /*----------------------------------------------------------------------------*/

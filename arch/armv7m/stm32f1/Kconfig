@@ -336,10 +336,6 @@ config STM32F1_USART1_PARITY_EVEN
 
 endchoice
 
-config STM32F1_USART1_DATABITS
-  int "USART1 default data bits"
-  default 8
-
 config STM32F1_USART1_STOPBITS
   int "USART1 default stop bits"
   default 1
