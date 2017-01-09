@@ -215,7 +215,7 @@ static void stm32f1_uart_setbaudrate(struct stm32f1_uart_s *dev)
 }
 
 /*----------------------------------------------------------------------------*/
-/*setup baud rate and port params, enable uart*/
+/* Setup baud rate and port params, enable uart */
 static int stm32f1_uart_init(struct uart_s *uart)
 {
   uint32_t val;
@@ -309,7 +309,7 @@ static int stm32f1_uart_init(struct uart_s *uart)
 }
 
 /*----------------------------------------------------------------------------*/
-/*disable uart*/
+/* Disable uart */
 static int stm32f1_uart_fini (struct uart_s *uart)
 {
   uint32_t val;
@@ -337,7 +337,7 @@ static int stm32f1_uart_fini (struct uart_s *uart)
 }
 
 /*----------------------------------------------------------------------------*/
-/*write some bytes to buffer*/
+/* Write some bytes to buffer */
 static int stm32f1_uart_write(struct uart_s *uart, const uint8_t *buf, int len)
 {
   int i;
@@ -360,7 +360,7 @@ static int stm32f1_uart_write(struct uart_s *uart, const uint8_t *buf, int len)
 }
 
 /*----------------------------------------------------------------------------*/
-/*finish buffer transmission*/
+/* Finish pending buffer transmission */
 static int stm32f1_uart_flush(struct uart_s *uart)
 {
   struct stm32f1_uart_s *dev = (struct stm32f1_uart_s *)uart;
@@ -374,7 +374,7 @@ static int stm32f1_uart_flush(struct uart_s *uart)
 }
 
 /*----------------------------------------------------------------------------*/
-/*tell how many bytes can be read*/
+/* Tell how many bytes can be read */
 static int stm32f1_uart_avail(struct uart_s *uart)
 {
   struct stm32f1_uart_s *dev = (struct stm32f1_uart_s *)uart;
@@ -389,8 +389,8 @@ static int stm32f1_uart_avail(struct uart_s *uart)
 }
 
 /*----------------------------------------------------------------------------*/
-/*read some bytes from port*/
-static int stm32f1_uart_read (struct uart_s *uart, uint8_t *buf, int len)
+/* Read some bytes from port */
+static int stm32f1_uart_read(struct uart_s *uart, uint8_t *buf, int len)
 {
   struct stm32f1_uart_s *dev = (struct stm32f1_uart_s *)uart;
   
@@ -404,7 +404,7 @@ static int stm32f1_uart_read (struct uart_s *uart, uint8_t *buf, int len)
 }
 
 /*----------------------------------------------------------------------------*/
-/*control port details*/
+/* Control port details */
 static int stm32f1_uart_ioctl(struct uart_s *uart, int command, void* params)
 {
   struct stm32f1_uart_s *dev = (struct stm32f1_uart_s *)uart;
@@ -432,7 +432,12 @@ void stm32f1_uart_earlysetup()
 
   g_stm32f1_kconsole = NULL;
 
+  /* Register a hook to be notified of clock changes */
+
+  stm32f1_clock_registerhook(stm32f1_uart_clockchange);
+
   /* Find the kconsole */
+
   for (i=0; i<STM32F1_UARTCOUNT; i++)
     {
       if(g_stm32f1_uarts[i]->params->is_kconsole)
@@ -444,7 +449,6 @@ void stm32f1_uart_earlysetup()
         }
     }
 
-  stm32f1_clock_registerhook(stm32f1_uart_clockchange);
 }
 
 /*----------------------------------------------------------------------------*/
