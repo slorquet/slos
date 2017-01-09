@@ -2,6 +2,7 @@
 #define __ARCH__ARMV6M__STM32F1__STM32F1__RCC__H__
 
 #include <stdint.h>
+#include <stdbool.h>
 
 struct stm32f1_clocks_s
 {
@@ -12,13 +13,17 @@ struct stm32f1_clocks_s
   uint32_t pclk2;  /* APB2 main clock = HCLK / APB2 prescaler */
   uint32_t tclk2;  /* APB2 timers clock = PCLK2 if APB2 prescaler=1, else PCLK2*2 */
   uint32_t adcclk; /* ADC clock = PCLK2 / ADC prescaler */
+  /* TODO overflow flags */
 };
+
+typedef void (*stm32f1_clockhook_f)(void);
 
 void stm32f1_clock_setup(void);
 struct stm32f1_clocks_s * stm32f1_clock_getinfo(void);
-void stm32f1_ahbprescaler(uint32_t prescaler);
-void stm32f1_apb1prescaler(uint32_t prescaler);
-void stm32f1_apb2prescaler(uint32_t prescaler);
-void stm32f1_adcprescaler(uint32_t prescaler);
+bool stm32f1_ahbprescaler(uint32_t prescaler);
+bool stm32f1_apb1prescaler(uint32_t prescaler);
+bool stm32f1_apb2prescaler(uint32_t prescaler);
+bool stm32f1_adcprescaler(uint32_t prescaler);
+bool stm32f1_clock_registerhook(stm32f1_clockhook_f hook);
 
 #endif /* __ARCH__ARMV6M__STM32F1__STM32F1__RCC__H__ */

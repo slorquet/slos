@@ -37,7 +37,7 @@
 #define DRIVEMODE_IRQ   1 /* IRQ driven tx/rx, still requires CPU for each char, usable when DMA not available. */
 #define DRIVEMODE_DMA   2 /* Preprogrammed DMA, does not require CPU for each char. */
 
-#define STOBITS_0_5     0
+#define STOPBITS_0_5     0
 #define STOPBITS_1      1
 #define STOPBITS_2      2
 #define STOPBITS_1_5    3
@@ -262,12 +262,12 @@ static int stm32f1_uart_init(struct uart_s *uart)
         }
     }
 
-  val  = stm32f1_uart_getreg(dev,STM32F1_USART_CR2;
+  val  = stm32f1_uart_getreg(dev,STM32F1_USART_CR2);
   val &= ~USART_CR2_ADD_MASK;
   val &= ~(USART_CR2_LBDL | USART_CR2_LBDIE | USART_CR2_LINEN);
   val &= ~(USART_CR2_LBCL | USART_CR2_CPHA | USART_CR2_CPOL | USART_CR2_CLKEN);
 
-  val &≃ ~USART_CR2_STOP_MASK;  
+  val &= ~USART_CR2_STOP_MASK;
   if (dev->uart.stopbits==STOPBITS_1)
     {
       val |= USART_CR2_STOP_1;
@@ -276,18 +276,18 @@ static int stm32f1_uart_init(struct uart_s *uart)
     {
       val |= USART_CR2_STOP_2;
     }
-  else if (dev->uart.stopbits==STOPBITS_15)
+  else if (dev->uart.stopbits==STOPBITS_1_5)
     {
       val |= USART_CR2_STOP_15;
     }
-  else if (dev->uart.stopbits==STOPBITS_05)
+  else if (dev->uart.stopbits==STOPBITS_0_5)
     {
       val |= USART_CR2_STOP_05;
     }
   
   stm32f1_uart_putreg(dev, STM32F1_USART_CR2, val);
   
-  val  = stm32f1_uart_getreg(dev,STM32F1_USART_CR3;
+  val  = stm32f1_uart_getreg(dev,STM32F1_USART_CR3);
   val &= ~(USART_CR3_EIE | USART_CR3_CTSIE);
   val &= ~(USART_CR3_IREN | USART_CR3_IRLP);
   val &= ~(USART_CR3_HDSEL);
@@ -413,6 +413,18 @@ static int stm32f1_uart_ioctl(struct uart_s *uart, int command, void* params)
 }
 
 /*----------------------------------------------------------------------------*/
+/* This function is called everytime a clock is changed */
+static void stm32f1_uart_clockchange(void)
+{
+  int i;
+  /* Clock has changed, recompute baud rates */
+  for (i=0; i<STM32F1_UARTCOUNT; i++)
+    {
+      stm32f1_uart_setbaudrate(g_stm32f1_uarts[i]);
+    }
+}
+
+/*----------------------------------------------------------------------------*/
 /* Low level debug output initialization */
 void stm32f1_uart_earlysetup()
 {
@@ -431,6 +443,8 @@ void stm32f1_uart_earlysetup()
           break;
         }
     }
+
+  stm32f1_clock_registerhook(stm32f1_uart_clockchange);
 }
 
 /*----------------------------------------------------------------------------*/

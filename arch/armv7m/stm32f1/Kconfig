@@ -265,10 +265,6 @@ config STM32F1_DMA2
   bool "DMA2"
   default n
 
-config STM32F1_RCC
-  bool "RCC"
-  default n
-
 config STM32F1_FLASH
   bool "FLASH"
   default n
@@ -343,5 +339,8 @@ config STM32F1_USART1_STOPBITS
 endif
 
 endmenu
+
+config STM32F1_CLOCKHOOK_MAX
+  int "Maximum number of clock change hooks"
 
 endif
