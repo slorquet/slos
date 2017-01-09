@@ -305,7 +305,7 @@ static int stm32f1_uart_init(struct uart_s *uart)
   val |= USART_CR1_UE;
   stm32f1_uart_putreg(dev, STM32F1_USART_CR1, val);
   
-  return -ENOSYS;
+  return 0;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -333,7 +333,7 @@ static int stm32f1_uart_fini (struct uart_s *uart)
   val &= ~dev->params->rccbit;
   putreg32(STM32F1_REGBASE_RCC + dev->params->rccreg, val);
 
-  return -ENOSYS;
+  return 0;
 }
 
 /*----------------------------------------------------------------------------*/
