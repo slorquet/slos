@@ -6,9 +6,17 @@
 #include "bits/stm32f1_rcc.h"
 #include "stm32f1_rcc.h"
 
-static struct stm32f1_clocks_s g_stm32f1_clocks; /* current system clock frequencies */
+/*==============================================================================
+ * Definitions
+ *==============================================================================
+ */
 
-struct stm32f1_prescalers_s
+/*==============================================================================
+ * Types
+ *==============================================================================
+ */
+
+struct stm32f1_prescalers_s /* TODO store as shifts */
 {
   uint32_t psc_ahb;
   uint32_t psc_apb1;
@@ -17,6 +25,20 @@ struct stm32f1_prescalers_s
   uint32_t mul_tim1;
   uint32_t mul_tim2; 
 };
+
+/*==============================================================================
+ * Function Prototypes
+ *==============================================================================
+ */
+
+static void stm32f1_clock_notifychange(void);
+
+/*==============================================================================
+ * Variables and constants
+ *==============================================================================
+ */
+
+static struct stm32f1_clocks_s g_stm32f1_clocks; /* current system clock frequencies */
 
 static struct stm32f1_prescalers_s g_stm32f1_prescalers =
 {
@@ -30,6 +52,11 @@ static struct stm32f1_prescalers_s g_stm32f1_prescalers =
 
 uint8_t g_stm32f1_clockhookcount;
 stm32f1_clockhook_f g_stm32f1_clockhooks[CONFIG_STM32F1_CLOCKHOOK_MAX];
+
+/*==============================================================================
+ * Functions
+ *==============================================================================
+ */
 
 /*----------------------------------------------------------------------------*/
 /* Recompute various clocks based on sysclk and prescalers*/
@@ -57,7 +84,7 @@ static void stm32f1_clock_recompute(void)
 /*----------------------------------------------------------------------------*/
 void stm32f1_clock_setup(void)
 {
-  /*RM0008 rev16 7.2.6 page 96: Default to HSI (8 MHz, max 72 MHz) */
+  /*RM0008 rev16 7.2.6 page 96: Default to HSI */
   g_stm32f1_clocks.sysclk = 8000000;
 
   stm32f1_clock_recompute();
@@ -91,6 +118,7 @@ bool stm32f1_ahbprescaler(uint32_t prescaler)
 
   g_stm32f1_prescalers.psc_ahb = prescaler;
   stm32f1_clock_recompute();
+  stm32f1_clock_notifychange();
   return true;
 }
 
@@ -120,6 +148,7 @@ bool stm32f1_apb1prescaler(uint32_t prescaler)
       g_stm32f1_prescalers.mul_tim1 = 2;
     }
   stm32f1_clock_recompute();
+  stm32f1_clock_notifychange();
   return true;
 }
 
@@ -149,6 +178,7 @@ bool stm32f1_apb2prescaler(uint32_t prescaler)
       g_stm32f1_prescalers.mul_tim2 = 2;
     }
   stm32f1_clock_recompute();
+  stm32f1_clock_notifychange();
   return true;
 }
 
@@ -169,6 +199,7 @@ bool stm32f1_adcprescaler(uint32_t prescaler)
 
   g_stm32f1_prescalers.psc_adc = prescaler;
   stm32f1_clock_recompute();
+  stm32f1_clock_notifychange();
   return true;
 }
 
@@ -182,4 +213,13 @@ bool stm32f1_clock_registerhook(stm32f1_clockhook_f hook)
     return true;
     }
   return false;
+}
+/*----------------------------------------------------------------------------*/
+static void stm32f1_clock_notifychange(void)
+{
+  int i;
+  for(i = 0; i < g_stm32f1_clockhookcount; i++)
+  {
+    g_stm32f1_clockhooks[i]();
+  }  
 }
