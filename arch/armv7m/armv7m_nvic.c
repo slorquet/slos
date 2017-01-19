@@ -1,7 +1,13 @@
 #include <stdint.h>
+#include <stddef.h>
+
 #include "armv7m_nvic.h"
 #include "irq.h"
-static armv7m_irqhandler_t handlers[14]; /* Vectors 2..15 */
+#include "bits/irq.h"
+
+static armv7m_irqhandler_t corehandlers[14]; /* Vectors 2..15 */
+static armv7m_irqhandler_t chiphandlers[ARCH_CHIP_NIRQS]; /* Vectors 16..N */
+static void*               chipargs    [ARCH_CHIP_NIRQS]; /* Vectors 16..N */
 
 /*----------------------------------------------------------------------------*/
 void armv7m_irq_init(void)
@@ -10,28 +16,43 @@ void armv7m_irq_init(void)
 
   /* Initialize all irq handlers to non-defined state */
 
-  for(i=0;i<sizeof(handlers)/sizeof(handlers[0]);i++)
+  for(i=0;i<sizeof(corehandlers)/sizeof(corehandlers[0]);i++)
     {
-      handlers[i] = 0;
+      corehandlers[i] = 0;
+    }
+
+  for(i=0;i<sizeof(chiphandlers)/sizeof(chiphandlers[0]);i++)
+    {
+      chiphandlers[i] = 0;
+      chipargs    [i] = NULL;
     }
 
   /* Set all priorities to zero */
 }
 
 /*----------------------------------------------------------------------------*/
-void armv7m_irq_attach(uint8_t irqno, armv7m_irqhandler_t handler)
+void armv7m_irq_attach(uint8_t irqno, armv7m_irqhandler_t handler, void *arg)
 {
-  if(irqno < 2 || irqno > 15)
+  if (irqno < 2)
     {
       return;
     }
-  handlers[irqno-2] = handler;
+
+  if (irqno < 16)
+    {
+      corehandlers[irqno-2] = handler;
+    }
+  else
+    {
+      chiphandlers[irqno-16] = handler;
+      chipargs    [irqno-16] = arg;
+    }
 }
 
 /*----------------------------------------------------------------------------*/
 void armv7m_irq_activate(uint8_t irqno, bool state)
 {
-  if(irqno < 2 || irqno > 15)
+  if (irqno < 2)
     {
       return;
     }
@@ -41,21 +62,44 @@ void armv7m_irq_activate(uint8_t irqno, bool state)
 }
 
 /*----------------------------------------------------------------------------*/
-/* Called at interrupt */
+/* Called at Core interrupt */
 void armv7m_irq(void)
 {
   int irqno;
 
   /* Get the number of the active interrupt in IPSR */
 
+  /* Compute table index */
+  //irqno -= 2;
+
   /* Check that a handler is attached */
-  if(handlers[irqno]==0)
+  if(corehandlers[irqno]==0)
     {
       return;
     }
 
   /* Call the handler */
-  handlers[irqno](0);
+  corehandlers[irqno](irqno, NULL);
+}
 
+/*----------------------------------------------------------------------------*/
+/* Called at SoC interrupt */
+void chip_irq(void)
+{
+  int irqno;
+
+  /* Get the number of the active interrupt in IPSR */
+
+  /* Compute table index */
+  //irqno -= 16;
+
+  /* Check that a handler is attached */
+  if(chiphandlers[irqno]==0)
+    {
+      return;
+    }
+
+  /* Call the handler */
+  chiphandlers[irqno](irqno, chipargs[irqno]);
 }
 

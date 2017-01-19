@@ -8,8 +8,7 @@
 
 void arch_start(void); /*system entry point*/
 void armv7m_irq(void);
-
-void chip_irq(void) { while(1); }
+void chip_irq(void);
 
 /*symbols defined in linker script*/
 extern uint32_t _stack_end;
