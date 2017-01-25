@@ -7,3 +7,6 @@ CFLAGS+=-march=armv7e-m
 else
 CFLAGS+=-march=armv7-m
 endif
+
+include $(TOPDIR)/arch/$(CONFIG_ARCH)/$(CONFIG_ARCH_CHIP_FAMILY)/Chip.defs
+

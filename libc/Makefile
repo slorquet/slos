@@ -1,5 +1,6 @@
 -include $(TOPDIR)/.config
 include $(TOPDIR)/tools/Dequote.mk
+include $(TOPDIR)/arch/$(CONFIG_ARCH)/Arch.defs
 -include $(TOPDIR)/Make.defs
 
 CSRCS:=

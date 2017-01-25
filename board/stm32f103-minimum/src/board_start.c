@@ -14,6 +14,11 @@ void board_start(void)
   /* configure pc13 as output to blink the led */
   stm32f1_gpio_init(PC13 | GPIO_MODE_OUT | GPIO_TYPE_PP | GPIO_SPEED_LOW | GPIO_STATE_CLEAR);
 
+  /* Test UART */
+  kprintf("Hello world!\n");
+
+  /* Loop blinking led */
+
   while(1)
     {
       stm32f1_gpio_write(PC13, state);
