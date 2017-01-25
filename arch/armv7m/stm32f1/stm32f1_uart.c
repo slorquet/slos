@@ -26,6 +26,7 @@
  * - IRDA
  * - Multiprocessor
  * - Synchronous
+ * Some helpful details: http://www.micromouseonline.com/2009/12/31/stm32-usart-basics/
  */
  
 /*==============================================================================
@@ -210,8 +211,10 @@ static void stm32f1_uart_setbaudrate(struct stm32f1_uart_s *dev)
   /*                baud = fclk / (16 * usartdiv)
    * Hence 16 * usartdiv = fclk / baud
    * And        usartdiv = fclk / (16 * baud)
+   * BUT, this is a 12.4 fixed point number. So BRR must be programmed ito 16x usartdiv
+   *            usart_brr = fclk / baud
    */
-  stm32f1_uart_putreg(dev, STM32F1_USART_BRR, fclk / (16 * dev->uart.baudrate));
+  stm32f1_uart_putreg(dev, STM32F1_USART_BRR, fclk / dev->uart.baudrate);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -241,7 +244,7 @@ static int stm32f1_uart_init(struct uart_s *uart)
   val  = stm32f1_uart_getreg(dev, STM32F1_USART_CR1);
   val &= ~(USART_CR1_RWU | USART_CR1_WAKE);
   val &= ~(USART_CR1_IDLEIE | USART_CR1_RXNEIE |  USART_CR1_TCIE | USART_CR1_TXEIE | USART_CR1_PEIE);
-  val |= USART_CR1_RE | USART_CR1_TE;
+  val |= USART_CR1_UE;
   
   if (dev->uart.parity == PARITY_NONE)
     {
@@ -261,6 +264,7 @@ static int stm32f1_uart_init(struct uart_s *uart)
           val &= ~USART_CR1_PS;
         }
     }
+  stm32f1_uart_putreg(dev, STM32F1_USART_CR1, val);
 
   val  = stm32f1_uart_getreg(dev,STM32F1_USART_CR2);
   val &= ~USART_CR2_ADD_MASK;
@@ -302,7 +306,7 @@ static int stm32f1_uart_init(struct uart_s *uart)
   
   /* Enable uart */
   val = stm32f1_uart_getreg(dev, STM32F1_USART_CR1);
-  val |= USART_CR1_UE;
+  val |= USART_CR1_RE | USART_CR1_TE;
   stm32f1_uart_putreg(dev, STM32F1_USART_CR1, val);
   
   return 0;
@@ -344,15 +348,17 @@ static int stm32f1_uart_write(struct uart_s *uart, const uint8_t *buf, int len)
 
   struct stm32f1_uart_s *dev = (struct stm32f1_uart_s *)uart;
 
-  if(dev->drivemode == DRIVEMODE_BASIC)
+  if (dev->drivemode == DRIVEMODE_BASIC)
     {
-      for(i=0; i<len; i++)
+      for (i=0; i<len; i++)
         {
           /* Wait for TXE set */
-          while((stm32f1_uart_getreg(dev, STM32F1_USART_SR) & USART_SR_TXE) != USART_SR_TXE);
+          while ((stm32f1_uart_getreg(dev, STM32F1_USART_SR) & USART_SR_TXE) != USART_SR_TXE);
           /* Write TX data reg */
           stm32f1_uart_putreg(dev, STM32F1_USART_DR, buf[i]);
         }
+      /* Wait for TC set */
+      while ((stm32f1_uart_getreg(dev, STM32F1_USART_SR) & USART_SR_TC) != USART_SR_TC);
       return len;
     } 
  
