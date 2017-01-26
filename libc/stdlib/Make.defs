@@ -1,0 +1,3 @@
+VPATH+=stdlib
+
+CSRCS+=ltoa.c

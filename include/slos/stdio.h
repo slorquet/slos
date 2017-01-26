@@ -8,7 +8,7 @@
 struct printf_stream_s
 {
   void (*putchar)(const char  ch, void *context);
-  void (*puts)   (const char *ch, void *context);
+  int  (*puts)   (const char *ch, void *context); /* return number of chars written */
   void *context;
 };
 

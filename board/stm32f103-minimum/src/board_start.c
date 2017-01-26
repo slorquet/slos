@@ -15,7 +15,15 @@ void board_start(void)
   stm32f1_gpio_init(PC13 | GPIO_MODE_OUT | GPIO_TYPE_PP | GPIO_SPEED_LOW | GPIO_STATE_CLEAR);
 
   /* Test UART */
-  kprintf("Hello world!\n");
+  kprintf("Hello %s!\n\n", "world");
+  kprintf("hex   = %x\n", 0xA42B);
+  kprintf("HEX   = %X\n", 0xA42B);
+  kprintf("sdecp = %d\n", 12345);
+  kprintf("sdecp = %d\n", 42);
+  kprintf("snegn = %d\n", -42);
+  kprintf("udecp = %u\n", 42);
+  kprintf("unegn = %u\n", -42);
+  kprintf("ptr   = %p\n", &state);
 
   /* Loop blinking led */
 

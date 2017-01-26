@@ -88,7 +88,7 @@ static int stm32f1_uart_avail(struct uart_s *uart);
 static int stm32f1_uart_read (struct uart_s *uart, uint8_t *buf, int len);
 static int stm32f1_uart_ioctl(struct uart_s *uart, int command, void* params);
 
-static void kputs(const char *data, void *arg);
+static int  kputs(const char *data, void *arg);
 static void kputc(const char data, void *arg);
 
 /*==============================================================================
@@ -493,14 +493,14 @@ void stm32f1_uart_earlysetup()
 }
 
 /*----------------------------------------------------------------------------*/
-static void kputs(const char *data, void *arg)
+static int kputs(const char *data, void *arg)
 {
   if(g_stm32f1_kconsole == NULL)
     {
       return;
     }
 
-  g_stm32f1_kconsole->uart.ops->write(&g_stm32f1_kconsole->uart, data, strlen(data));
+  return g_stm32f1_kconsole->uart.ops->write(&g_stm32f1_kconsole->uart, data, strlen(data));
 }
 
 /*----------------------------------------------------------------------------*/

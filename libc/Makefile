@@ -5,6 +5,7 @@ include $(TOPDIR)/arch/$(CONFIG_ARCH)/Arch.defs
 
 CSRCS:=
 include stdio/Make.defs
+include stdlib/Make.defs
 include string/Make.defs
 
 #sysincludes must be last system include dir.
