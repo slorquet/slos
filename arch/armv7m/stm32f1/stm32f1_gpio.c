@@ -194,13 +194,19 @@ void stm32f1_gpio_init(uint32_t gpiodesc)
         }
       else
         {
-          val |= GPIO_CNF_INPULL << line;
+          val |= GPIO_CNF_INPULL << line; /* Pull type is defined before by ODR */
         }
-
     }
 
-  else if ((gpiodesc & GPIO_FLAGS_MODE_MASK) == GPIO_MODE_OUT)
+  else if ((gpiodesc & GPIO_FLAGS_MODE_MASK) == GPIO_MODE_ANALOG)
     {
+      val |= (GPIO_MODE_INPUT | GPIO_CNF_ANALOG) << line;
+    }
+
+  else
+    {
+      /* out AND alt BOTH need this */
+
       if ((gpiodesc & GPIO_FLAGS_SPEED_MASK) == GPIO_SPEED_LOW)
         {
           val |= GPIO_MODE_OUT2MHZ << line;
@@ -214,31 +220,20 @@ void stm32f1_gpio_init(uint32_t gpiodesc)
           val |= GPIO_MODE_OUT50MHZ << line;
         }
 
-     /* set output type */
+      /* set output type */
 
       if ((gpiodesc & GPIO_FLAGS_TYPE_MASK) == GPIO_TYPE_OD)
         {
           val |= GPIO_CNF_OD << line;
         }
 
-    }
+      /* ALT is just a specific output type */
 
-  else if ((gpiodesc & GPIO_FLAGS_MODE_MASK) == GPIO_MODE_ALT)
-    {
-      val |= GPIO_CNF_ALT << line;
-
-     /* set output type */
-
-      if ((gpiodesc & GPIO_FLAGS_TYPE_MASK) == GPIO_TYPE_OD)
+      if ((gpiodesc & GPIO_FLAGS_MODE_MASK) == GPIO_MODE_ALT)
         {
-          val |= GPIO_CNF_OD << line;
+          val |= GPIO_CNF_ALT << line;
         }
 
-    }
-
-  else if ((gpiodesc & GPIO_FLAGS_MODE_MASK) == GPIO_MODE_ANALOG)
-    {
-      val |= GPIO_CNF_ANALOG << line;
     }
 
   stm32f1_gpio_putreg(base, reg, val);

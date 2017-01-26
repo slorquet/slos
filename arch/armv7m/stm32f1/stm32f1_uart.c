@@ -345,6 +345,7 @@ static int stm32f1_uart_fini (struct uart_s *uart)
 static int stm32f1_uart_write(struct uart_s *uart, const uint8_t *buf, int len)
 {
   int i;
+  uint8_t ch;
 
   struct stm32f1_uart_s *dev = (struct stm32f1_uart_s *)uart;
 
@@ -352,10 +353,13 @@ static int stm32f1_uart_write(struct uart_s *uart, const uint8_t *buf, int len)
     {
       for (i=0; i<len; i++)
         {
+          ch = buf[i];
+
           /* Wait for TXE set */
           while ((stm32f1_uart_getreg(dev, STM32F1_USART_SR) & USART_SR_TXE) != USART_SR_TXE);
           /* Write TX data reg */
-          stm32f1_uart_putreg(dev, STM32F1_USART_DR, buf[i]);
+          stm32f1_uart_putreg(dev, STM32F1_USART_DR, ch);
+
         }
       /* Wait for TC set */
       while ((stm32f1_uart_getreg(dev, STM32F1_USART_SR) & USART_SR_TC) != USART_SR_TC);
