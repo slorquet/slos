@@ -136,17 +136,23 @@ static struct stm32f1_uart_s g_stm32f1_usart1 =
   .uart =
     {
       .ops = &g_stm32f1_uartops,
-      .baudrate = CONFIG_STM32F1_USART1_BAUDRATE,
+      .term.c_baud = CONFIG_STM32F1_USART1_BAUDRATE,
 #if defined( CONFIG_STM32F1_USART1_PARITY_NONE )
-      .parity   = PARITY_NONE,
+      .term.c_cflag = 0
 #elif defined( CONFIG_STM32F1_USART1_PARITY_ODD )
-      .parity   = PARITY_ODD,
+      .parity   = PARENB | PARODD
 #elif defined( CONFIG_STM32F1_USART1_PARITY_EVEN )
-      .parity   = PARITY_EVEN,
+      .parity   = PARENB
 #else
 #error undefined USART1 parity
 #endif
-      .stopbits = CONFIG_STM32F1_USART1_STOPBITS,
+#if CONFIG_STM32F1_USART1_STOPBITS == 1
+                , /* No additional control flags */
+#elif CONFIG_STM32F1_USART1_STOPBITS == 2
+                | CSTOPB,
+#else
+#error unsupported stop bits
+#endif
     },
     .params = &g_stm32f1_usart1params,
     .drivemode = DRIVEMODE_BASIC
@@ -214,7 +220,7 @@ static void stm32f1_uart_setbaudrate(struct stm32f1_uart_s *dev)
    * BUT, this is a 12.4 fixed point number. So BRR must be programmed ito 16x usartdiv
    *            usart_brr = fclk / baud
    */
-  stm32f1_uart_putreg(dev, STM32F1_USART_BRR, fclk / dev->uart.baudrate);
+  stm32f1_uart_putreg(dev, STM32F1_USART_BRR, fclk / dev->uart.term.c_baud);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -246,16 +252,11 @@ static int stm32f1_uart_init(struct uart_s *uart)
   val &= ~(USART_CR1_IDLEIE | USART_CR1_RXNEIE |  USART_CR1_TCIE | USART_CR1_TXEIE | USART_CR1_PEIE);
   val |= USART_CR1_UE;
   
-  if (dev->uart.parity == PARITY_NONE)
-    {
-      val &= ~USART_CR1_PCE;
-      val &= ~USART_CR1_M; /* 8-bit frame */
-    }
-  else
+  if (dev->uart.term.c_cflag & PARENB)
     {
       val |= USART_CR1_PCE;
       val |= USART_CR1_M; /* 9-bit frame */
-      if (dev->uart.parity == PARITY_ODD)
+      if (dev->uart.term.c_cflag == PARODD)
         {
           val |= USART_CR1_PS;
         }
@@ -263,6 +264,11 @@ static int stm32f1_uart_init(struct uart_s *uart)
         {
           val &= ~USART_CR1_PS;
         }
+    }
+  else
+    {
+      val &= ~USART_CR1_PCE;
+      val &= ~USART_CR1_M; /* 8-bit frame */
     }
   stm32f1_uart_putreg(dev, STM32F1_USART_CR1, val);
 
@@ -272,14 +278,17 @@ static int stm32f1_uart_init(struct uart_s *uart)
   val &= ~(USART_CR2_LBCL | USART_CR2_CPHA | USART_CR2_CPOL | USART_CR2_CLKEN);
 
   val &= ~USART_CR2_STOP_MASK;
-  if (dev->uart.stopbits==STOPBITS_1)
-    {
-      val |= USART_CR2_STOP_1;
-    }
-  else if (dev->uart.stopbits==STOPBITS_2)
+  if (dev->uart.term.c_cflag & CSTOPB)
     {
       val |= USART_CR2_STOP_2;
     }
+  else
+    {
+      val |= USART_CR2_STOP_1;
+    }
+
+#if 0
+  /* TODO: need an additional term flag for "CSTOPHALF" to remove half a stop bit */
   else if (dev->uart.stopbits==STOPBITS_1_5)
     {
       val |= USART_CR2_STOP_15;
@@ -288,6 +297,7 @@ static int stm32f1_uart_init(struct uart_s *uart)
     {
       val |= USART_CR2_STOP_05;
     }
+#endif
   
   stm32f1_uart_putreg(dev, STM32F1_USART_CR2, val);
   

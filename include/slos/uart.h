@@ -1,6 +1,8 @@
 #ifndef __INCLUDE__SLOS__UART__H__
 #define __INCLUDE__SLOS__UART__H__
 
+#include <termios.h>
+
 struct uart_s;
 
 struct uart_ops_s
@@ -17,9 +19,7 @@ struct uart_ops_s
 struct uart_s
 {
   const struct uart_ops_s *ops;
-  uint32_t baudrate;
-  uint8_t parity;
-  uint8_t stopbits;
+  struct termios term;
 };
 
 #endif /* __INCLUDE__SLOS__UART__H__ */
