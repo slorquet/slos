@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <errno.h>
+#include <termios.h>
 #include <slos/uart.h>
 #include <slos/stdio.h>
 
@@ -135,8 +136,16 @@ static struct stm32f1_uart_s g_stm32f1_usart1 =
 {
   .uart =
     {
-      .ops = &g_stm32f1_uartops,
-      .term.c_baud = CONFIG_STM32F1_USART1_BAUDRATE,
+      .ops          = &g_stm32f1_uartops,
+
+      .term.c_baud  = CONFIG_STM32F1_USART1_BAUDRATE,
+
+#ifdef CONFIG_STM32F1_USART1_KCONSOLE
+      .term.c_oflag = ONLCR,
+#else
+      .term.c_oflag = 0,
+#endif
+
 #if defined( CONFIG_STM32F1_USART1_PARITY_NONE )
       .term.c_cflag = 0
 #elif defined( CONFIG_STM32F1_USART1_PARITY_ODD )
@@ -154,6 +163,7 @@ static struct stm32f1_uart_s g_stm32f1_usart1 =
 #error unsupported stop bits
 #endif
     },
+
     .params = &g_stm32f1_usart1params,
     .drivemode = DRIVEMODE_BASIC
 };
@@ -351,6 +361,16 @@ static int stm32f1_uart_fini (struct uart_s *uart)
 }
 
 /*----------------------------------------------------------------------------*/
+static inline __attribute__((always_inline)) void send(struct stm32f1_uart_s *dev, uint8_t ch)
+{
+  /* Wait for room in the TX buffer (TXE set) */
+  while ((stm32f1_uart_getreg(dev, STM32F1_USART_SR) & USART_SR_TXE) != USART_SR_TXE);
+
+  /* Write in the TX buffer */
+  stm32f1_uart_putreg(dev, STM32F1_USART_DR, ch);
+}
+
+/*----------------------------------------------------------------------------*/
 /* Write some bytes to buffer */
 static int stm32f1_uart_write(struct uart_s *uart, const uint8_t *buf, int len)
 {
@@ -364,11 +384,12 @@ static int stm32f1_uart_write(struct uart_s *uart, const uint8_t *buf, int len)
       for (i=0; i<len; i++)
         {
           ch = buf[i];
+          send(dev, ch);
 
-          /* Wait for TXE set */
-          while ((stm32f1_uart_getreg(dev, STM32F1_USART_SR) & USART_SR_TXE) != USART_SR_TXE);
-          /* Write TX data reg */
-          stm32f1_uart_putreg(dev, STM32F1_USART_DR, ch);
+          if (ch == '\n' && (dev->uart.term.c_oflag & ONLCR))
+            {
+            send(dev, '\r');
+            }
 
         }
       /* Wait for TC set */

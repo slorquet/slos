@@ -24,25 +24,25 @@ enum
 
 /* Input modes */
 
-#define BRKINT    /* Signal interrupt on break. */
-#define ICRNL     /* Map CR to NL on input. */
-#define IGNBRK    /* Ignore break condition. */
-#define IGNCR     /* Ignore CR. */
-#define IGNPAR    /* Ignore characters with parity errors. */
-#define INLCR     /* Map NL to CR on input. */
-#define INPCK     /* Enable input parity check. */
-#define ISTRIP    /* Strip character. */
-#define IXANY     /* Enable any character to restart output. */
-#define IXOFF     /* Enable start/stop input control. */
-#define IXON      /* Enable start/stop output control. */
-#define PARMRK    /* Mark parity errors. */
+#define BRKINT    (1<< 0) /* Signal interrupt on break. */
+#define ICRNL     (1<< 1) /* Map CR to NL on input. */
+#define IGNBRK    (1<< 2) /* Ignore break condition. */
+#define IGNCR     (1<< 3) /* Ignore CR. */
+#define IGNPAR    (1<< 4) /* Ignore characters with parity errors. */
+#define INLCR     (1<< 5) /* Map NL to CR on input. */
+#define INPCK     (1<< 6) /* Enable input parity check. */
+#define ISTRIP    (1<< 7) /* Strip character. */
+#define IXANY     (1<< 8) /* Enable any character to restart output. */
+#define IXOFF     (1<< 9) /* Enable start/stop input control. */
+#define IXON      (1<<10) /* Enable start/stop output control. */
+#define PARMRK    (1<<11) /* Mark parity errors. */
 
 /* Output modes */
 
-#define OPOST    /* Post-process output. */
-#define ONLCR    /* Map NL to CR-NL on output. */
-#define OCRNL    /* Map CR to NL on output. */
-#define ONLRET   /* NL performs CR function. */
+#define OPOST    (1<<0) /* Post-process output. */
+#define ONLCR    (1<<1) /* Map NL to CR-NL on output. */
+#define OCRNL    (1<<2) /* Map CR to NL on output. */
+#define ONLRET   (1<<3) /* NL performs CR function. */
 
 /* Baud */
 
