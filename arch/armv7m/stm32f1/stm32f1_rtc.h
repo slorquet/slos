@@ -1,5 +1,5 @@
-#ifndef __ARCH__ARMV7M__STM32F1__STM32F1__RCC__H__
-#define __ARCH__ARMV7M__STM32F1__STM32F1__RCC__H__
+#ifndef __ARCH__ARMV7M__STM32F1__STM32F1__RTC__H__
+#define __ARCH__ARMV7M__STM32F1__STM32F1__RTC__H__
 
 #include <stdint.h>
 #include <stdbool.h>

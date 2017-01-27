@@ -497,7 +497,7 @@ static int kputs(const char *data, void *arg)
 {
   if(g_stm32f1_kconsole == NULL)
     {
-      return;
+      return 0;
     }
 
   return g_stm32f1_kconsole->uart.ops->write(&g_stm32f1_kconsole->uart, data, strlen(data));

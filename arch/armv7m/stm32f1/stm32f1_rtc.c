@@ -7,6 +7,7 @@
 #include "bits/stm32f1_rcc.h"
 #include "bits/stm32f1_rtc.h"
 #include "stm32f1_rtc.h"
+#include "stm32f1_rcc.h"
 
 /*==============================================================================
  * Definitions

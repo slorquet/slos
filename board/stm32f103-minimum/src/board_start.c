@@ -3,6 +3,8 @@
 #include "stm32f1_rcc.h"
 #include "stm32f1_gpio.h"
 #include "stm32f1_uart.h"
+#include "stm32f1_rtc.h"
+#include <slos/stdio.h>
 
 #define PC13 (GPIO_PORT_C | GPIO_PIN_13)
 
