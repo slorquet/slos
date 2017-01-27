@@ -10,6 +10,7 @@ void board_start(void)
 {
   uint32_t state = 1;
   volatile int i;
+  bool succ;
 
   /* configure pc13 as output to blink the led */
   stm32f1_gpio_init(PC13 | GPIO_MODE_OUT | GPIO_TYPE_PP | GPIO_SPEED_LOW | GPIO_STATE_CLEAR);
@@ -24,6 +25,13 @@ void board_start(void)
   kprintf("udecp = %u\n", 42);
   kprintf("unegn = %u\n", -42);
   kprintf("ptr   = %p\n", &state);
+
+  kprintf("Enable LSE\n");
+  succ = stm32f1_clock_enablelse();
+  if(succ)
+    kprintf("LSE status OK\n");
+  else
+    kprintf("LSE status Fail\n");
 
   /* Loop blinking led */
 

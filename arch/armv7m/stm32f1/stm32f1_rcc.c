@@ -4,6 +4,7 @@
 
 #include "bits/stm32f1_periphs.h"
 #include "bits/stm32f1_rcc.h"
+#include "bits/stm32f1_pwr.h"
 #include "stm32f1_rcc.h"
 
 /*==============================================================================
@@ -97,7 +98,7 @@ struct stm32f1_clocks_s * stm32f1_clock_getinfo(void)
 }
 
 /*----------------------------------------------------------------------------*/
-bool stm32f1_ahbprescaler(uint32_t prescaler)
+bool stm32f1_clock_ahbprescaler(uint32_t prescaler)
 {
   uint32_t val = getreg32(STM32F1_REGBASE_RCC+STM32F1_RCC_CFGR);
   val &= ~RCC_CFGR_HPRE_MASK;
@@ -123,7 +124,7 @@ bool stm32f1_ahbprescaler(uint32_t prescaler)
 }
 
 /*----------------------------------------------------------------------------*/
-bool stm32f1_apb1prescaler(uint32_t prescaler)
+bool stm32f1_clock_apb1prescaler(uint32_t prescaler)
 {
   uint32_t val = getreg32(STM32F1_REGBASE_RCC+STM32F1_RCC_CFGR);
   val &= ~RCC_CFGR_PPRE1_MASK;
@@ -153,7 +154,7 @@ bool stm32f1_apb1prescaler(uint32_t prescaler)
 }
 
 /*----------------------------------------------------------------------------*/
-bool stm32f1_apb2prescaler(uint32_t prescaler)
+bool stm32f1_clock_apb2prescaler(uint32_t prescaler)
 {
   uint32_t val = getreg32(STM32F1_REGBASE_RCC+STM32F1_RCC_CFGR);
   val &= ~RCC_CFGR_PPRE2_MASK;
@@ -183,7 +184,7 @@ bool stm32f1_apb2prescaler(uint32_t prescaler)
 }
 
 /*----------------------------------------------------------------------------*/
-bool stm32f1_adcprescaler(uint32_t prescaler)
+bool stm32f1_clock_adcprescaler(uint32_t prescaler)
 {
   uint32_t val = getreg32(STM32F1_REGBASE_RCC+STM32F1_RCC_CFGR);
   val &= ~RCC_CFGR_ADCPRE_MASK;
@@ -201,6 +202,45 @@ bool stm32f1_adcprescaler(uint32_t prescaler)
   stm32f1_clock_recompute();
   stm32f1_clock_notifychange();
   return true;
+}
+
+/*----------------------------------------------------------------------------*/
+bool stm32f1_clock_enablelse(void)
+{
+  int tries = 1000;
+  uint32_t val;
+
+  /* Enable power control */
+
+  val  = getreg32(STM32F1_REGBASE_RCC+STM32F1_RCC_APB1ENR);
+  val |= RCC_APB1ENR_PWREN | RCC_APB1ENR_BKPEN;
+  putreg32(STM32F1_REGBASE_RCC+STM32F1_RCC_APB1ENR, val);
+
+  /* Ensure access to backup domain is enabled */
+
+  val  = getreg32(STM32F1_REGBASE_PWR+STM32F1_PWR_CR);
+  val |= PWR_CR_DBP;
+  putreg32(STM32F1_REGBASE_PWR+STM32F1_PWR_CR, val);
+
+  /* Enable LSE */
+
+  val  = getreg32(STM32F1_REGBASE_RCC+STM32F1_RCC_BDCR);
+  val |= RCC_BDCR_LSEON;
+  putreg32(STM32F1_REGBASE_RCC+STM32F1_RCC_BDCR, val);
+
+  /* Wait for LSE ready */
+
+  while( tries > 0)
+    {
+      val = getreg32(STM32F1_REGBASE_RCC+STM32F1_RCC_BDCR);
+      if(val & RCC_BDCR_LSERDY)
+        {
+          break;
+        }
+        tries-=1; /* Try again */
+    }
+
+  return val & RCC_BDCR_LSERDY;
 }
 
 /*----------------------------------------------------------------------------*/

@@ -24,6 +24,9 @@ bool stm32f1_ahbprescaler(uint32_t prescaler);
 bool stm32f1_apb1prescaler(uint32_t prescaler);
 bool stm32f1_apb2prescaler(uint32_t prescaler);
 bool stm32f1_adcprescaler(uint32_t prescaler);
+
+bool stm32f1_clock_enablelse(void);
+
 bool stm32f1_clock_registerhook(stm32f1_clockhook_f hook);
 
 #endif /* __ARCH__ARMV6M__STM32F1__STM32F1__RCC__H__ */
