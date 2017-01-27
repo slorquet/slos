@@ -1,2 +1,6 @@
 CHIP_CSRCS=stm32f1_start.c stm32f1_rcc.c stm32f1_gpio.c stm32f1_uart.c
 
+ifeq ($(CONFIG_STM32F1_RTC),y)
+CHIP_CSRCS+=stm32f1_rtc.c
+endif
+

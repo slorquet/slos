@@ -27,11 +27,14 @@ void board_start(void)
   kprintf("ptr   = %p\n", &state);
 
   kprintf("Enable LSE\n");
-  succ = stm32f1_clock_enablelse();
-  if(succ)
-    kprintf("LSE status OK\n");
-  else
-    kprintf("LSE status Fail\n");
+  succ = stm32f1_clock_lse_enable(true);
+  kprintf("LSE status %s\n",succ?"OK":"Fail");
+
+  succ = stm32f1_clock_rtc(RTC_SRC_LSE);
+  kprintf("LSE to RTC %s\n",succ?"OK":"Fail");
+
+  succ = stm32f1_rtc_init(32767);
+  kprintf("RTC init %s\n",succ?"OK":"Fail");
 
   /* Loop blinking led */
 
@@ -40,5 +43,6 @@ void board_start(void)
       stm32f1_gpio_write(PC13, state);
       state = !state;
       for(i=0;i<100000;i++) {};
+      kprintf("RTC=%d\n", stm32f1_rtc_read() );
     }
 }

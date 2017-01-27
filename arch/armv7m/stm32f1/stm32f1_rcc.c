@@ -205,42 +205,170 @@ bool stm32f1_clock_adcprescaler(uint32_t prescaler)
 }
 
 /*----------------------------------------------------------------------------*/
-bool stm32f1_clock_enablelse(void)
+void stm32f1_clock_enablebkp(void)
+{
+  uint32_t val;
+
+  /* Enable power and backup domain clocks */
+
+  val  = getreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_APB1ENR);
+  val |= RCC_APB1ENR_PWREN | RCC_APB1ENR_BKPEN;
+  putreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_APB1ENR, val);
+
+  /* Enable access to backup domain */
+
+  val  = getreg32(STM32F1_REGBASE_PWR + STM32F1_PWR_CR);
+  val |= PWR_CR_DBP;
+  putreg32(STM32F1_REGBASE_PWR + STM32F1_PWR_CR, val);
+}
+
+/*----------------------------------------------------------------------------*/
+bool stm32f1_clock_lse_enable(bool state)
 {
   int tries = 1000;
   uint32_t val;
 
-  /* Enable power control */
+  stm32f1_clock_enablebkp();
 
-  val  = getreg32(STM32F1_REGBASE_RCC+STM32F1_RCC_APB1ENR);
-  val |= RCC_APB1ENR_PWREN | RCC_APB1ENR_BKPEN;
-  putreg32(STM32F1_REGBASE_RCC+STM32F1_RCC_APB1ENR, val);
-
-  /* Ensure access to backup domain is enabled */
-
-  val  = getreg32(STM32F1_REGBASE_PWR+STM32F1_PWR_CR);
-  val |= PWR_CR_DBP;
-  putreg32(STM32F1_REGBASE_PWR+STM32F1_PWR_CR, val);
-
-  /* Enable LSE */
-
-  val  = getreg32(STM32F1_REGBASE_RCC+STM32F1_RCC_BDCR);
-  val |= RCC_BDCR_LSEON;
-  putreg32(STM32F1_REGBASE_RCC+STM32F1_RCC_BDCR, val);
-
-  /* Wait for LSE ready */
-
-  while( tries > 0)
+  if(state)
     {
-      val = getreg32(STM32F1_REGBASE_RCC+STM32F1_RCC_BDCR);
-      if(val & RCC_BDCR_LSERDY)
+      /* Enable LSE */
+
+      val  = getreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_BDCR);
+      val |= RCC_BDCR_LSEON;
+      putreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_BDCR, val);
+
+      /* Wait for LSE ready */
+
+      while( tries > 0)
         {
-          break;
+          val = getreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_BDCR);
+          if(val & RCC_BDCR_LSERDY)
+            {
+              break;
+            }
+            tries-=1; /* Try again */
         }
-        tries-=1; /* Try again */
+
+      return val & RCC_BDCR_LSERDY;
+    }
+  else
+    {
+      /* Disable LSE */
+
+      val  = getreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_BDCR);
+      val &= ~RCC_BDCR_LSEON;
+      putreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_BDCR, val);
+
+      return true; /* Always succeed, even if test for failure could be done */
+    }
+}
+
+/*----------------------------------------------------------------------------*/
+bool stm32f1_clock_lse_ready(void)
+{
+  uint32_t val = getreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_BDCR);
+  return (val & RCC_BDCR_LSERDY) == RCC_BDCR_LSERDY;
+}
+
+/*----------------------------------------------------------------------------*/
+bool stm32f1_clock_hse_enable(bool state)
+{
+  int tries = 1000;
+  uint32_t val;
+
+  if(state)
+    {
+      /* Enable HSE */
+
+      val  = getreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_CR);
+      val |= RCC_CR_HSEON;
+      putreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_CR, val);
+
+      /* Wait for HSE ready */
+
+      while( tries > 0)
+        {
+          val = getreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_CR);
+          if(val & RCC_CR_HSERDY)
+            {
+              break;
+            }
+            tries-=1; /* Try again */
+        }
+
+      return val & RCC_CR_HSERDY;
+    }
+  else
+    {
+      /* Disable HSE */
+
+      val  = getreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_CR);
+      val &= ~RCC_CR_HSEON;
+      putreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_CR, val);
+
+      return true; /* Always succeed, even if test for failure could be done */
+    }
+}
+
+/*----------------------------------------------------------------------------*/
+bool stm32f1_clock_hse_ready(void)
+{
+  uint32_t val = getreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_CR);
+  return (val & RCC_CR_HSERDY) == RCC_CR_HSERDY;
+}
+
+/*----------------------------------------------------------------------------*/
+bool stm32f1_clock_hsi_ready(void)
+{
+  uint32_t val = getreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_CR);
+  return (val & RCC_CR_HSIRDY) == RCC_CR_HSIRDY;
+}
+
+/*----------------------------------------------------------------------------*/
+bool stm32f1_clock_lsi_ready(void)
+{
+  uint32_t val = getreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_CSR);
+  return (val & RCC_CSR_LSIRDY) == RCC_CSR_LSIRDY;
+}
+
+/*----------------------------------------------------------------------------*/
+bool stm32f1_clock_rtc(int rtcclocksource)
+{
+  uint32_t val;
+
+  stm32f1_clock_enablebkp();
+
+  val  = getreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_BDCR);
+  val &= ~RCC_BDCR_RTCSEL_MASK;
+
+  switch(rtcclocksource)
+    {
+      case RTC_SRC_NONE:
+        val |= RCC_BDCR_RTCSEL_NONE;
+        break;
+
+      case RTC_SRC_LSE:
+        if(!stm32f1_clock_lse_ready()) return false;
+        val |= RCC_BDCR_RTCSEL_LSE;
+        break;
+
+      case RTC_SRC_LSI:
+        if(!stm32f1_clock_lsi_ready()) return false;
+        val |= RCC_BDCR_RTCSEL_LSI;
+        break;
+
+      case RTC_SRC_HSE128:
+        if(!stm32f1_clock_hse_ready()) return false;
+        val |= RCC_BDCR_RTCSEL_HSE128;
+        break;
+
+      default: return false;
     }
 
-  return val & RCC_BDCR_LSERDY;
+  putreg32(STM32F1_REGBASE_RCC + STM32F1_RCC_BDCR, val);
+
+  return true;
 }
 
 /*----------------------------------------------------------------------------*/
