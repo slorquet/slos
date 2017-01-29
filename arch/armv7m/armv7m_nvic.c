@@ -1,13 +1,14 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include "armv7m.h"
 #include "armv7m_nvic.h"
 #include "irq.h"
 #include "bits/irq.h"
 
-static armv7m_irqhandler_t corehandlers[14]; /* Vectors 2..15 */
+static armv7m_irqhandler_t corehandlers[14];              /* Vectors 2..15 */
 static armv7m_irqhandler_t chiphandlers[ARCH_CHIP_NIRQS]; /* Vectors 16..N */
-static void*               chipargs    [ARCH_CHIP_NIRQS]; /* Vectors 16..N */
+static void*               chipargs    [ARCH_CHIP_NIRQS]; /* Args for vectors 16..N */
 
 /*----------------------------------------------------------------------------*/
 void armv7m_irq_init(void)
@@ -65,12 +66,13 @@ void armv7m_irq_activate(uint8_t irqno, bool state)
 /* Called at Core interrupt */
 void armv7m_irq(void)
 {
-  int irqno;
+  uint32_t irqno;
 
   /* Get the number of the active interrupt in IPSR */
-
+  irqno = armv7m_getipsr();
+  
   /* Compute table index */
-  //irqno -= 2;
+  irqno -= 2;
 
   /* Check that a handler is attached */
   if(corehandlers[irqno]==0)
@@ -89,9 +91,10 @@ void chip_irq(void)
   int irqno;
 
   /* Get the number of the active interrupt in IPSR */
+  irqno = armv7m_getipsr();
 
   /* Compute table index */
-  //irqno -= 16;
+  irqno -= 16;
 
   /* Check that a handler is attached */
   if(chiphandlers[irqno]==0)

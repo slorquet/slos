@@ -7,4 +7,11 @@
 
 #define ARMV7M_SCS 0xE000E000
 
+static inline uint32_t armv7m_getipsr(void)
+{
+  register int ipsr asm("r0");
+  asm("MRS r0, IPSR" : "=l" (ipsr));
+  return ipsr & 0xFF;
+}
+
 #endif

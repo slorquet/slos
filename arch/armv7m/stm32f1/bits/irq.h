@@ -10,6 +10,4 @@
 #include "bits/irq_others.h"
 #endif
 
-void armv7m_irq_init(void);
-
 #endif
