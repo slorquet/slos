@@ -15,7 +15,6 @@ static inline uint32_t armv7m_getipsr(void)
 /* System control space */
 #define ARMV7M_SCS 0xE000E000
 
-#define ARMV7M_REGBASE_NVIC    (ARMV7M_SCS + 0x00000100)
 #define ARMV7M_SCB             (ARMV7M_SCS + 0x00000D00)
 #define ARMV7M_REGBASE_FPU     (ARMV7M_SCS + 0x00000F00)
 
@@ -23,26 +22,6 @@ static inline uint32_t armv7m_getipsr(void)
 #define ARMV7M_ICTR            (ARMV7M_SCS + 0x00000004) /* Interrupt Controller Type register */
 #define ARMV7M_ACTLR           (ARMV7M_SCS + 0x00000008) /* Auxiliary control register */
 #define ARMV7M_STIR            (ARMV7M_SCS + 0x000000F0) /* Software Triggered Interrupt register */
-
-/* SysTick */
-#define ARMV7M_SYSTICK_CSR     (ARMV7M_SCS + 0x00000010) /* Control and Status Register */
-#define ARMV7M_SYSTICK_RVR     (ARMV7M_SCS + 0x00000014) /* Reload Value Register */
-#define ARMV7M_SYSTICK_CVR     (ARMV7M_SCS + 0x00000018) /* Current Value Register */
-#define ARMV7M_SYSTICK_CALIB   (ARMV7M_SCS + 0x0000001C) /* Calibration Value Register */
-
-/* SysTick_CSR */
-#define SYSTICK_CSR_ENABLE    (1<< 0) /* Counter Enable */
-#define SYSTICK_CSR_TICKINT   (1<< 1) /* Underflow Interrupt Enable */
-#define SYSTICK_CSR_CLKSOURCE (1<< 2) /* Clock Source */
-#define SYSTICK_CSR_COUNTFLAG (1<<16) /* Underflow Happened */
-
-/* NVIC */
-#define ARMV7M_NVIC_REGBASE_ISER (ARMV7M_REGBASE_NVIC + 0x000) /* Interrupt Set-Enable registers (15) */
-#define ARMV7M_NVIC_REGBASE_ICER (ARMV7M_REGBASE_NVIC + 0x080) /* Interrupt Clear-Enable registers (15) */
-#define ARMV7M_NVIC_REGBASE_ISPR (ARMV7M_REGBASE_NVIC + 0x100) /* Interrupt Set-Pending registers (15) */
-#define ARMV7M_NVIC_REGBASE_ICPR (ARMV7M_REGBASE_NVIC + 0x180) /* Interrupt Clear-Pending registers (15) */
-#define ARMV7M_NVIC_REGBASE_IABR (ARMV7M_REGBASE_NVIC + 0x200) /* Interrupt Active registers (15) */
-#define ARMV7M_NVIC_REGBASE_IPR  (ARMV7M_REGBASE_NVIC + 0x300) /* Interrupt Priority registers (123) */
 
 /* SCB registers */
 

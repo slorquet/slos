@@ -1,6 +1,7 @@
 #include <stdint.h>
 
 #include "irq.h"
+#include "armv7m_systick.h"
 
 #include "stm32f1_rcc.h"
 #include "stm32f1_gpio.h"
@@ -20,6 +21,7 @@ void board_start(void)
   stm32f1_gpio_init(PC13 | GPIO_MODE_OUT | GPIO_TYPE_PP | GPIO_SPEED_LOW | GPIO_STATE_CLEAR);
 
   /* Test UART */
+#if 0
   kprintf("Hello %s!\n\n", "world");
   kprintf("hex   = %x\n", 0xA42B);
   kprintf("HEX   = %X\n", 0xA42B);
@@ -29,6 +31,7 @@ void board_start(void)
   kprintf("udecp = %u\n", 42);
   kprintf("unegn = %u\n", -42);
   kprintf("ptr   = %p\n", &state);
+#endif
 
   kprintf("Enable LSE\n");
   succ = stm32f1_clock_lse_enable(true);
@@ -40,7 +43,9 @@ void board_start(void)
   succ = stm32f1_rtc_init(32767);
   kprintf("RTC init %s\n",succ?"OK":"Fail");
 
-  armv7m_irq_enable();
+  armv7m_systick_init();
+
+  irq_enable();
 
   /* Loop blinking led */
 

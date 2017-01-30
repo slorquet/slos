@@ -9,7 +9,7 @@ include $(CONFIG_ARCH_CHIP_FAMILY)/Make.defs
 VPATH += $(CONFIG_ARCH_CHIP_FAMILY)
 
 CSRCS=$(CHIP_CSRCS)
-CSRCS+=armv7m_nvic.c
+CSRCS+=armv7m_nvic.c armv7m_systick.c
 MAINSRC=arch_start.c
 
 MAINOBJ=$(MAINSRC:.c=.o)

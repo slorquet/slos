@@ -4,25 +4,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-static inline void armv7m_irq_enable(void)
-{
-  uint32_t bp=0;
-  asm volatile(
-    "\tmov r0, #0\n"
-    "\tmrs r0, basepri\n"
-    "\tcpsie i"
-  );
-}
+#include "armv7m_nvic.h"
 
-static inline armv7m_irq_disable(void)
-{
-  asm volatile("cpsid i");
-}
+#define irq_enable() armv7m_irq_enable()
+#define irq_disable() armv7m_irq_disable()
 
-typedef void (*armv7m_irqhandler_t)(int irqno, void *arg);
-
-void armv7m_irq_init(void);
-void armv7m_irq_attach(uint32_t irqno, armv7m_irqhandler_t handler, void *arg);
-void armv7m_irq_activate(uint32_t irqno, bool state);
+#define irq_attach(irqno, handler, arg) armv7m_irq_attach(irqno, handler, arg)
+#define irq_activate(irqno, state)      armv7m_irq_activate(irqno, state)
 
 #endif

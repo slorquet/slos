@@ -3,11 +3,10 @@
 
 #include "armv7m.h"
 #include "armv7m_nvic.h"
-#include "irq.h"
 #include "bits/irq.h"
 
-static armv7m_irqhandler_t corehandlers[14];              /* Vectors 2..15 */
-static armv7m_irqhandler_t chiphandlers[ARCH_CHIP_NIRQS]; /* Vectors 16..N */
+static armv7m_irqhandler_f corehandlers[14];              /* Vectors 2..15 */
+static armv7m_irqhandler_f chiphandlers[ARCH_CHIP_NIRQS]; /* Vectors 16..N */
 static void*               chipargs    [ARCH_CHIP_NIRQS]; /* Args for vectors 16..N */
 
 /*----------------------------------------------------------------------------*/
@@ -29,10 +28,31 @@ void armv7m_irq_init(void)
     }
 
   /* Set all priorities to zero */
+  asm volatile(
+    "\tmov r0, #0\n"
+    "\tmsr basepri, r0\n"
+  );
 }
 
 /*----------------------------------------------------------------------------*/
-void armv7m_irq_attach(uint32_t irqno, armv7m_irqhandler_t handler, void *arg)
+void armv7m_irq_enable(void)
+{
+  uint32_t bp=0;
+  asm volatile(
+    "cpsie i"
+  );
+}
+
+/*----------------------------------------------------------------------------*/
+void armv7m_irq_disable(void)
+{
+  asm volatile(
+    "cpsid i"
+  );
+}
+
+/*----------------------------------------------------------------------------*/
+void armv7m_irq_attach(uint32_t irqno, armv7m_irqhandler_f handler, void *arg)
 {
   if (irqno < 2)
     {

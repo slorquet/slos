@@ -1,7 +1,7 @@
-#ifndef __ARCH__ARMV6M__STM32F1__BITS__IRQ__H__
-#define __ARCH__ARMV6M__STM32F1__BITS__IRQ__H__
+#ifndef __ARCH__ARMV7M__STM32F1__BITS__IRQ__H__
+#define __ARCH__ARMV7M__STM32F1__BITS__IRQ__H__
 
-#include "config.h"
+#include <config.h>
 #if defined( CONFIG_STM32F1_LINE_CONNECTIVITY )
 #include "bits/irq_connectivity.h"
 #elif defined( CONFIG_STM32F1_LINE_XLDENSITY )
