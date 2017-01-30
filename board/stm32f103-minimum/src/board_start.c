@@ -1,5 +1,7 @@
 #include <stdint.h>
 
+#include "irq.h"
+
 #include "stm32f1_rcc.h"
 #include "stm32f1_gpio.h"
 #include "stm32f1_uart.h"
@@ -37,6 +39,8 @@ void board_start(void)
 
   succ = stm32f1_rtc_init(32767);
   kprintf("RTC init %s\n",succ?"OK":"Fail");
+
+  armv7m_irq_enable();
 
   /* Loop blinking led */
 

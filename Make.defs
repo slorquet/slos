@@ -20,7 +20,7 @@ DEPFLAGS = -MT $@ -MD -MP -MF $(DEPDIR)/$*.Td
 %.o:%.c
 %.o:%.c $(DEPDIR)/%.d
 	@#@echo compiling $<
-	$(CC) $(DEPFLAGS) -c $(CFLAGS) -Og -o $@ $<
+	$(CC) $(DEPFLAGS) -c $(CFLAGS) -o $@ $<
 	@mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d
 
 $(DEPDIR)/%.d: ;

@@ -1,8 +1,11 @@
 #include <config.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 #include "armv7m.h"
+#include "bits/irq.h"
+#include "irq.h"
 #include "bits/stm32f1_periphs.h"
 #include "bits/stm32f1_rcc.h"
 #include "bits/stm32f1_rtc.h"
@@ -35,11 +38,33 @@
  */
 
 /*----------------------------------------------------------------------------*/
+static bool stm32f1_rtc_syncwrite()
+{
+  uint32_t val;
+  int tries = 1000;
+
+  /* Wait for RTOFF to be set */
+  while(tries > 0)
+    {
+      val = getreg32(STM32F1_REGBASE_RTC + STM32F1_RTC_CRL);
+      if (val & RTC_CRL_RTOFF) break;
+      tries -= 1;
+    }
+
+  return (tries>0);
+}
+
+/*----------------------------------------------------------------------------*/
+void stm32f1_rtc_irq(int irqno, void *arg)
+{
+  kprintf("rtc irq %d\n",irqno);
+}
+
+/*----------------------------------------------------------------------------*/
 /* Enable the RTC. Clock source is supposed enabled */
 bool stm32f1_rtc_init(uint32_t prescaler)
 {
   uint32_t val;
-  int tries = 1000;
 
   /* Enable BKP and PWR for RTC access */
 
@@ -57,18 +82,19 @@ bool stm32f1_rtc_init(uint32_t prescaler)
   val |= RTC_CRL_CNF;
   putreg32(STM32F1_REGBASE_RTC + STM32F1_RTC_CRL, val);
 
-  /* Wait for RTOFF to be set */
-  while(tries > 0)
-    {
-      val = getreg32(STM32F1_REGBASE_RTC + STM32F1_RTC_CRL);
-      if (val & RTC_CRL_RTOFF) goto done;
-      tries -= 1;
-    }
+  if (!stm32f1_rtc_syncwrite()) return false;
 
-  /* Timeout */
-  return false;
+  armv7m_irq_attach(STM32F1_IRQ_RTC      , stm32f1_rtc_irq, NULL);
+  //armv7m_irq_attach(STM32F1_IRQ_RTC_ALARM, stm32f1_rtc_irq, NULL);
+  armv7m_irq_activate(STM32F1_IRQ_RTC, true);
 
-done:
+  val = getreg32(STM32F1_REGBASE_RTC + STM32F1_RTC_CRH);
+  val |= RTC_CRH_SECIE;
+  putreg32(STM32F1_REGBASE_RTC + STM32F1_RTC_CRH, val);
+
+
+  if (!stm32f1_rtc_syncwrite()) return false;
+
   /* Define the prescaler */
 
   putreg32(STM32F1_REGBASE_RTC + STM32F1_RTC_PRLH, prescaler >> 16   );

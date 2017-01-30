@@ -32,7 +32,7 @@ void armv7m_irq_init(void)
 }
 
 /*----------------------------------------------------------------------------*/
-void armv7m_irq_attach(uint8_t irqno, armv7m_irqhandler_t handler, void *arg)
+void armv7m_irq_attach(uint32_t irqno, armv7m_irqhandler_t handler, void *arg)
 {
   if (irqno < 2)
     {
@@ -51,15 +51,35 @@ void armv7m_irq_attach(uint8_t irqno, armv7m_irqhandler_t handler, void *arg)
 }
 
 /*----------------------------------------------------------------------------*/
-void armv7m_irq_activate(uint8_t irqno, bool state)
+void armv7m_irq_activate(uint32_t irqno, bool state)
 {
+  uint32_t regmask;
+
   if (irqno < 2)
     {
       return;
     }
 
-  /* All core interrupts are managed in the first set of NVIC regs */
+  /* Compute enable/disable bit in reg. There are 32 irq per reg */
+  regmask = irqno & 0x1F;
 
+  /* Turn into a mask */
+  regmask = 1<<regmask;
+
+  /* Select the proper register */
+  irqno >>= 5;
+
+  if (state)
+    {
+      irqno += ARMV7M_NVIC_REGBASE_ISER;
+    }
+  else
+    {
+      irqno += ARMV7M_NVIC_REGBASE_ICER;
+    }
+
+  putreg32(irqno, regmask);
+ 
 }
 
 /*----------------------------------------------------------------------------*/
@@ -88,7 +108,7 @@ void armv7m_irq(void)
 /* Called at SoC interrupt */
 void chip_irq(void)
 {
-  int irqno;
+  uint32_t irqno;
 
   /* Get the number of the active interrupt in IPSR */
   irqno = armv7m_getipsr();

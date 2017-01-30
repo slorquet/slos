@@ -22,8 +22,8 @@ uint32_t _vectors[] __attribute__((section(".armvectors"))) = {
     /*Entries 0..15 are common for all ARMv7-M*/
     (uint32_t)&_stack_end, /*initial value for SP, defined in linkerscript*/
     (uint32_t)&arch_start, /*initial PC*/
-    [ 2 ... 15] = (uint32_t)armv7m_irq,
-    [16 ... 16 + ARCH_CHIP_NIRQS] = (uint32_t)chip_irq,
+    [ 2 ... 15]              = (uint32_t)armv7m_irq,
+    [16 ... ARCH_CHIP_NIRQS] = (uint32_t)chip_irq,
 };
 
 void board_start(void);
