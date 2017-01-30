@@ -55,7 +55,7 @@ static bool stm32f1_rtc_syncwrite()
 }
 
 /*----------------------------------------------------------------------------*/
-void stm32f1_rtc_irq(uint32_t irqno, void *arg)
+void stm32f1_rtc_irq(uint32_t irqno, void **ctx, void *arg)
 {
   kprintf("rtc irq %d\n",irqno);
 }

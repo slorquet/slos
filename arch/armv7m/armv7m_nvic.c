@@ -53,8 +53,10 @@ void armv7m_irq_attach(uint32_t irqno, armv7m_irqhandler_f handler, void *arg)
       return;
     }
 
-  handlers[irqno-2] = handler;
-  args    [irqno-2] = arg;
+  irqno -= 2;
+
+  handlers[irqno] = handler;
+  args    [irqno] = arg;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -98,10 +100,10 @@ void* armv7m_irq(void *sp, uint32_t irqno)
   irqno -= 2;
 
   /* Check that a handler is attached */
-  if(handlers[irqno]==0)
+  if(handlers[irqno]!=0)
     {
       /* Call the handler */
-      handlers[irqno](irqno, &sp, args[irqno]);
+      handlers[irqno](irqno+2, &sp, args[irqno]);
     }
 
   return sp;
