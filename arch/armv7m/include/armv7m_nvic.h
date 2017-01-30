@@ -31,7 +31,14 @@ void armv7m_irq_enable(void);
 
 void armv7m_irq_disable(void);
 
-typedef void (*armv7m_irqhandler_f)(uint32_t irqno, void *arg);
+/* Exception handler has 3 parameters:
+ * - the number of the exception being processed
+ * - a pointer to a void *sp pointer, that can be :
+ *    - casted to struct armv7m_excontext_t to get values of saved registers
+ *    - changed to support context switching
+ * - an argument word that was saved during irq attach
+ */
+typedef void (*armv7m_irqhandler_f)(uint32_t irqno, void **context, void *arg);
 
 void armv7m_irq_init(void);
 void armv7m_irq_attach(uint32_t irqno, armv7m_irqhandler_f handler, void *arg);
