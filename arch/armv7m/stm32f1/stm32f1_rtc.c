@@ -4,8 +4,6 @@
 #include <stddef.h>
 
 #include "armv7m.h"
-#include "bits/irq.h"
-#include "irq.h"
 #include "bits/stm32f1_periphs.h"
 #include "bits/stm32f1_rcc.h"
 #include "bits/stm32f1_rtc.h"
@@ -55,12 +53,6 @@ static bool stm32f1_rtc_syncwrite()
 }
 
 /*----------------------------------------------------------------------------*/
-void stm32f1_rtc_irq(uint32_t irqno, void **ctx, void *arg)
-{
-  kprintf("rtc irq %d\n",irqno);
-}
-
-/*----------------------------------------------------------------------------*/
 /* Enable the RTC. Clock source is supposed enabled */
 bool stm32f1_rtc_init(uint32_t prescaler)
 {
@@ -81,17 +73,6 @@ bool stm32f1_rtc_init(uint32_t prescaler)
   val = getreg32(STM32F1_REGBASE_RTC + STM32F1_RTC_CRL);
   val |= RTC_CRL_CNF;
   putreg32(STM32F1_REGBASE_RTC + STM32F1_RTC_CRL, val);
-
-  if (!stm32f1_rtc_syncwrite()) return false;
-
-  armv7m_irq_attach(STM32F1_IRQ_RTC      , stm32f1_rtc_irq, NULL);
-  //armv7m_irq_attach(STM32F1_IRQ_RTC_ALARM, stm32f1_rtc_irq, NULL);
-  armv7m_irq_activate(STM32F1_IRQ_RTC, true);
-
-  val = getreg32(STM32F1_REGBASE_RTC + STM32F1_RTC_CRH);
-  val |= RTC_CRH_SECIE;
-  putreg32(STM32F1_REGBASE_RTC + STM32F1_RTC_CRH, val);
-
 
   if (!stm32f1_rtc_syncwrite()) return false;
 
