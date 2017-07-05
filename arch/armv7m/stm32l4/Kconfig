@@ -357,22 +357,22 @@ config STM32L4_SPI3
 	depends on HAVE_SPI3
 
 config STM32L4_USART2
-	bool "USART2 (unsupported)"
+	bool "USART2"
 	default n
 	depends on HAVE_USART2
 
 config STM32L4_USART3
-	bool "USART3 (unsupported)"
+	bool "USART3"
 	default n
 	depends on HAVE_USART3
 
 config STM32L4_UART4
-	bool "UART4 (unsupported)"
+	bool "UART4"
 	default n
 	depends on HAVE_UART4
 
 config STM32L4_UART5
-	bool "UART5 (unsupported)"
+	bool "UART5"
 	default n
 	depends on HAVE_UART5
 
@@ -475,7 +475,7 @@ config STM32L4_TIM8
 	depends on HAVE_TIM8
 
 config STM32L4_USART1
-	bool "USART1 (unsupported)"
+	bool "USART1"
 	default n
 	depends on HAVE_USART1
 
@@ -608,5 +608,77 @@ config STM32L4_RNG
 	depends on HAVE_RNG
 
 endmenu
+
+menu "UART config"
+
+choice
+  prompt "UART to use as kernel console"
+
+config STM32L4_USART1_KCONSOLE
+  bool "USART1"
+  depends on STM32L4_USART1 || STM32L4_USART2 || STM32L4_USART3 || STM32_UART4 || STM32L4_UART5
+
+endchoice
+
+if STM32L4_USART1
+
+comment "--- USART1 ---"
+
+choice
+  prompt "USART TX pin"
+
+config STM32L4_USART1_TX_0
+  bool "None"
+
+config STM32L4_USART1_TX_1
+  bool "PA9"
+
+config STM32L4_USART1_TX_2
+  bool "PB6"
+
+endchoice
+
+choice
+  prompt "USART TX pin"
+
+config STM32L4_USART1_RX_0
+  bool "None"
+
+config STM32L4_USART1_RX_1
+  bool "PA10"
+
+config STM32L4_USART1_RX_2
+  bool "PB7"
+
+endchoice
+
+config STM32L4_USART1_BAUDRATE
+  int "USART1 default baud rate"
+  default 115200
+
+choice
+  prompt "USART1 default parity"
+
+config STM32L4_USART1_PARITY_NONE
+  bool "None"
+
+config STM32L4_USART1_PARITY_ODD
+  bool "Odd"
+
+config STM32L4_USART1_PARITY_EVEN
+  bool "Even"
+
+endchoice
+
+config STM32L4_USART1_STOPBITS
+  int "USART1 default stop bits"
+  default 1
+
+endif
+
+endmenu #uart config
+
+config STM32L4_CLOCKHOOK_MAX
+  int "Maximum number of clock change hooks"
 
 endif
