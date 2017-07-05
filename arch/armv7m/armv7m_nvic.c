@@ -31,7 +31,6 @@ void armv7m_irq_init(void)
 /*----------------------------------------------------------------------------*/
 void armv7m_irq_enable(void)
 {
-  uint32_t bp=0;
   asm volatile(
     "cpsie i"
   );
