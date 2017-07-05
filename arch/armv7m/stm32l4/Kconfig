@@ -5,51 +5,291 @@ if ARCH_CHIP_FAMILY_STM32L4
 
 config HAVE_GPIOA
 	bool
-	default y
+	default n
 
 config HAVE_GPIOB
 	bool
-	default y
+	default n
 
 config HAVE_GPIOC
 	bool
-	default y
+	default n
 
 config HAVE_GPIOD
 	bool
-	default y
+	default n
 
 config HAVE_GPIOE
 	bool
-	default y
+	default n
 
 config HAVE_GPIOF
 	bool
-	default y
+	default n
 
 config HAVE_GPIOG
 	bool
-	default y
+	default n
 
 config HAVE_GPIOH
 	bool
-	default y
+	default n
+
+config HAVE_USART1
+	bool
+	default n
+
+config HAVE_USART2
+	bool
+	default n
+
+config HAVE_LPUART1
+	bool
+	default n
+
+
+config HAVE_TIM1
+	bool
+	default n
+
+config HAVE_TIM2
+	bool
+	default n
+
+config HAVE_TIM6
+	bool
+	default n
+
+config HAVE_TIM7
+	bool
+	default n
+
+config HAVE_TIM15
+	bool
+	default n
+
+config HAVE_TIM16
+	bool
+	default n
+
+config HAVE_LPTIM1
+	bool
+	default n
+
+config HAVE_LPTIM2
+	bool
+	default n
+
+
+config HAVE_DMA1
+	bool
+	default n
+
+config HAVE_DMA2
+	bool
+	default n
+
+
+config HAVE_SPI1
+	bool
+	default n
+
+config HAVE_SPI3
+	bool
+	default n
+
+
+config HAVE_I2C1
+	bool
+	default n
+
+config HAVE_I2C3
+	bool
+	default n
+
+
+config HAVE_CAN1
+	bool
+	default n
+
+
+config HAVE_RNG
+	bool
+	default n
+
+config HAVE_ADC
+	bool
+	default n
+
+config HAVE_TSC
+	bool
+	default n
+
+config HAVE_CRC
+	bool
+	default n
+
+config HAVE_SAI1
+	bool
+	default n
+
+config HAVE_SWPMI1
+	bool
+	default n
+
+config HAVE_COMP
+	bool
+	default n
+
+config HAVE_OPAMP
+	bool
+	default n
+
+config HAVE_DAC
+	bool
+	default n
+
+config HAVE_USBFS
+	bool
+	default n
+
+config HAVE_OTGFS
+	bool
+	default n
+
+config HAVE_CRS
+	bool
+	default n
+
+config HAVE_IWDG
+	bool
+	default n
+
+config HAVE_WWDG
+	bool
+	default n
+
+config HAVE_RTC
+	bool
+	default n
+
 
 config HAVE_AES
 	bool
 	default n
 
-#this allows to choose a particular model
+#a model family groups peripherals available to more than one chip
 
+config ARCH_CHIPFAMILY_STM32L4X6
+	bool
+	select HAVE_RNG
+	select HAVE_ADC
+	select HAVE_OTGFS
+	select HAVE_GPIOH
+	select HAVE_GPIOG
+	select HAVE_GPIOF
+	select HAVE_GPIOE
+	select HAVE_GPIOD
+	select HAVE_GPIOC
+	select HAVE_GPIOB
+	select HAVE_GPIOA
+	select HAVE_TSC
+	select HAVE_CRC
+	select HAVE_DMA2
+	select HAVE_DMA1
+	select HAVE_DFSDM
+	select HAVE_SAI2
+	select HAVE_SAI1
+	select HAVE_TIM17
+	select HAVE_TIM16
+	select HAVE_TIM15
+	select HAVE_USART1
+	select HAVE_TIM8
+	select HAVE_SPI1
+	select HAVE_TIM1
+	select HAVE_SDMMC1
+	select HAVE_COMP
+	select HAVE_VREFBUF
+	select HAVE_LPTIM2
+	select HAVE_SWPMI1
+	select HAVE_LPUART1
+	select HAVE_LPTIM1
+	select HAVE_OPAMP
+	select HAVE_DAC
+	select HAVE_CAN1
+	select HAVE_I2C3
+	select HAVE_I2C2
+	select HAVE_I2C1
+	select HAVE_UART5
+	select HAVE_UART4
+	select HAVE_USART3
+	select HAVE_USART2
+	select HAVE_SPI3
+	select HAVE_SPI2
+	select HAVE_IWDG
+	select HAVE_WWDG
+	select HAVE_RTC
+	select HAVE_LCD
+	select HAVE_TIM7
+	select HAVE_TIM6
+	select HAVE_TIM5
+	select HAVE_TIM4
+	select HAVE_TIM3
+	select HAVE_TIM2
+
+#this allows to choose a particular model
 choice
 	prompt "L4 model"
 
-config ARCH_CHIP_STM32L476RG
-	bool "STM32L476RG"
+config ARCH_CHIP_STM32L432KC
+	bool "STM32L432KC (UFQFPN32, 5x5)"
+	#always present FLASH PWR RCC FIREWALL SYSCFG EXTI
+	select HAVE_RNG
+	select HAVE_ADC
+	select HAVE_GPIOH
+	select HAVE_GPIOC
+	select HAVE_GPIOB
+	select HAVE_GPIOA
+	select HAVE_TSC
+	select HAVE_CRC
+	select HAVE_DMA2
+	select HAVE_DMA1
+	select HAVE_SAI1
+	select HAVE_TIM16
+	select HAVE_TIM15
+	select HAVE_USART1
+	select HAVE_SPI1
+	select HAVE_TIM1
+	select HAVE_COMP
+	select HAVE_LPTIM2
+	select HAVE_SWPMI1
+	select HAVE_LPUART1
+	select HAVE_LPTIM1
+	select HAVE_OPAMP
+	select HAVE_DAC
+	select HAVE_USBFS
+	select HAVE_CAN1
+	select HAVE_CRS
+	select HAVE_I2C3
+	select HAVE_I2C1
+	select HAVE_USART2
+	select HAVE_SPI3
+	select HAVE_IWDG
+	select HAVE_WWDG
+	select HAVE_RTC
+	select HAVE_TIM7
+	select HAVE_TIM6
+	select HAVE_TIM2
 
 config ARCH_CHIP_STM32L476RG
-	bool "STM32L476RG"
+	bool "STM32L476RG (TQFP64)"
+	select ARCH_CHIPFAMILY_STM32L4X6
+
+config ARCH_CHIP_STM32L486RG
+	bool "STM32L486RG (TQFP64)"
+	select ARCH_CHIPFAMILY_STM32L4X6
 	select HAVE_AES
+
 endchoice
 
 menu "Peripheral enable"
@@ -59,82 +299,102 @@ comment "--- APB1 ---"
 config STM32L4_TIM2
 	bool "TIM2 (unsupported)"
 	default n
+	depends on HAVE_TIM2
 
 config STM32L4_TIM3
 	bool "TIM3 (unsupported)"
 	default n
+	depends on HAVE_TIM3
 
 config STM32L4_TIM4
 	bool "TIM4 (unsupported)"
 	default n
+	depends on HAVE_TIM4
 	
 config STM32L4_TIM5
 	bool "TIM5 (unsupported)"
 	default n
+	depends on HAVE_TIM5
 	
 config STM32L4_TIM6
 	bool "TIM6 (unsupported)"
 	default n
+	depends on HAVE_TIM6
 	
 config STM32L4_TIM7
 	bool "TIM7 (unsupported)"
 	default n
+	depends on HAVE_TIM7
 
 config STM32L4_LCD
 	bool "LCD (unsupported)"
 	default n
+	depends on HAVE_LCD
 
 config STM32L4_RTC
 	bool "RTC (unsupported)"
 	default n
+	depends on HAVE_RTC
 
 config STM32L4_WWDG
 	bool "WWDG (unsupported)"
 	default n
+	depends on HAVE_WWDG
 
 config STM32L4_IWDG
 	bool "IWDG (unsupported)"
 	default n
+	depends on HAVE_IWDG
 
 config STM32L4_SPI2
 	bool "SPI2 (unsupported)"
 	default n
+	depends on HAVE_SPI2
 
 config STM32L4_SPI3
 	bool "SPI3 (unsupported)"
 	default n
+	depends on HAVE_SPI3
 
 config STM32L4_USART2
 	bool "USART2 (unsupported)"
 	default n
+	depends on HAVE_USART2
 
 config STM32L4_USART3
 	bool "USART3 (unsupported)"
 	default n
+	depends on HAVE_USART3
 
 config STM32L4_UART4
 	bool "UART4 (unsupported)"
 	default n
+	depends on HAVE_UART4
 
 config STM32L4_UART5
 	bool "UART5 (unsupported)"
 	default n
+	depends on HAVE_UART5
 
 config STM32L4_I2C1
 	bool "I2C1 (unsupported)"
 	default n
+	depends on HAVE_I2C1
 
 config STM32L4_I2C2
 	bool "I2C2 (unsupported)"
 	default n
+	depends on HAVE_I2C2
 
 config STM32L4_I2C3
 	bool "I2C3 (unsupported)"
 	default n
+	depends on HAVE_I2C3
 
 config STM32L4_CAN1
 	bool "CAN1 (unsupported)"
 	default n
+	depends on HAVE_CAN1
 
 config STM32L4_PWR
 	bool "PWR"
@@ -143,26 +403,32 @@ config STM32L4_PWR
 config STM32L4_DAC1
 	bool "DAC1 (unsupported)"
 	default n
+	depends on HAVE_DAC1
 
 config STM32L4_OPAMP
 	bool "OPAMP (unsupported)"
 	default n
+	depends on HAVE_OPAMP
 
 config STM32L4_LPTIM1
 	bool "LPTIM1 (unsupported)"
 	default n
+	depends on HAVE_LPTIM1
 
 config STM32L4_LPUART1
 	bool "LPUART1 (unsupported)"
 	default n
+	depends on HAVE_LPUART1
 
 config STM32L4_SWPMI1
 	bool "SWPMI1 (unsupported)"
 	default n
+	depends on HAVE_SWPMI
 
 config STM32L4_LPTIM2
 	bool "LPTIM2 (unsupported)"
 	default n
+	depends on HAVE_LPTIM2
 
 comment "--- APB2 ---"
 
@@ -173,10 +439,12 @@ config STM32L4_SYSCFG
 config STM32L4_VREFBUF
 	bool "VREFBUF (unsupported)"
 	default n
+	depends on HAVE_VREFBUF
 
 config STM32L4_COMP
 	bool "COMP (unsupported)"
 	default n
+	depends on HAVE_COMP
 
 config STM32L4_EXTI
 	bool "EXTI (unsupported)"
@@ -189,56 +457,69 @@ config STM32L4_FIREWALL
 config STM32L4_SDMMC1
 	bool "SDMMC1 (unsupported)"
 	default n
+	depends on HAVE_SDMMC1
 
 config STM32L4_TIM1
 	bool "TIM1 (unsupported)"
 	default n
+	depends on HAVE_TIM1
 
 config STM32L4_SPI1
 	bool "SPI1 (unsupported)"
 	default n
+	depends on HAVE_SPI1
 
 config STM32L4_TIM8
 	bool "TIM8 (unsupported)"
 	default n
+	depends on HAVE_TIM8
 
 config STM32L4_USART1
 	bool "USART1 (unsupported)"
 	default n
+	depends on HAVE_USART1
 
 config STM32L4_TIM15
 	bool "TIM15 (unsupported)"
 	default n
+	depends on HAVE_TIM15
 
 config STM32L4_TIM16
 	bool "TIM16 (unsupported)"
 	default n
+	depends on HAVE_TIM16
 
 config STM32L4_TIM17
 	bool "TIM17 (unsupported)"
 	default n
+	depends on HAVE_TIM17
 
 config STM32L4_SAI1
 	bool "SAI1 (unsupported)"
 	default n
+	depends on HAVE_SAI1
 
 config STM32L4_SAI2
 	bool "SAI2 (unsupported)"
 	default n
+	depends on HAVE_SAI2
 
 config STM32L4_DFSDM1
 	bool "DFSDM1 (unsupported)"
 	default n
+	depends on HAVE_DFSDM1
 
 comment "--- AHB1 ---"
 
 config STM32L4_DMA1
 	bool "DMA1 (unsupported)"
 	default n
+	depends on HAVE_DMA1
 
 config STM32L4_DMA2
 	bool "DMA2 (unsupported)"
 	default n
+	depends on HAVE_DMA2
 
 config STM32L4_RCC
 	bool "RCC"
@@ -251,10 +532,12 @@ config STM32L4_FLASH
 config STM32L4_CRC
 	bool "CRC (unsupported)"
 	default n
+	depends on HAVE_CRC
 
 config STM32L4_TSC
 	bool "TSC (unsupported)"
 	default n
+	depends on HAVE_TSC
 
 
 comment "--- AHB2 ---"
@@ -299,21 +582,30 @@ config STM32L4_GPIOH
 	default n
 	depends on HAVE_GPIOH
 
+config STM32L4_USBFS
+	bool "OTGFS (unsupported)"
+	default n
+	depends on HAVE_USBFS
+
 config STM32L4_OTGFS
 	bool "OTGFS (unsupported)"
 	default n
+	depends on HAVE_OTGFS
 
 config STM32L4_ADC
 	bool "ADC (unsupported)"
 	default n
+	depends on HAVE_ADC
 
 config STM32L4_AES
 	bool "AES (unsupported)"
 	default n
+	depends on HAVE_AES
 
 config STM32L4_RNG
 	bool "RNG (unsupported)"
 	default n
+	depends on HAVE_RNG
 
 endmenu
 
