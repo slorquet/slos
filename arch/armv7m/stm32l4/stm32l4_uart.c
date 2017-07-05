@@ -9,14 +9,32 @@
 #include <slos/stdio.h>
 
 #include "armv7m.h"
-#include "bits/stm32f1_periphs.h"
+#include "bits/stm32l4_periphs.h"
 #include "bits/stm32l4_rcc.h"
-#include "bits/stm32f1_gpio.h"
+#include "bits/stm32l4_gpio.h"
 #include "bits/stm32l4_uart.h"
 #include "bits/irq.h"
 #include "stm32l4_gpio.h"
 #include "stm32l4_rcc.h"
 #include "stm32l4_uart.h"
+
+/*==============================================================================
+ * Definitions
+ *==============================================================================
+ */
+
+#define DRIVEMODE_BASIC 0 /* No interrupt at all, for early boot logs. */
+#define DRIVEMODE_IRQ   1 /* IRQ driven tx/rx, still requires CPU for each char, usable when DMA not available. */
+#define DRIVEMODE_DMA   2 /* Preprogrammed DMA, does not require CPU for each char. */
+
+#define STOPBITS_0_5     0
+#define STOPBITS_1      1
+#define STOPBITS_2      2
+#define STOPBITS_1_5    3
+
+#define PARITY_NONE     0
+#define PARITY_ODD      1
+#define PARITY_EVEN     2
 
 /*==============================================================================
  * Types
@@ -74,7 +92,7 @@ static const struct uart_ops_s g_stm32l4_uartops =
 };
 
 #ifdef CONFIG_STM32L4_USART1
-static const struct stm32f1_uartparams_s g_stm32f1_usart1params =
+static const struct stm32l4_uartparams_s g_stm32l4_usart1params =
 {
   .regbase    = STM32L4_REGBASE_USART1,
   .rccreg     = STM32L4_RCC_APB2ENR,
@@ -86,8 +104,24 @@ static const struct stm32f1_uartparams_s g_stm32f1_usart1params =
 #else
   .is_kconsole = 0,
 #endif
-  .txpin      = GPIO_PORT_B | GPIO_PIN_6 | GPIO_MODE_ALT | GPIO_SPEED_MED | GPIO_TYPE_PP,
-  .rxpin      = GPIO_PORT_B | GPIO_PIN_7 | GPIO_MODE_IN  | GPIO_SPEED_MED | GPIO_PULL_UP,
+#if defined( CONFIG_STM32L4_USART1_TX_0)
+  .txpin      = 0,
+#elif defined( CONFIG_STM32L4_USART1_TX_1)
+  .txpin      = GPIO_PORT_A | GPIO_PIN_9 | GPIO_MODE_ALT | GPIO_ALT_7,
+#elif defined( CONFIG_STM32L4_USART1_TX_2)
+  .txpin      = GPIO_PORT_B | GPIO_PIN_6 | GPIO_MODE_ALT | GPIO_ALT_7,
+#else
+#error invalid usart1 tx config
+#endif
+#if defined( CONFIG_STM32L4_USART1_RX_0)
+  .rxpin      = 0,
+#elif defined( CONFIG_STM32L4_USART1_RX_1)
+  .rxpin      = GPIO_PORT_A | GPIO_PIN_10 | GPIO_MODE_ALT | GPIO_ALT_7,
+#elif defined( CONFIG_STM32L4_USART1_RX_2)
+  .rxpin      = GPIO_PORT_B | GPIO_PIN_7 | GPIO_MODE_ALT | GPIO_ALT_7,
+#else
+#error invalid usart1 rx config
+#endif
 };
 
 static struct stm32f1_uart_s g_stm32f1_usart1 =
