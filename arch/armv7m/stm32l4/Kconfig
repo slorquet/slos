@@ -237,12 +237,8 @@ config ARCH_CHIPFAMILY_STM32L4X6
 	select HAVE_TIM3
 	select HAVE_TIM2
 
-#this allows to choose a particular model
-choice
-	prompt "L4 model"
-
-config ARCH_CHIP_STM32L432KC
-	bool "STM32L432KC (UFQFPN32, 5x5)"
+config ARCH_CHIPFAMILY_STM32L4X3
+  bool
 	#always present FLASH PWR RCC FIREWALL SYSCFG EXTI
 	select HAVE_RNG
 	select HAVE_ADC
@@ -280,6 +276,14 @@ config ARCH_CHIP_STM32L432KC
 	select HAVE_TIM7
 	select HAVE_TIM6
 	select HAVE_TIM2
+
+#this allows to choose a particular model
+choice
+	prompt "L4 model"
+
+config ARCH_CHIP_STM32L432KC
+	bool "STM32L432KC (UFQFPN32, 5x5)"
+  select ARCH_CHIPFAMILY_STM32L4X3
 
 config ARCH_CHIP_STM32L476RG
 	bool "STM32L476RG (TQFP64)"
