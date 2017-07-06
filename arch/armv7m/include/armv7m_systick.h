@@ -15,5 +15,7 @@
 #define SYSTICK_CSR_CLKSOURCE (1<< 2) /* Clock Source */
 #define SYSTICK_CSR_COUNTFLAG (1<<16) /* Underflow Happened */
 
+void armv7m_systick_init(void);
+
 #endif /* __ARMV7M__SYSTICK__H__ */
 
