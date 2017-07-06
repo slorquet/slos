@@ -620,7 +620,12 @@ choice
 
 config STM32L4_USART1_KCONSOLE
   bool "USART1"
-  depends on STM32L4_USART1 || STM32L4_USART2 || STM32L4_USART3 || STM32_UART4 || STM32L4_UART5
+  depends on STM32L4_USART1
+
+config STM32L4_USART2_KCONSOLE
+  bool "USART2"
+  depends on STM32L4_USART2
+  default y
 
 endchoice
 
@@ -629,7 +634,7 @@ if STM32L4_USART1
 comment "--- USART1 ---"
 
 choice
-  prompt "USART TX pin"
+  prompt "USART1 TX pin"
 
 config STM32L4_USART1_TX_0
   bool "None"
@@ -643,7 +648,7 @@ config STM32L4_USART1_TX_2
 endchoice
 
 choice
-  prompt "USART TX pin"
+  prompt "USART1 RX pin"
 
 config STM32L4_USART1_RX_0
   bool "None"
@@ -678,7 +683,63 @@ config STM32L4_USART1_STOPBITS
   int "USART1 default stop bits"
   default 1
 
-endif
+endif #usart1
+
+if STM32L4_USART2
+
+comment "--- USART2 ---"
+
+choice
+  prompt "USART2 TX pin"
+
+config STM32L4_USART2_TX_0
+  bool "None"
+
+config STM32L4_USART2_TX_1
+  bool "PA9"
+
+config STM32L4_USART2_TX_2
+  bool "PB6"
+
+endchoice
+
+choice
+  prompt "USART2 RX pin"
+
+config STM32L4_USART2_RX_0
+  bool "None"
+
+config STM32L4_USART2_RX_1
+  bool "PA10"
+
+config STM32L4_USART2_RX_2
+  bool "PB7"
+
+endchoice
+
+config STM32L4_USART2_BAUDRATE
+  int "USART2 default baud rate"
+  default 115200
+
+choice
+  prompt "USART2 default parity"
+
+config STM32L4_USART2_PARITY_NONE
+  bool "None"
+
+config STM32L4_USART2_PARITY_ODD
+  bool "Odd"
+
+config STM32L4_USART2_PARITY_EVEN
+  bool "Even"
+
+endchoice
+
+config STM32L4_USART2_STOPBITS
+  int "USART1 default stop bits"
+  default 1
+
+endif #usart2
 
 endmenu #uart config
 
