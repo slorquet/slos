@@ -1,5 +1,6 @@
+#include <config.h>
+
 #include "stm32l4_rcc.h"
-#include "stm32l4_gpio.h"
 #include "stm32l4_uart.h"
 
 void chip_start(void)
