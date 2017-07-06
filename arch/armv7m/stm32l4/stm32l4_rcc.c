@@ -82,7 +82,8 @@ static void stm32l4_clock_recompute(void)
 /*----------------------------------------------------------------------------*/
 void stm32l4_clock_setup(void)
 {
-  /*RM???? rev16 ?.?.? page ??: Default to HSI */
+  /*RM0394 rev3 6.2 page 173: Default to MSI 4 MHz */
+  /*RM0351 rev4 6.2 page 182: Default to MSI 4 MHz */
   g_stm32l4_clocks.sysclk = 4000000;
 
   stm32l4_clock_recompute();
@@ -99,18 +100,24 @@ struct stm32l4_clocks_s * stm32l4_clock_getinfo(void)
 /*----------------------------------------------------------------------------*/
 bool stm32l4_ahbprescaler(uint32_t prescaler)
 {
+  stm32l4_clock_recompute();
+  stm32l4_clock_notifychange();
   return false;
 }
 
 /*----------------------------------------------------------------------------*/
 bool stm32l4_apb1prescaler(uint32_t prescaler)
 {
+  stm32l4_clock_recompute();
+  stm32l4_clock_notifychange();
   return false;
 }
 
 /*----------------------------------------------------------------------------*/
 bool stm32l4_apb2prescaler(uint32_t prescaler)
 {
+  stm32l4_clock_recompute();
+  stm32l4_clock_notifychange();
   return false;
 }
 
@@ -194,7 +201,21 @@ bool stm32l4_clock_adc(int adcclocksource)
 /*----------------------------------------------------------------------------*/
 bool stm32l4_clock_registerhook(stm32l4_clockhook_f hook)
 {
+  if(g_stm32l4_clockhookcount < CONFIG_STM32L4_CLOCKHOOK_MAX)
+    {
+    g_stm32l4_clockhooks[g_stm32l4_clockhookcount++] = hook;
+    return true;
+    }
   return false;
 }
 
+/*----------------------------------------------------------------------------*/
+static void stm32l4_clock_notifychange(void)
+{
+  int i;
+  for(i = 0; i < g_stm32l4_clockhookcount; i++)
+  {
+    g_stm32l4_clockhooks[i]();
+  }
+}
 
