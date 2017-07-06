@@ -2,10 +2,10 @@ a tentative to create a small and fast rtos with a posix api for apps.
 
 DONE
 
- * stm32f1minimal: UART console is working
+ * stm32f1minimal: UART console is working, also systick and led blink
+ * nucleo-l432kc: UART console is working, also systick and led blink
  * libc: Basic printf and ltoa
  * stm32f1minimal: RTC counter
- * nucleo-l432kc: GPIOs OK
 
 TODOLIST
 
