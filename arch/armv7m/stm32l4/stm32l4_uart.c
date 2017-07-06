@@ -27,7 +27,7 @@
 #define DRIVEMODE_IRQ   1 /* IRQ driven tx/rx, still requires CPU for each char, usable when DMA not available. */
 #define DRIVEMODE_DMA   2 /* Preprogrammed DMA, does not require CPU for each char. */
 
-#define STOPBITS_0_5     0
+#define STOPBITS_0_5    0
 #define STOPBITS_1      1
 #define STOPBITS_2      2
 #define STOPBITS_1_5    3
@@ -89,6 +89,15 @@ static const struct uart_ops_s g_stm32l4_uartops =
   .avail = stm32l4_uart_avail,
   .read  = stm32l4_uart_read,
   .ioctl = stm32l4_uart_ioctl,
+};
+
+static struct stm32l4_uart_s *g_stm32l4_kconsole;
+
+/* Stream structure used by the kprintf function in libc */
+const struct printf_stream_s konsole =
+{
+  .putchar = kputc,
+  .puts    = kputs
 };
 
 #ifdef CONFIG_STM32L4_USART1
@@ -164,11 +173,11 @@ static struct stm32l4_uart_s g_stm32l4_usart1 =
 #ifdef CONFIG_STM32L4_USART2
 static const struct stm32l4_uartparams_s g_stm32l4_usart2params =
 {
-  .base       = STM32L4_REGBASE_USART1,
+  .base       = STM32L4_REGBASE_USART2,
   .ckenreg    = STM32L4_RCC_APB1ENR1,
   .ckenbit    = RCC_APB1ENR1_USART2EN,
 
-  .irq        = STM32L4_IRQ_USART1,
+  .irq        = STM32L4_IRQ_USART2,
 #ifdef CONFIG_STM32L4_USART2_KCONSOLE
   .is_kconsole = 1,
 #else
@@ -263,15 +272,6 @@ enum
   STM32L4_UARTCOUNT
 };
 
-static struct stm32l4_uart_s *g_stm32l4_kconsole;
-
-/* Stream structure used by the kprintf function in libc */
-const struct printf_stream_s konsole =
-{
-  .putchar = kputc,
-  .puts    = kputs
-};
-
 /*==============================================================================
  * Functions
  *==============================================================================
@@ -336,8 +336,6 @@ static void stm32l4_uart_setbaudrate(struct stm32l4_uart_s *uart)
 /*----------------------------------------------------------------------------*/
 static int stm32l4_uart_init(struct uart_s *uart)
 {
-  uint32_t base;
-  uint32_t reg;
   uint32_t val;
 
   struct stm32l4_uart_s * dev = (struct stm32l4_uart_s*)uart;
@@ -346,26 +344,82 @@ static int stm32l4_uart_init(struct uart_s *uart)
 
   updatereg32(STM32L4_REGBASE_RCC + dev->params->ckenreg, dev->params->ckenbit, 0);
 
+  /* Configure registers for a simple rs232 uart */
+  val = stm32l4_uart_getreg(dev, STM32L4_USART_CR1);
+
   /* Configure GPIOs */
   if (dev->params->rxpin)
     {
       stm32l4_gpio_init(dev->params->rxpin);
+      val |= USART_CR1_RE;
     }
   if (dev->params->txpin)
     {
       stm32l4_gpio_init(dev->params->txpin);
+      val |= USART_CR1_TE;
     }
 
-  /* Configure registers for a simple uart, 8 bits, 1 stop bit, no parity */
 
-  //CR1: OVER8=0, UE=1, M=0, WAKE=0, PCE=0, no parity, no interrupts, RE=1, RWU=0
-  stm32l4_uart_updatereg(dev, STM32L4_USART_CR1, USART_CR1_UE | USART_CR1_RE | USART_CR1_TE, 0xFFFF4000);
+  val &= ~(USART_CR1_M1 | USART_CR1_OVER8 | USART_CR1_MME | USART_CR1_WAKE | USART_CR1_UESM);
+  val &= ~(USART_CR1_EOBIE | USART_CR1_RTOIE | USART_CR1_CMIE | USART_CR1_PEIE | USART_CR1_TXEIE | USART_CR1_TCIE | \
+           USART_CR1_RXNEIE | USART_CR1_IDLEIE);
 
-  //CR2: LINEN=0, STOP=00, CLKEN=0, no cpol, no cpha, no lbcl, no lin
-  stm32l4_uart_updatereg(dev, STM32L4_USART_CR2, 0, 0xFFFF8090);
 
-  //CR3: ONEBIT=0, no interrupts, CTSE=0, RTSE=0, no dma, SCEN=0, NACK=0, HDSEL=0, no irda
-  stm32l4_uart_updatereg(dev, STM32L4_USART_CR3, 0, 0xFFFFF000);
+  if (dev->uart.term.c_cflag & PARENB)
+    {
+      val |=  USART_CR1_PCE;
+      val |=  USART_CR1_M0; /* 9-bit frame */
+      if (dev->uart.term.c_cflag == PARODD)
+        {
+          val |= USART_CR1_PS;
+        }
+      else
+        {
+          val &= ~USART_CR1_PS;
+        }
+    }
+  else
+    {
+      val &= ~USART_CR1_PCE;
+      val &= ~USART_CR1_M0; /* 8-bit frame */
+    }
+
+  stm32l4_uart_putreg(dev, STM32L4_USART_CR1, val);
+
+  val = stm32l4_uart_getreg(dev, STM32L4_USART_CR2);
+
+  val &= ~(USART_CR2_ADD_MASK | USART_CR2_RTOEN | USART_CR2_ABRMOD_MASK | USART_CR2_ABREN | USART_CR2_MSBFIRST | \
+           USART_CR2_DATAINV | USART_CR2_TXINV | USART_CR2_RXINV | USART_CR2_SWAP | USART_CR2_LINEN | USART_CR2_CLKEN | \
+           USART_CR2_CPOL | USART_CR2_CPHA | USART_CR2_LBCL | USART_CR2_LBDIE | USART_CR2_LBDL | USART_CR2_ADDM7);
+
+  val &= USART_CR2_STOP_MASK;
+  if (dev->uart.term.c_cflag & CSTOPB)
+    {
+      val |= USART_CR2_STOP_2;
+    }
+  else
+    {
+      val |= USART_CR2_STOP_1;
+    }
+
+  stm32l4_uart_putreg(dev, STM32L4_USART_CR2, val);
+
+  val = stm32l4_uart_getreg(dev, STM32L4_USART_CR3);
+  val &= ~(USART_CR3_UCESM | USART_CR3_WUS_MASK | USART_CR3_SCARCNT_MASK | USART_CR3_DEP | USART_CR3_DEM | \
+           USART_CR3_OVRDIS | USART_CR3_ONEBIT | USART_CR3_CTSE | USART_CR3_RTSE | USART_CR3_SCEN | \
+           USART_CR3_NACK | USART_CR3_HDSEL |USART_CR3_IRLP | USART_CR3_IREN);
+  val &= ~(USART_CR3_TCBGTIE | USART_CR3_WUFIE | USART_CR3_CTSIE | USART_CR3_EIE);
+  val &= ~(USART_CR3_DDRE | USART_CR3_DMAT | USART_CR3_DMAR);
+
+  stm32l4_uart_putreg(dev, STM32L4_USART_CR3, val);
+
+  stm32l4_uart_setbaudrate(dev);
+
+  /* Optionally enable IRQ and DMA */
+
+  /* Enable UART */
+
+  stm32l4_uart_updatereg(dev, STM32L4_USART_CR1, USART_CR1_UE, 0);
 
   return 0;
 }

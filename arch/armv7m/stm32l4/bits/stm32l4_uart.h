@@ -1,7 +1,6 @@
 #ifndef _ARCH_ARMV7M_STM32L4_BITS_STM32L4_UART_H_
 #define _ARCH_ARMV7M_STM32L4_BITS_STM32L4_UART_H
 
-
 //reg offsets
 #define STM32L4_USART_CR1    0x00
 #define STM32L4_USART_CR2    0x04
@@ -14,8 +13,6 @@
 #define STM32L4_USART_ICR    0x20
 #define STM32L4_USART_RDR    0x24
 #define STM32L4_USART_TDR    0x28
-
-
 
 /* Control Register 1 */
 
@@ -36,9 +33,9 @@
 #define USART_CR1_CMIE          (1<<14)
 #define USART_CR1_OVER8         (1<<15)
 #define USART_CR1_DEDT_SHIFT    16
-#define USART_CR1_DEDT_MASK     (0x1F << STM32L4_USART_CR1_DEDT_SHIFT)
+#define USART_CR1_DEDT_MASK     (0x1F << USART_CR1_DEDT_SHIFT)
 #define USART_CR1_DEAT_SHIFT    21
-#define USART_CR1_DEAT_MASK     (0x1F << STM32L4_USART_CR1_DEDT_SHIFT)
+#define USART_CR1_DEAT_MASK     (0x1F << USART_CR1_DEDT_SHIFT)
 #define USART_CR1_RTOIE         (1<<26)
 #define USART_CR1_EOBIE         (1<<27)
 #define USART_CR1_M1            (1<<28)
@@ -53,7 +50,11 @@
 #define USART_CR2_CPOL          (1<<10)
 #define USART_CR2_CLKEN         (1<<11)
 #define USART_CR2_STOP_SHIFT    12
-#define USART_CR2_STOP_MASK     (3 << STM32L4_USART_CR2_STOP_SHIFT)
+#define USART_CR2_STOP_MASK     (3 << USART_CR2_STOP_SHIFT)
+#define USART_CR2_STOP_1        (0 << USART_CR2_STOP_SHIFT)
+#define USART_CR2_STOP_05       (1 << USART_CR2_STOP_SHIFT)
+#define USART_CR2_STOP_2        (2 << USART_CR2_STOP_SHIFT)
+#define USART_CR2_STOP_15       (3 << USART_CR2_STOP_SHIFT)
 #define USART_CR2_LINEN         (1<<14)
 #define USART_CR2_SWAP          (1<<15)
 #define USART_CR2_RXINV         (1<<16)
@@ -62,10 +63,10 @@
 #define USART_CR2_MSBFIRST      (1<<19)
 #define USART_CR2_ABREN         (1<<20)
 #define USART_CR2_ABRMOD_SHIFT  21
-#define USART_CR2_ABRMOD_MASK   (3<<STM32L4_USART_CR2_ABRMOD_SHIFT)
+#define USART_CR2_ABRMOD_MASK   (3 << USART_CR2_ABRMOD_SHIFT)
 #define USART_CR2_RTOEN         (1<<23)
 #define USART_CR2_ADD_SHIFT     24
-#define USART_CR2_ADD_MASK      (0xFF << STM32L4_USART_CR2_ADD_SHIFT)
+#define USART_CR2_ADD_MASK      (0xFF << USART_CR2_ADD_SHIFT)
 
 /* Control Register 3 */
 
@@ -86,9 +87,9 @@
 #define USART_CR3_DEM           (1<<14)
 #define USART_CR3_DEP           (1<<15)
 #define USART_CR3_SCARCNT_SHIFT 17
-#define USART_CR3_SCARCNT_MASK  (7<<STM32L4_USART_CR3_SCARCNT_SHIFT)
+#define USART_CR3_SCARCNT_MASK  (7 << USART_CR3_SCARCNT_SHIFT)
 #define USART_CR3_WUS_SHIFT     20
-#define USART_CR3_WUS_MASK      (3<<STM32L4_USART_CR3_WUS_SHIFT)
+#define USART_CR3_WUS_MASK      (3 << USART_CR3_WUS_SHIFT)
 #define USART_CR3_WUFIE         (1<<22)
 #define USART_CR3_UCESM         (1<<23)
 
@@ -99,14 +100,14 @@
 /* Baud rate Register */
 
 #define USART_BRR_SHIFT 0
-#define USART_BRR_MASK  (0xFFFF<<STM32L4_USART_BRR)SHIFT)
+#define USART_BRR_MASK  (0xFFFF << USART_BRR)SHIFT)
 
 /* Guard time and prescaler Register */
 
 #define USART_GTPR_PSC_SHIFT    0
-#define USART_GTPR_PSC_MASK     (0xFF<<STM32L4_USART_GTPR_PSC_SHIFT)
+#define USART_GTPR_PSC_MASK     (0xFF << USART_GTPR_PSC_SHIFT)
 #define USART_GTPR_GT_SHIFT     8
-#define USART_GTPR_GT_MASK      (0xFF<<STM32L4_USART_GTPR_GT_SHIFT)
+#define USART_GTPR_GT_MASK      (0xFF << USART_GTPR_GT_SHIFT)
 
 /* Interrupt and Status Register */
 #define USART_ISR_PE            (1<< 0)

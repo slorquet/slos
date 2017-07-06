@@ -19,10 +19,6 @@ void board_start(void)
 
   stm32l4_gpio_init(LED | GPIO_MODE_OUT | GPIO_PULL_UP | GPIO_TYPE_PP ); /*LED PIN ON A5*/
 
-  /* setup standard GPIO pins for uart 2 at PA2(TX) PA15(RX)*/
-  stm32l4_gpio_init(GPIO_PORT_A | GPIO_PIN_2  | GPIO_MODE_ALT | GPIO_ALT_7 | GPIO_PULL_UP | GPIO_TYPE_PP ); /*TX PIN ON A2*/
-  stm32l4_gpio_init(GPIO_PORT_A | GPIO_PIN_15 | GPIO_MODE_ALT | GPIO_ALT_7 | GPIO_PULL_UP | GPIO_TYPE_PP ); /*RX PIN ON A15*/
-
   /*write something*/
   kprintf("Hello L432KC\n");
 	

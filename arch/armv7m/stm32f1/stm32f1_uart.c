@@ -216,7 +216,7 @@ static void stm32f1_uart_setbaudrate(struct stm32f1_uart_s *dev)
 {
   uint32_t fclk;
   struct stm32f1_clocks_s * clocks = stm32f1_clock_getinfo();
-  if(dev == &g_stm32f1_usart1)
+  if(dev->params->base == STM32F1_REGBASE_USART1)
     {
       fclk = clocks->pclk2;
     }
@@ -224,6 +224,7 @@ static void stm32f1_uart_setbaudrate(struct stm32f1_uart_s *dev)
     {
       fclk = clocks->pclk1;    
     }
+
   /*                baud = fclk / (16 * usartdiv)
    * Hence 16 * usartdiv = fclk / baud
    * And        usartdiv = fclk / (16 * baud)
@@ -260,7 +261,7 @@ static int stm32f1_uart_init(struct uart_s *uart)
   val  = stm32f1_uart_getreg(dev, STM32F1_USART_CR1);
   val &= ~(USART_CR1_RWU | USART_CR1_WAKE);
   val &= ~(USART_CR1_IDLEIE | USART_CR1_RXNEIE |  USART_CR1_TCIE | USART_CR1_TXEIE | USART_CR1_PEIE);
-  val |= USART_CR1_UE;
+  val |= USART_CR1_RE | USART_CR1_TE;
   
   if (dev->uart.term.c_cflag & PARENB)
     {
@@ -326,7 +327,7 @@ static int stm32f1_uart_init(struct uart_s *uart)
   
   /* Enable uart */
   val = stm32f1_uart_getreg(dev, STM32F1_USART_CR1);
-  val |= USART_CR1_RE | USART_CR1_TE;
+  val |= USART_CR1_UE;
   stm32f1_uart_putreg(dev, STM32F1_USART_CR1, val);
   
   return 0;
