@@ -10,8 +10,8 @@
 static inline void updatereg32(uint32_t addr, uint32_t setbits, uint32_t clrbits)
 {
   uint32_t reg = getreg32(addr);
+  reg &= ~clrbits; //Clear bits before setting them, can be used as masking
   reg |= setbits;
-  reg &= ~clrbits;
   putreg32(addr, reg);
 }
 

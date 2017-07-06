@@ -193,7 +193,7 @@ void stm32l4_gpio_init(uint32_t gpiodesc)
 
   /* Enable clock to GPIO peripheral */
 
-  updatereg32(gpio->ckenreg, gpio->ckenbit, 0);
+  updatereg32(STM32L4_REGBASE_RCC + gpio->ckenreg, gpio->ckenbit, 0);
 
   /* Configure 1-bit ports */
 

@@ -344,10 +344,7 @@ static int stm32l4_uart_init(struct uart_s *uart)
 
   /* Enable clock to UART peripheral */
 
-  reg  = dev->params->ckenreg;
-  val  = getreg32(reg);
-  val |= dev->params->ckenbit;
-  putreg32(reg, val);
+  updatereg32(STM32L4_REGBASE_RCC + dev->params->ckenreg, dev->params->ckenbit, 0);
 
   /* Configure GPIOs */
   if (dev->params->rxpin)
