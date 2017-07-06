@@ -1,11 +1,11 @@
-config BOARD_NUCLEO_L476RG
-	bool "nucleo-l476rg"
-	depends on ARCH_CHIP_STM32L476RG
+config BOARD_NUCLEO_L432KC
+	bool "nucleo-l432kc"
+	depends on ARCH_CHIP_STM32L432KC
 
-if BOARD_NUCLEO_L476RG
+if BOARD_NUCLEO_L432KC
 
-config BOARD_NUCLEO_L476RG_DUMMY
-	bool "Dummy L476 setting for tests"
+config BOARD_NUCLEO_L432KC_DUMMY
+	bool "Dummy L432KC setting for tests"
 
 endif
 

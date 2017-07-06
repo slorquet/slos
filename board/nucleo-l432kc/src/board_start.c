@@ -1,4 +1,8 @@
 #include <stdint.h>
+#include <slos/stdio.h>
+
+#include "armv7m_systick.h"
+#include "armv7m_nvic.h"
 
 #include "stm32l4_rcc.h"
 #include "stm32l4_gpio.h"
@@ -11,7 +15,9 @@
 
 void board_start(void)
 {
-	
+	uint32_t state = 0;
+  uint32_t i;
+
   stm32l4_gpio_init(LED | GPIO_MODE_OUT | GPIO_PULL_UP | GPIO_TYPE_PP ); /*LED PIN ON A5*/
 
   /* setup standard GPIO pins for uart 2 at PA2(TX) PA15(RX)*/
@@ -26,7 +32,7 @@ void board_start(void)
 
   armv7m_systick_init();
 
-  irq_enable();
+  armv7m_irq_enable();
 
   while(1)
     {
