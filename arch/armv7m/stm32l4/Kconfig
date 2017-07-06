@@ -736,7 +736,7 @@ config STM32L4_USART2_PARITY_EVEN
 endchoice
 
 config STM32L4_USART2_STOPBITS
-  int "USART1 default stop bits"
+  int "USART2 default stop bits"
   default 1
 
 endif #usart2
