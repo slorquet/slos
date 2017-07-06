@@ -236,28 +236,18 @@ static struct stm32l4_uart_s g_stm32l4_usart2 =
 static struct stm32l4_uart_s * const g_stm32l4_uarts[] = {
 #ifdef CONFIG_STM32L4_USART1
   &g_stm32l4_usart1,
-#else
-  NULL,
 #endif
 #ifdef CONFIG_STM32L4_USART2
   &g_stm32l4_usart2,
-#else
-  NULL,
 #endif
 #ifdef CONFIG_STM32L4_USART3
   &g_stm32l4_usart3,
-#else
-  NULL,
 #endif
 #ifdef CONFIG_STM32L4_UART4
   &g_stm32l4_uart4,
-#else
-  NULL,
 #endif
 #ifdef CONFIG_STM32L4_UART5
   &_stm32l4_uart5,
-#else
-  NULL,
 #endif
 };
 
@@ -266,6 +256,9 @@ enum
 {
 #ifdef CONFIG_STM32L4_USART1
   STM32L4_INDEX_USART1,
+#endif
+#ifdef CONFIG_STM32L4_USART2
+  STM32L4_INDEX_USART2,
 #endif
   STM32L4_UARTCOUNT
 };
@@ -355,6 +348,16 @@ static int stm32l4_uart_init(struct uart_s *uart)
   val  = getreg32(reg);
   val |= dev->params->ckenbit;
   putreg32(reg, val);
+
+  /* Configure GPIOs */
+  if (dev->params->rxpin)
+    {
+      stm32l4_gpio_init(dev->params->rxpin);
+    }
+  if (dev->params->txpin)
+    {
+      stm32l4_gpio_init(dev->params->txpin);
+    }
 
   /* Configure registers for a simple uart, 8 bits, 1 stop bit, no parity */
 

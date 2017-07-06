@@ -641,9 +641,11 @@ config STM32L4_USART1_TX_0
 
 config STM32L4_USART1_TX_1
   bool "PA9 (AF7)"
+  depends on STM32L4_GPIOA
 
 config STM32L4_USART1_TX_2
   bool "PB6 (AF7)"
+  depends on STM32L4_GPIOB
 
 endchoice
 
@@ -655,9 +657,11 @@ config STM32L4_USART1_RX_0
 
 config STM32L4_USART1_RX_1
   bool "PA10 (AF7)"
+  depends on STM32L4_GPIOA
 
 config STM32L4_USART1_RX_2
   bool "PB7 (AF7)"
+  depends on STM32L4_GPIOB
 
 endchoice
 
@@ -697,9 +701,11 @@ config STM32L4_USART2_TX_0
 
 config STM32L4_USART2_TX_1
   bool "PA2 (AF7)"
+  depends on STM32L4_GPIOA
 
 config STM32L4_USART2_TX_2
   bool "PD5 (AF7)"
+  depends on STM32L4_GPIOD
 
 endchoice
 
@@ -711,12 +717,15 @@ config STM32L4_USART2_RX_0
 
 config STM32L4_USART2_RX_1
   bool "PA3 (AF7)"
+  depends on STM32L4_GPIOA
 
 config STM32L4_USART2_RX_2
   bool "PA15 (AF3)"
+  depends on STM32L4_GPIOA
 
 config STM32L4_USART2_RX_3
   bool "PD6 (AF7)"
+  depends on STM32L4_GPIOD
 
 endchoice
 

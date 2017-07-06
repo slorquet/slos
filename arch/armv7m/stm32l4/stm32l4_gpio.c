@@ -3,9 +3,9 @@
 #include <config.h>
 
 #include "armv7m.h"
-#include "stm32l4_rcc.h"
 #include "bits/stm32l4_periphs.h"
 #include "bits/stm32l4_gpio.h"
+#include "bits/stm32l4_rcc.h"
 #include "stm32l4_gpio.h"
 
 /*==============================================================================
@@ -34,115 +34,115 @@ struct stm32l4_gpio_s {
  *==============================================================================
  */
 
-#ifdef CONFIG_STM32L4_GPIO_A
+#ifdef CONFIG_STM32L4_GPIOA
 static const struct stm32l4_gpio_s g_stm32l4_gpioa =
 {
   .base    = STM32L4_REGBASE_GPIOA,
   .ckenreg = STM32L4_RCC_AHB2ENR,
-  .ckenbit = STM32L4_RCC_AHB2ENR_GPIOAEN
+  .ckenbit = RCC_AHB2ENR_GPIOAEN
 };
 #endif
 
-#ifdef CONFIG_STM32L4_GPIO_B
+#ifdef CONFIG_STM32L4_GPIOB
 static const struct stm32l4_gpio_s g_stm32l4_gpiob =
 {
   .base    = STM32L4_REGBASE_GPIOB,
   .ckenreg = STM32L4_RCC_AHB2ENR,
-  .ckenbit = STM32L4_RCC_AHB2ENR_GPIOBEN
+  .ckenbit = RCC_AHB2ENR_GPIOBEN
 };
 #endif
 
-#ifdef CONFIG_STM32L4_GPIO_C
+#ifdef CONFIG_STM32L4_GPIOC
 static const struct stm32l4_gpio_s g_stm32l4_gpioc =
 {
   .base    = STM32L4_REGBASE_GPIOC,
   .ckenreg = STM32L4_RCC_AHB2ENR,
-  .ckenbit = STM32L4_RCC_AHB2ENR_GPIOCEN
+  .ckenbit = RCC_AHB2ENR_GPIOCEN
 };
 #endif
 
-#ifdef CONFIG_STM32L4_GPIO_D
+#ifdef CONFIG_STM32L4_GPIOD
 static const struct stm32l4_gpio_s g_stm32l4_gpiod =
 {
   .base    = STM32L4_REGBASE_GPIOD,
   .ckenreg = STM32L4_RCC_AHB2ENR,
-  .ckenbit = STM32L4_RCC_AHB2ENR_GPIODEN
+  .ckenbit = RCC_AHB2ENR_GPIODEN
 };
 #endif
 
-#ifdef CONFIG_STM32L4_GPIO_E
+#ifdef CONFIG_STM32L4_GPIOE
 static const struct stm32l4_gpio_s g_stm32l4_gpioe =
 {
   .base    = STM32L4_REGBASE_GPIOE,
   .ckenreg = STM32L4_RCC_AHB2ENR,
-  .ckenbit = STM32L4_RCC_AHB2ENR_GPIOEEN
+  .ckenbit = RCC_AHB2ENR_GPIOEEN
 };
 #endif
 
-#ifdef CONFIG_STM32L4_GPIO_F
+#ifdef CONFIG_STM32L4_GPIOF
 static const struct stm32l4_gpio_s g_stm32l4_gpiof =
 {
   .base    = STM32L4_REGBASE_GPIOF,
   .ckenreg = STM32L4_RCC_AHB2ENR,
-  .ckenbit = STM32L4_RCC_AHB2ENR_GPIOFEN
+  .ckenbit = RCC_AHB2ENR_GPIOFEN
 };
 #endif
 
-#ifdef CONFIG_STM32L4_GPIO_G
+#ifdef CONFIG_STM32L4_GPIOG
 static const struct stm32l4_gpio_s g_stm32l4_gpiog =
 {
   .base    = STM32L4_REGBASE_GPIOG,
   .ckenreg = STM32L4_RCC_AHB2ENR,
-  .ckenbit = STM32L4_RCC_AHB2ENR_GPIOGEN
+  .ckenbit = RCC_AHB2ENR_GPIOGEN
 };
 #endif
 
-#ifdef CONFIG_STM32L4_GPIO_H
+#ifdef CONFIG_STM32L4_GPIOH
 static const struct stm32l4_gpio_s g_stm32l4_gpioh =
 {
   .base    = STM32L4_REGBASE_GPIOH,
   .ckenreg = STM32L4_RCC_AHB2ENR,
-  .ckenbit = STM32L4_RCC_AHB2ENR_GPIOHEN
+  .ckenbit = RCC_AHB2ENR_GPIOHEN
 };
 #endif
 
 static const struct stm32l4_gpio_s *g_stm32l4_gpios[] = {
-#ifdef CONFIG_STM32L4_GPIO_A
+#ifdef CONFIG_STM32L4_GPIOA
   &g_stm32l4_gpioa,
 #else
   NULL,
 #endif
-#ifdef CONFIG_STM32L4_GPIO_B
+#ifdef CONFIG_STM32L4_GPIOB
   &g_stm32l4_gpiob,
 #else
   NULL,
 #endif
-#ifdef CONFIG_STM32L4_GPIO_C
+#ifdef CONFIG_STM32L4_GPIOC
   &g_stm32l4_gpioc,
 #else
   NULL,
 #endif
-#ifdef CONFIG_STM32L4_GPIO_D
+#ifdef CONFIG_STM32L4_GPIOD
   &g_stm32l4_gpiod,
 #else
   NULL,
 #endif
-#ifdef CONFIG_STM32L4_GPIO_E
+#ifdef CONFIG_STM32L4_GPIOE
   &g_stm32l4_gpioe,
 #else
   NULL,
 #endif
-#ifdef CONFIG_STM32L4_GPIO_F
+#ifdef CONFIG_STM32L4_GPIOF
   &g_stm32l4_gpiof,
 #else
   NULL,
 #endif
-#ifdef CONFIG_STM32L4_GPIO_G
+#ifdef CONFIG_STM32L4_GPIOG
   &g_stm32l4_gpiog,
 #else
   NULL,
 #endif
-#ifdef CONFIG_STM32L4_GPIO_H
+#ifdef CONFIG_STM32L4_GPIOH
   &g_stm32l4_gpioh,
 #else
   NULL,
@@ -169,11 +169,7 @@ static inline uint32_t stm32l4_gpio_getreg(const struct stm32l4_gpio_s *gpio, ui
 /*----------------------------------------------------------------------------*/
 static inline void stm32l4_gpio_updatereg(const struct stm32l4_gpio_s *gpio, uint32_t regoff, uint32_t set, uint32_t clr)
 {
-  uint32_t val;
-  val = getreg32(gpio->base + regoff);
-  val &= ~clr;
-  val |=  set;
-  putreg32(gpio->base + regoff, val);
+  updatereg32(gpio->base + regoff, set, clr);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -197,10 +193,7 @@ void stm32l4_gpio_init(uint32_t gpiodesc)
 
   /* Enable clock to GPIO peripheral */
 
-  reg = gpio->ckenreg;
-  val = getreg32(reg);
-  val |= gpio->ckenbit;
-  putreg32(reg, val);
+  updatereg32(gpio->ckenreg, gpio->ckenbit, 0);
 
   /* Configure 1-bit ports */
 
