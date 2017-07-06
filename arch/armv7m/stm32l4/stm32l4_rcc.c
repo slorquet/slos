@@ -1,3 +1,4 @@
+#include <config.h>
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -18,7 +19,7 @@
  *==============================================================================
  */
 
-struct stm3l4_prescalers_s /* TODO store as shifts */
+struct stm32l4_prescalers_s /* TODO store as shifts */
 {
   uint32_t psc_ahb;
   uint32_t psc_apb1;
@@ -163,8 +164,8 @@ bool stm32l4_clock_lsi_ready(void)
 /*----------------------------------------------------------------------------*/
 bool stm32l4_clock_msi_ready(void)
 {
-  uint32_t val = getreg32(STM32F1_REGBASE_RCC + STM32L4_RCC_CSR);
-  return (val & RCC_CSR_MSIRDY) == RCC_CSR_MSIRDY;
+  uint32_t val = getreg32(STM32L4_REGBASE_RCC + STM32L4_RCC_CR);
+  return (val & RCC_CR_MSIRDY) == RCC_CR_MSIRDY;
 }
 
 

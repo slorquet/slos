@@ -308,11 +308,12 @@ static inline void stm32l4_uart_updatereg(const struct stm32l4_uart_s *uart, uin
 static void stm32l4_uart_setbaudrate(struct stm32l4_uart_s *uart)
 {
   struct stm32l4_clocks_s *infos;
+  struct stm32l4_uart_s *dev = (struct stm32l4_uart_s*)uart;
   uint32_t clock,baud;
 
   infos = stm32l4_clock_getinfo();
 
-  if(uart == &g_stm32l4_usart1)
+  if(dev->params->base == STM32L4_REGBASE_USART1)
     {
       clock = infos->pclk2;
     }

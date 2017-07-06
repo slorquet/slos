@@ -143,7 +143,7 @@
 #define RCC_AHB2RSTR_ADCRST        (1<<13)
 #define RCC_AHB2RSTR_AESRST        (1<<16)
 #define RCC_AHB2RSTR_RNGRST        (1<<18)
-)
+
 /* Register AHB3RSTR */
 #define RCC_AHB3RSTR_FMCRST        (1<<0)
 #define RCC_AHB3RSTR_QSPIRST       (1<<8)
