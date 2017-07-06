@@ -1,9 +1,19 @@
 #ifndef __ARMV7M__H__
 #define __ARMV7M__H__
 
+#include <stdint.h>
+
 #define getreg16(addr)     (*((volatile uint16_t*) (addr) ) )
 #define getreg32(addr)     (*((volatile uint32_t*) (addr) ) )
 #define putreg32(addr,val) (*((volatile uint32_t*) (addr) ) = (val))
+
+static inline void updatereg32(uint32_t addr, uint32_t setbits, uint32_t clrbits)
+{
+  uint32_t reg = getreg32(addr);
+  reg |= setbits;
+  reg &= ~clrbits;
+  putreg32(addr, reg);
+}
 
 static inline uint32_t armv7m_getipsr(void)
 {
