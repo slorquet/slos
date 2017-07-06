@@ -177,18 +177,20 @@ static const struct stm32l4_uartparams_s g_stm32l4_usart2params =
 #if defined( CONFIG_STM32L4_USART2_TX_0)
   .txpin      = 0,
 #elif defined( CONFIG_STM32L4_USART2_TX_1)
-  .txpin      = GPIO_PORT_A | GPIO_PIN_9 | GPIO_MODE_ALT | GPIO_ALT_7,
+  .txpin      = GPIO_PORT_A | GPIO_PIN_2 | GPIO_MODE_ALT | GPIO_ALT_7,
 #elif defined( CONFIG_STM32L4_USART2_TX_2)
-  .txpin      = GPIO_PORT_B | GPIO_PIN_6 | GPIO_MODE_ALT | GPIO_ALT_7,
+  .txpin      = GPIO_PORT_D | GPIO_PIN_5 | GPIO_MODE_ALT | GPIO_ALT_7,
 #else
 #error invalid usart2 tx config
 #endif
 #if defined( CONFIG_STM32L4_USART2_RX_0)
   .rxpin      = 0,
 #elif defined( CONFIG_STM32L4_USART2_RX_1)
-  .rxpin      = GPIO_PORT_A | GPIO_PIN_10 | GPIO_MODE_ALT | GPIO_ALT_7,
+  .rxpin      = GPIO_PORT_A | GPIO_PIN_3 | GPIO_MODE_ALT | GPIO_ALT_7,
 #elif defined( CONFIG_STM32L4_USART2_RX_2)
-  .rxpin      = GPIO_PORT_B | GPIO_PIN_7 | GPIO_MODE_ALT | GPIO_ALT_7,
+  .rxpin      = GPIO_PORT_A | GPIO_PIN_15 | GPIO_MODE_ALT | GPIO_ALT_3,
+#elif defined( CONFIG_STM32L4_USART2_RX_3)
+  .rxpin      = GPIO_PORT_D | GPIO_PIN_6 | GPIO_MODE_ALT | GPIO_ALT_7,
 #else
 #error invalid usart2 rx config
 #endif

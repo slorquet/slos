@@ -640,10 +640,10 @@ config STM32L4_USART1_TX_0
   bool "None"
 
 config STM32L4_USART1_TX_1
-  bool "PA9"
+  bool "PA9 (AF7)"
 
 config STM32L4_USART1_TX_2
-  bool "PB6"
+  bool "PB6 (AF7)"
 
 endchoice
 
@@ -654,10 +654,10 @@ config STM32L4_USART1_RX_0
   bool "None"
 
 config STM32L4_USART1_RX_1
-  bool "PA10"
+  bool "PA10 (AF7)"
 
 config STM32L4_USART1_RX_2
-  bool "PB7"
+  bool "PB7 (AF7)"
 
 endchoice
 
@@ -696,10 +696,10 @@ config STM32L4_USART2_TX_0
   bool "None"
 
 config STM32L4_USART2_TX_1
-  bool "PA9"
+  bool "PA2 (AF7)"
 
 config STM32L4_USART2_TX_2
-  bool "PB6"
+  bool "PD5 (AF7)"
 
 endchoice
 
@@ -710,10 +710,13 @@ config STM32L4_USART2_RX_0
   bool "None"
 
 config STM32L4_USART2_RX_1
-  bool "PA10"
+  bool "PA3 (AF7)"
 
 config STM32L4_USART2_RX_2
-  bool "PB7"
+  bool "PA15 (AF3)"
+
+config STM32L4_USART2_RX_3
+  bool "PD6 (AF7)"
 
 endchoice
 
