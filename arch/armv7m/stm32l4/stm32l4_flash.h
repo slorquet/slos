@@ -1,32 +1,15 @@
-#ifndef __STM32__FLASH__H__
-#define __STM32__FLASH__H__
+#ifndef _ARCH_ARMV7M_STM32L4_STM32L4_FLASH_H_
+#define _ARCH_ARMV7M_STM32L4_STM32L4_FLASH_H_
 
-enum {
-    FLASH_BLOCK_8,
-    FLASH_BLOCK_16,
-    FLASH_BLOCK_32,
-    FLASH_BLOCK_64
+#include <stdint.h>
+
+struct stm32l4_device_sig_s
+{
+  uint8_t  waf_num; /* Wafer number */
+  uint16_t waf_x;   /* Die X coordnate in wafer */
+  uint16_t waf_y;   /* Die Y coordinate in wafer */
+  uint8_t  lotnum[7]; /* Lot number */
 };
-
-#define STM32_FLASH_BASE          0x08000000
-
-#define STM32_FLASH_SIZE_ADDR     0x1FFF7A22
-
-#define STM32_FLASH_KEYR          0x40023C04
-#define STM32_FLASH_OPTKEYR       0x40023C08
-#define STM32_FLASH_SR            0x40023C0C
-#define STM32_FLASH_CR            0x40023C10
-#define STM32_FLASH_OPTCR         0x40023C14
-
-#define STM32_FLASH_CR_PG         (1<<  0)
-#define STM32_FLASH_CR_SER        (1<<  1)
-#define STM32_FLASH_CR_START      (1<< 16)
-#define STM32_FLASH_CR_LOCK       (1<< 31)
-
-#define STM32_FLASH_SR_BSY        (1<< 16)
-
-#define STM32_FLASH_OPTCR_OPTLOCK (1<<  0)
-#define STM32_FLASH_OPTCR_DB1M    (1<< 30)
 
 /* init registers before operations*/
 

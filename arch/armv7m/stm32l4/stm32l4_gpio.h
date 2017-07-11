@@ -1,5 +1,5 @@
-#ifndef GPIO
-#define GPIO
+#ifndef _ARCH_ARMV7M_STM32L4_STM32L4_GPIO_H_
+#define _ARCH_ARMV7M_STM32L4_STM32L4_GPIO_H_
 
 #include <stdint.h>
 
