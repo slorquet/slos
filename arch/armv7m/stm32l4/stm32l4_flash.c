@@ -17,6 +17,8 @@
  *==============================================================================
  */
 
+#define STM32L4_ERASE_SIZE 2048
+
 /*==============================================================================
  * Variables and constants
  *==============================================================================
@@ -34,6 +36,8 @@ void stm32l4_flash_init(void)
 {
   uint32_t reg;
 
+  /* Disable the dual bank feature if available */
+
 #if defined(CONFIG_ARCH_CHIPFAMILY_STM32L4X6)
   putreg32(STM32L4_FLASH_OPTKEYR, 0x08192A3B);
   putreg32(STM32L4_FLASH_OPTKEYR, 0x4C5D6E7F); /* unlock */
@@ -44,29 +48,14 @@ void stm32l4_flash_init(void)
   putreg32(STM32L4_FLASH_OPTCR, reg);
 #endif
 
-  /* unlock */
-  putreg32(STM32L4_FLASH_KEYR, 0x45670123);
-  putreg32(STM32L4_FLASH_KEYR, 0xCDEF89AB);
-
-  /* set block size */
-  blocksize &= 3; /* only keep 2 bits */
-  reg = getreg32(STM32L4_FLASH_CR);
-  reg &= ~0x00000300;
-  reg |= blocksize<<8;
-  putreg32(STM32L4_FLASH_CR, reg);
-
-  /* Relock */
-  reg |= STM32L4_FLASH_CR_LOCK;
-  putreg32(STM32L4_FLASH_CR, reg);
-
   /* read flash info and define sector count */
-  sectcount = getreg16(STM32L4_REGBASE_SYSFLASH + iSTM32L4_SYSFLASH_SIZE);
+
+  sectcount = getreg16(STM32L4_REGBASE_SYSFLASH + STM32L4_SYSFLASH_SIZE);
 
   switch(sectcount)
     {
-      case 0x200: sectcount =  8; break;
-      case 0x400: sectcount = 12; break;
-      case 0x800: sectcount = 24; break;
+      case 0x100: sectcount = 12; break; /* 256k */
+      case 0x200: sectcount =  8; break; /* 512k */
       default: sectcount = 0;
    }
 }

@@ -11,11 +11,11 @@ struct stm32l4_device_sig_s
   uint8_t  lotnum[7]; /* Lot number */
 };
 
-/* init registers before operations*/
+/* init registers before operations */
 
-void stm32_flash_init(uint8_t blocksize);
+void stm32_flash_init(void);
 
-/* erase flash at any address, return erased size */
+/* erase flash at any address, return erased size or zero if error */
 
 uint32_t stm32_flash_erase(uint32_t destaddr);
 
