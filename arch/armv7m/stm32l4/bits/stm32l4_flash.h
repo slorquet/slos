@@ -50,7 +50,7 @@ enum {
 #define STM32L4_FLASH_SR            0x010
 #define STM32L4_FLASH_CR            0x014
 #define STM32L4_FLASH_ECCR          0x018
-#define STM32L4_FLASH_OPTCR         0x020
+#define STM32L4_FLASH_OPTR          0x020
 #define STM32L4_FLASH_PCROP1SR      0x024
 #define STM32L4_FLASH_PCROP1ER      0x028
 #define STM32L4_FLASH_WRP1AR        0x02C
@@ -63,15 +63,43 @@ enum {
 #define STM32L4_FLASH_WRP2AR        0x04C
 #define STM32L4_FLASH_WRP2BR        0x050
 #endif
-#define STM32_FLASH_CR_PG           (1<<  0)
-#define STM32_FLASH_CR_SER          (1<<  1)
-#define STM32_FLASH_CR_START        (1<< 16)
-#define STM32_FLASH_CR_LOCK         (1<< 31)
 
-#define STM32_FLASH_SR_BSY          (1<< 16)
+#define FLASH_SR_EOP                (1<< 0)
+#define FLASH_SR_OPERR              (1<< 1)
+#define FLASH_SR_PROGERR            (1<< 3)
+#define FLASH_SR_WRPERR             (1<< 4)
+#define FLASH_SR_PGAERR             (1<< 5)
+#define FLASH_SR_SIZERR             (1<< 6)
+#define FLASH_SR_PGSERR             (1<< 7)
+#define FLASH_SR_MISSERR            (1<< 8)
+#define FLASH_SR_FASTERR            (1<< 9)
+#define FLASH_SR_RDERR              (1<<14)
+#define FLASH_SR_OPTVERR            (1<<15)
+#define FLASH_SR_BSY                (1<<16)
+#define FLASH_SR_PEMPTY             (1<<17)
 
-#define STM32_FLASH_OPTCR_OPTLOCK   (1<<  0)
-#define STM32_FLASH_OPTCR_DUALBANK  (1<< 21)
+#define FLASH_CR_PG                 (1<< 0)
+#define FLASH_CR_PER                (1<< 1)
+#define FLASH_CR_MER1               (1<< 2)
+#define FLASH_CR_PNB_SHIFT          3
+#define FLASH_CR_PNB_MASK           (0xFF<<FLASH_CR_PNB_SHIFT)
+#if defined(CONFIG_ARCH_CHIPFAMILY_STM32L4X6)
+#define FLASH_CR_BKER               (1<<11)
+#define FLASH_CR_MER2               (1<<15)
+#endif
+#define FLASH_CR_STRT               (1<<16)
+#define FLASH_CR_OPTSTRT            (1<<17)
+#define FLASH_CR_FSTPRG             (1<<18)
+#define FLASH_CR_EOPIE              (1<<24)
+#define FLASH_CR_ERRIE              (1<<25)
+#define FLASH_CR_RDERRIE            (1<<26)
+#define FLASH_CR_OBL_LAUNCH         (1<<27)
+#define FLASH_CR_LOCK               (1<<31)
+#define FLASH_CR_OPTLOCK            (1<<30)
+
+#if defined(CONFIG_ARCH_CHIPFAMILY_STM32L4X6)
+#define FLASH_OPTR_DUALBANK (1<<21)
+#endif
 
 #endif // _ARCH_ARMV7M_STM32L4_BITS_STM32L4_FLASH_H_
 

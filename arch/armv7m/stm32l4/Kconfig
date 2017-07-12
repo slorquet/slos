@@ -530,7 +530,7 @@ config STM32L4_RCC
 	default y
 
 config STM32L4_FLASH
-	bool "FLASH (unsupported)"
+	bool "FLASH"
 	default n
 
 config STM32L4_CRC
