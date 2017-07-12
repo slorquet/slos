@@ -2,26 +2,31 @@
 #define _ARCH_ARMV7M_STM32L4_STM32L4_FLASH_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
-struct stm32l4_device_sig_s
+struct stm32l4_devicesig_s
 {
-  uint8_t  waf_num; /* Wafer number */
-  uint16_t waf_x;   /* Die X coordnate in wafer */
-  uint16_t waf_y;   /* Die Y coordinate in wafer */
-  uint8_t  lotnum[7]; /* Lot number */
+  uint16_t flashsize;
+  uint8_t  package;
+  uint8_t  waf_num;   /* Wafer number */
+  uint16_t waf_x;     /* Die X coordnate in wafer */
+  uint16_t waf_y;     /* Die Y coordinate in wafer */
+  uint8_t  lotnum[8]; /* Lot number, ASCII with final 0 */
 };
 
 /* init registers before operations */
 
-void stm32_flash_init(void);
+void stm32l4_flash_init(void);
+
+void stm32l4_flash_getdevicesig(struct stm32l4_devicesig_s *sig);
 
 /* erase flash at any address, return erased size or zero if error */
 
-uint32_t stm32_flash_erase(uint32_t destaddr);
+bool stm32l4_flash_erase(uint32_t destaddr);
 
 /* write some data to the flash */
 
-int stm32_flash_write(uint32_t destaddr, uint8_t *sourcedata, uint32_t len);
+bool stm32l4_flash_write(uint32_t destaddr, uint8_t *sourcedata, uint32_t len);
 
 #endif // __STM32__FLASH__H__
 

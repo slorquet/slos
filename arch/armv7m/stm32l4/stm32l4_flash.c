@@ -68,10 +68,8 @@ void stm32l4_flash_init(void)
 
   /* read flash info and define sector count */
 
-  sectcount = getreg32(STM32L4_REGBASE_SYSFLASH + STM32L4_SYSFLASH_SIZE);
-  sectcount <<= 11; /* sectors are 2k */
-
-  kprintf("stm32l4 flash: %d sectors\n", sectcount);
+  sectcount = getreg32(STM32L4_REGBASE_SYSFLASH + STM32L4_SYSFLASH_SIZE) & SYSFLASH_SIZE_MASK;
+  sectcount >>= 1; /* sectors are 2k */
 }
 
 /*----------------------------------------------------------------------------*/
@@ -189,5 +187,31 @@ bool stm32l4_flash_write(uint32_t destaddr, uint8_t *sourcedata, uint32_t len)
   stm32l4_flash_updatereg(STM32L4_FLASH_CR, FLASH_CR_LOCK, 0);
 
   return true; /*success*/
+}
+
+
+void stm32l4_flash_getdevicesig(struct stm32l4_devicesig_s *sig)
+{
+  uint32_t id;
+
+  id = getreg32(STM32L4_REGBASE_SYSFLASH + STM32L4_SYSFLASH_UID0);
+  sig->waf_x = (id & SYSFLASH_UID0_X_MASK) >> SYSFLASH_UID0_X_SHIFT;
+  sig->waf_y = (id & SYSFLASH_UID0_Y_MASK) >> SYSFLASH_UID0_Y_SHIFT;
+
+  id = getreg32(STM32L4_REGBASE_SYSFLASH + STM32L4_SYSFLASH_UID1);
+  sig->waf_num = (id & SYSFLASH_UID1_WAFNUM_MASK) >> SYSFLASH_UID1_WAFNUM_SHIFT;
+  sig->lotnum[4] = (id >> 24) & 0xFF;
+  sig->lotnum[5] = (id >> 16) & 0xFF;
+  sig->lotnum[6] = (id >>  8) & 0xFF;
+
+  id = getreg32(STM32L4_REGBASE_SYSFLASH + STM32L4_SYSFLASH_UID2);
+  sig->lotnum[0] = (id >> 24) & 0xFF;
+  sig->lotnum[1] = (id >> 16) & 0xFF;
+  sig->lotnum[2] = (id >>  8) & 0xFF;
+  sig->lotnum[3] =  id        & 0xFF;
+  sig->lotnum[7] = 0;
+
+  sig->flashsize = getreg32(STM32L4_REGBASE_SYSFLASH + STM32L4_SYSFLASH_SIZE) & SYSFLASH_SIZE_MASK;
+  sig->package   = getreg32(STM32L4_REGBASE_SYSFLASH + STM32L4_SYSFLASH_UID0) & SYSFLASH_PACKAGE_MASK;
 }
 

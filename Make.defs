@@ -1,7 +1,7 @@
 RM=rm -f
 
-LD=arm-none-eabi-ld -nostdlib
-CC=arm-none-eabi-gcc -nostdinc -nostdlib -g
+LD=arm-none-eabi-ld -nostdlib -Og
+CC=arm-none-eabi-gcc -nostdinc -nostdlib -g -Og
 AS=arm-none-eabi-as
 AR=arm-none-eabi-ar
 

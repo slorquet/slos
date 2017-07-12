@@ -18,22 +18,31 @@ SECTIONS
 
     .text ALIGN(4) : {
         *(.text .text.*)    /* main code */
-        *(.rodata)          /* read only data */
         *(.glue_7)          /* required by linker */
         *(.glue_7t)         /* required by linker */
     } > FLASH
 
+    .rodata ALIGN(4) : {
+        *(.rodata)          /* read only data */
+    } > FLASH
+
+    /* The initizlized data is always stored after the text section */
+
     _data_init_start = .; /* start of init data */
+    _data_init_end = _data_init_start + _data_end - _data_start;
+    . = _data_init_end;
+    . = ALIGN(2048);
+    _userflashstart = .; /* This symbol is the beginning of the next sector after the code */
 
     . = 0x20000000;
 
     .stack ALIGN(4) : {
-        /* stack is reserved at begininning of RAM */
+        /* stack is reserved at begininning of RAM, addresses are descending so stack overflow will explode instead of overwriting data */
         . += STACK_SIZE;
         _stack_end = .;
     } > RAM
 
-    /* definir le contenu de la RAM */
+    /* compile-time RAM contents */
     .data ALIGN(4) : {
         _data_start = .;
         *(.data .data.*)    /* initialized data */

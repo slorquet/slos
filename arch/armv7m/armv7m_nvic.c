@@ -14,12 +14,14 @@ void armv7m_irq_init(void)
   int i;
 
   /* Initialize all irq handlers to non-defined state */
-
+  /* BSS initialized to zero: not required */
+#if 0
   for(i=0;i<sizeof(handlers)/sizeof(handlers[0]);i++)
     {
       handlers[i] = 0;
       args    [i] = NULL;
     }
+#endif
 
   /* Set all priorities to zero */
   asm volatile(

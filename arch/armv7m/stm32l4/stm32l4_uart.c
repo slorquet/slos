@@ -242,7 +242,7 @@ static struct stm32l4_uart_s g_stm32l4_usart2 =
 };
 #endif
 
-static struct stm32l4_uart_s * const g_stm32l4_uarts[] = {
+static struct stm32l4_uart_s * g_stm32l4_uarts[] = {
 #ifdef CONFIG_STM32L4_USART1
   &g_stm32l4_usart1,
 #endif
@@ -268,6 +268,15 @@ enum
 #endif
 #ifdef CONFIG_STM32L4_USART2
   STM32L4_INDEX_USART2,
+#endif
+#ifdef CONFIG_STM32L4_USART3
+  STM32L4_INDEX_USART3,
+#endif
+#ifdef CONFIG_STM32L4_UART4
+  STM32L4_INDEX_UART4,
+#endif
+#ifdef CONFIG_STM32L4_UART5
+  STM32L4_INDEX_UART5,
 #endif
   STM32L4_UARTCOUNT
 };
