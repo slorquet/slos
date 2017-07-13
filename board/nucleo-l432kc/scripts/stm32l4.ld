@@ -46,6 +46,7 @@ SECTIONS
     .data ALIGN(4) : {
         _data_start = .;
         *(.data .data.*)    /* initialized data */
+        *(.igot.plt)
         _data_end = .;
     } > RAM AT > FLASH      /* where to store the initialized contents! */
 

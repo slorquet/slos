@@ -9,7 +9,5 @@ DONE
 
 TODOLIST
 
- * Hello world with proper structure on stm32l4
  * handle based heap malloc()
- * interrupts
 

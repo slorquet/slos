@@ -1,5 +1,6 @@
 .config
 .config.old
+System.map
 include/config.h
 board/Kconfig
 *.a
