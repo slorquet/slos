@@ -31,7 +31,6 @@ void board_start(void);
 static inline void clearbss(void)
 {
   uint32_t *addr;
-  uint32_t *src;
 
   for(addr = &_bss_start; addr < &_bss_end; addr++)
     {

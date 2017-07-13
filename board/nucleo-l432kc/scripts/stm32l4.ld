@@ -17,13 +17,10 @@ SECTIONS
     } > FLASH
 
     .text ALIGN(4) : {
-        *(.text .text.*)    /* main code */
-        *(.glue_7)          /* required by linker */
-        *(.glue_7t)         /* required by linker */
-    } > FLASH
-
-    .rodata ALIGN(4) : {
-        *(.rodata)          /* read only data */
+        *(.text .text.*)        /* main code */
+        *(.glue_7)              /* required by linker */
+        *(.glue_7t)             /* required by linker */
+        *(.rodata .rodata.*)    /* read only data */
     } > FLASH
 
     /* The initizlized data is always stored after the text section */
@@ -33,6 +30,9 @@ SECTIONS
     . = _data_init_end;
     . = ALIGN(2048);
     _userflashstart = .; /* This symbol is the beginning of the next sector after the code */
+
+
+
 
     . = 0x20000000;
 
