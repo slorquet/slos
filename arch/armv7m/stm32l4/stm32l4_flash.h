@@ -10,7 +10,7 @@
  *==============================================================================
  */
 
-#define STM32L4_ERASE_SIZE 2048
+#define STM32L4_FLASH_ERASESIZE 2048
 
 /*==============================================================================
  * Types
@@ -35,6 +35,7 @@ struct stm32l4_devicesig_s
 /* init registers before operations */
 
 void stm32l4_flash_init(void);
+uint32_t stm32l4_flash_end(void);
 
 void stm32l4_flash_getdevicesig(struct stm32l4_devicesig_s *sig);
 

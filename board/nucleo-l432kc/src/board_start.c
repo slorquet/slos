@@ -44,7 +44,6 @@ void systick_irq(uint32_t irqno, void **context, void *arg)
 void board_start(void)
 {
   struct stm32l4_devicesig_s sig;
-  uint32_t start;
 
   stm32l4_gpio_init(LED | GPIO_MODE_OUT | GPIO_PULL_UP | GPIO_TYPE_PP ); /*LED PIN ON A5*/
 
@@ -56,9 +55,6 @@ void board_start(void)
   kprintf("Lot num: [%s]\n", sig.lotnum);
   kprintf("package: %d, Flash size %dKB\n",sig.package, sig.flashsize);
 
-  start = (uint32_t)&_userflash_start;
-  kprintf("Erasing the rest of flash, start addr=0x%x\n", start);
-
   armv7m_systick_callback(systick_irq, NULL);
 }
 
@@ -67,8 +63,24 @@ void board_main(void)
 {
   uint32_t i;
   uint32_t state = 0;
+  uint32_t start, end;
+  bool ret;
+
   /* Loop blinking led */
 
+  start = (uint32_t)&_userflash_start;
+  end   = stm32l4_flash_end();
+
+  kprintf("Erasing the rest of flash, start addr=0x%x end addr=0x%x\n", start,end);
+
+  while(start < end)
+    {
+      kprintf("Erasing at %x: ",start);
+      ret = stm32l4_flash_erase(start);
+      kprintf("%s\n", ret?"success":"failure");
+      start += STM32L4_FLASH_ERASESIZE;
+    }
+  kprintf("Done.\n");
   while(1)
     {
       stm32l4_gpio_write(LED, state);

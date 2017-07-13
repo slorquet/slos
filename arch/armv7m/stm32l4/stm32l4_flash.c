@@ -66,6 +66,13 @@ void stm32l4_flash_init(void)
 }
 
 /*----------------------------------------------------------------------------*/
+/* Return the address of the end of flash */
+uint32_t stm32l4_flash_end(void)
+{
+  return STM32L4_REGBASE_USRFLASH + (sectcount<<11);
+}
+
+/*----------------------------------------------------------------------------*/
 /* Wait until the flash is not busy anymore. do that only for a limited time.
  * If flash is still busy after timeout, return false.
  */
