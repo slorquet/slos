@@ -80,6 +80,7 @@ static void kputc(const char data, void *arg);
  * Variables and constants
  *==============================================================================
  */
+
 static const struct uart_ops_s g_stm32l4_uartops =
 {
   .init  = stm32l4_uart_init,

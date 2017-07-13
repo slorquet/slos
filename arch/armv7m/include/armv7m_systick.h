@@ -2,6 +2,7 @@
 #define __ARMV7M__SYSTICK__H__
 
 #include "armv7m.h"
+#include "armv7m_nvic.h"
 
 /* SysTick */
 #define ARMV7M_SYSTICK_CSR     (ARMV7M_SCS + 0x00000010) /* Control and Status Register */
@@ -16,6 +17,7 @@
 #define SYSTICK_CSR_COUNTFLAG (1<<16) /* Underflow Happened */
 
 void armv7m_systick_init(void);
+void armv7m_systick_callback(armv7m_irqhandler_f handler, void *arg);
 
 #endif /* __ARMV7M__SYSTICK__H__ */
 

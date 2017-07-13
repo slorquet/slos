@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stddef.h>
 #include <slos/stdio.h>
 
 #include "armv7m_systick.h"
@@ -10,14 +11,40 @@
 #include "stm32l4_spi.h"
 #include "stm32l4_flash.h"
 
+/*==============================================================================
+ * Definitions
+ *==============================================================================
+ */
+
 /* nucleo led on arduino D13 (PB3) */
 #define LED (GPIO_PORT_B | GPIO_PIN_3)
 
+/*==============================================================================
+ * Variables and constants
+ *==============================================================================
+ */
+static uint32_t ctr;
+extern uint32_t *_userflash_start;
+
+/*==============================================================================
+ * Functions
+ *==============================================================================
+ */
+
+/*----------------------------------------------------------------------------*/
+void systick_irq(uint32_t irqno, void **context, void *arg)
+{
+  ctr++;
+
+  if( (ctr % 1000)==0)
+    kprintf("systick!\n");
+}
+
+/*----------------------------------------------------------------------------*/
 void board_start(void)
 {
-  uint32_t state = 0;
-  uint32_t i;
   struct stm32l4_devicesig_s sig;
+  uint32_t start;
 
   stm32l4_gpio_init(LED | GPIO_MODE_OUT | GPIO_PULL_UP | GPIO_TYPE_PP ); /*LED PIN ON A5*/
 
@@ -29,12 +56,18 @@ void board_start(void)
   kprintf("Lot num: [%s]\n", sig.lotnum);
   kprintf("package: %d, Flash size %dKB\n",sig.package, sig.flashsize);
 
-  /*switch the LED on (it's on PA5)*/
+  start = (uint32_t)&_userflash_start;
+  kprintf("Erasing the rest of flash, start addr=0x%x\n", start);
+
+  armv7m_systick_callback(systick_irq, NULL);
+}
+
+/*----------------------------------------------------------------------------*/
+void board_main(void)
+{
+  uint32_t i;
+  uint32_t state = 0;
   /* Loop blinking led */
-
-  armv7m_systick_init();
-
-  armv7m_irq_enable();
 
   while(1)
     {
@@ -42,5 +75,5 @@ void board_start(void)
       state = !state;
       for(i=0;i<100000;i++) {};
     }
-	
 }
+

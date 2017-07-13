@@ -1,5 +1,6 @@
-//#include "config.h"
+#include <config.h>
 
+#include "armv7m_systick.h"
 #include "chip.h"
 #include "irq.h"
 #include "bits/irq.h"
@@ -26,6 +27,7 @@ uint32_t _vectors[] __attribute__((section(".armvectors"))) = {
 };
 
 void board_start(void);
+void board_main (void);
 
 /*----------------------------------------------------------------------------*/
 static inline void clearbss(void)
@@ -56,15 +58,21 @@ static inline void copydata(void)
 void arch_start(void)
 {
 
+  /* Setup the C execution environment */
+
   clearbss();
 
   copydata();
 
-  /* Initialize common armv7m IRQs */
+  /* Initialize common armv7m features */
 
   armv7m_irq_init();
 
-  /* Initialize peripherals */
+#ifdef CONFIG_ARMV7M_SYSTICK
+  armv7m_systick_init();
+#endif
+
+  /* Initialize system-on-chip peripherals */
 
   chip_start();
 
@@ -75,4 +83,8 @@ void arch_start(void)
   /* Enable IRQs */
 
   armv7m_irq_enable();
+
+  /* Start the OS (for now, in the board code) */
+
+  board_main();
 }

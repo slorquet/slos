@@ -34,4 +34,7 @@ source arch/armv7m/stm32f1/Kconfig
 source arch/armv7m/stm32f4/Kconfig
 source arch/armv7m/stm32l4/Kconfig
 
+config ARMV7M_SYSTICK
+	bool "Enable SYSTICK"
+
 endif

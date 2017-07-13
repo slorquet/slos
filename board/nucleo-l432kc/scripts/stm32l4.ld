@@ -29,7 +29,7 @@ SECTIONS
     _data_init_end = _data_init_start + _data_end - _data_start;
     . = _data_init_end;
     . = ALIGN(2048);
-    _userflashstart = .; /* This symbol is the beginning of the next sector after the code */
+    _userflash_start = .; /* This symbol is the beginning of the next sector after the code */
 
 
 
