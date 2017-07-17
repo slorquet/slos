@@ -1,0 +1,93 @@
+memory allocator
+
+The memory allocator is special. the allocated data blocks can be moved to avoid fragmentation.
+This means that the memory is not accessed directly.
+
+Memory allocation functions work with "handles", then handles must be dereferenced to get the
+memory pointer to them.
+
+Some handles can be locked to ensure that they are not moved during their use, but this will lead to more fragmentation.
+
+Heap organization
+
+the function heap_init initizlizes a new heap on a block of RAM.
+
+The beginning of the RAM zone contains a table of handles, and blocks are allocated starting from the end of the pool.
+
+A pool uses a few more global data to manage its contents
+
+-the base address
+-the number of allocated blocks
+
+A pool can use a total of 62 bits to represent the triplet (handle, size, address).
+The blocks are always aligned to 4 bytes and have a minimum size of 4 bytes, which allows us to discard 2 size bits (and code 4x larger blocks)
+
+-H: number of bits to represent the handle ID
+  bits   blocks  metadata size
+    16    65536    512kB
+    17   131072      1M
+    18   262144      2M
+    19   524288      4M
+    20  1048576      8M
+    21  2097152     16M
+    22  4194304     32M
+    23  8M          64M
+    24  16M        128M
+    26  32M        256MB
+
+-S: number of bits to represent the block size:
+    bits    4     8     16    32    64
+    20     4M
+    19     2M
+    18     1M
+    17   512k
+    16   256k  512k     1M    2M    4M
+    15   128k  256k   512k    1M    2M
+    14    64k  128k   256k  512k    1M
+
+-A: number of bits to represent the offset to the start of the block, and the max block offset:
+    30   4G
+    26   1G
+    24  64M
+    22  16M
+    20   4M
+    18   1M
+
+example partitions if small block size is 4 bytes:
+
+H 22 S 20 A 20 (4M pool with max 4M of 4M blocks)
+H 22 S 16 A 24 (64M pool with max 4M of 256k/2M blocks)
+H 24 S 16 A 18 (1M pool with max 
+H 18 S 20 A 24 (64M pool with max 262144 of 4M blocks)
+
+-small block granularity (arbitrary, eg 4 bytes)
+-big block granularity (arbitrary, eg 32 bytes)
+
+Each block of allocated data is aligned on 4 bytes and the minimum allocation size is 4 bytes, this allows us to save 4 data bits for flags
+
+struct block30_header_s
+{
+  /* first word */
+  uint32_t handle :16;  /* HANDLE value */
+  uint32_t size   :16;  /* Multiple of 4 bytes if big is clear, else multiples of 16 bytes */
+  /* Second word */
+  uint32_t baseaddr :30;
+  uint32_t locked   : 1;
+  uint32_t big      : 1;
+};
+
+struct block_header_h20_s22_a20_s
+{
+  /* first word */
+  uint32_t handle :20;  /* HANDLE value, max 262144 handles */
+  uint32_t size   :12;  /* Multiple of 4 bytes if big is clear, else multiples of 16 bytes */
+  /* Second word */
+  uint32_t baseaddr :20; /* block offset from pool base in multiple of 4 bytes */
+  uint32_t size_hi  :10;
+  uint32_t locked   : 1;
+  uint32_t unused   : 1;
+};
+
+The table of handles is kept sorted.
+The size is compressed, when the "big" flag is set, size is a multiple of 4 bytes, when it's set, size if a multiple of 32 bytes.
+
