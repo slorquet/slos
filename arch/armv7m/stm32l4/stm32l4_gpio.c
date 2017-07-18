@@ -34,118 +34,85 @@ struct stm32l4_gpio_s {
  *==============================================================================
  */
 
+static const struct stm32l4_gpio_s g_stm32l4_gpios[] = {
 #ifdef CONFIG_STM32L4_GPIOA
-static const struct stm32l4_gpio_s g_stm32l4_gpioa =
 {
   .base    = STM32L4_REGBASE_GPIOA,
   .ckenreg = STM32L4_RCC_AHB2ENR,
   .ckenbit = RCC_AHB2ENR_GPIOAEN
-};
+},
+#else
+{0,0,0},
 #endif
 
 #ifdef CONFIG_STM32L4_GPIOB
-static const struct stm32l4_gpio_s g_stm32l4_gpiob =
 {
   .base    = STM32L4_REGBASE_GPIOB,
   .ckenreg = STM32L4_RCC_AHB2ENR,
   .ckenbit = RCC_AHB2ENR_GPIOBEN
-};
+},
+#else
+{0,0,0},
 #endif
 
 #ifdef CONFIG_STM32L4_GPIOC
-static const struct stm32l4_gpio_s g_stm32l4_gpioc =
 {
   .base    = STM32L4_REGBASE_GPIOC,
   .ckenreg = STM32L4_RCC_AHB2ENR,
   .ckenbit = RCC_AHB2ENR_GPIOCEN
 };
+#else
+{0,0,0},
 #endif
 
 #ifdef CONFIG_STM32L4_GPIOD
-static const struct stm32l4_gpio_s g_stm32l4_gpiod =
 {
   .base    = STM32L4_REGBASE_GPIOD,
   .ckenreg = STM32L4_RCC_AHB2ENR,
   .ckenbit = RCC_AHB2ENR_GPIODEN
 };
+#else
+{0,0,0},
 #endif
 
 #ifdef CONFIG_STM32L4_GPIOE
-static const struct stm32l4_gpio_s g_stm32l4_gpioe =
 {
   .base    = STM32L4_REGBASE_GPIOE,
   .ckenreg = STM32L4_RCC_AHB2ENR,
   .ckenbit = RCC_AHB2ENR_GPIOEEN
 };
+#else
+{0,0,0},
 #endif
 
 #ifdef CONFIG_STM32L4_GPIOF
-static const struct stm32l4_gpio_s g_stm32l4_gpiof =
 {
   .base    = STM32L4_REGBASE_GPIOF,
   .ckenreg = STM32L4_RCC_AHB2ENR,
   .ckenbit = RCC_AHB2ENR_GPIOFEN
 };
+#else
+{0,0,0},
 #endif
 
 #ifdef CONFIG_STM32L4_GPIOG
-static const struct stm32l4_gpio_s g_stm32l4_gpiog =
 {
   .base    = STM32L4_REGBASE_GPIOG,
   .ckenreg = STM32L4_RCC_AHB2ENR,
   .ckenbit = RCC_AHB2ENR_GPIOGEN
 };
+#else
+{0,0,0},
 #endif
 
 #ifdef CONFIG_STM32L4_GPIOH
-static const struct stm32l4_gpio_s g_stm32l4_gpioh =
 {
   .base    = STM32L4_REGBASE_GPIOH,
   .ckenreg = STM32L4_RCC_AHB2ENR,
   .ckenbit = RCC_AHB2ENR_GPIOHEN
 };
-#endif
-
-static const struct stm32l4_gpio_s *g_stm32l4_gpios[] = {
-#ifdef CONFIG_STM32L4_GPIOA
-  &g_stm32l4_gpioa,
 #else
-  NULL,
-#endif
-#ifdef CONFIG_STM32L4_GPIOB
-  &g_stm32l4_gpiob,
-#else
-  NULL,
-#endif
-#ifdef CONFIG_STM32L4_GPIOC
-  &g_stm32l4_gpioc,
-#else
-  NULL,
-#endif
-#ifdef CONFIG_STM32L4_GPIOD
-  &g_stm32l4_gpiod,
-#else
-  NULL,
-#endif
-#ifdef CONFIG_STM32L4_GPIOE
-  &g_stm32l4_gpioe,
-#else
-  NULL,
-#endif
-#ifdef CONFIG_STM32L4_GPIOF
-  &g_stm32l4_gpiof,
-#else
-  NULL,
-#endif
-#ifdef CONFIG_STM32L4_GPIOG
-  &g_stm32l4_gpiog,
-#else
-  NULL,
-#endif
-#ifdef CONFIG_STM32L4_GPIOH
-  &g_stm32l4_gpioh,
-#else
-  NULL,
+{0,0,0},
 #endif
 };
 
@@ -185,8 +152,8 @@ void stm32l4_gpio_init(uint32_t gpiodesc)
       return; /* Port does not exist */
     }
 
-  gpio = g_stm32l4_gpios[port];
-  if (!gpio)
+  gpio = &g_stm32l4_gpios[port];
+  if (!gpio->base)
     {
       return; /* This port is not implemented. */
     }
@@ -244,8 +211,8 @@ void stm32l4_gpio_write(uint32_t gpiodesc, int state)
       return; /* Port does not exist */
     }
 
-  gpio = g_stm32l4_gpios[port];
-  if (!gpio)
+  gpio = &g_stm32l4_gpios[port];
+  if (!gpio->base)
     {
       return; /* This port is not implemented. */
     }
@@ -256,5 +223,26 @@ void stm32l4_gpio_write(uint32_t gpiodesc, int state)
       line += 16; //access BR instead of BS
     }
   stm32l4_gpio_putreg(gpio, STM32L4_GPIO_BSRR, 1<<line);
+}
+
+/*----------------------------------------------------------------------------*/
+int stm32l4_gpio_read(uint32_t gpiodesc)
+{
+  const struct stm32l4_gpio_s *gpio;
+  uint32_t line = (gpiodesc & GPIO_FLAGS_LINE_MASK) >> GPIO_FLAGS_LINE_SHIFT;
+  uint32_t port = (gpiodesc & GPIO_FLAGS_PORT_MASK) >> GPIO_FLAGS_PORT_SHIFT;
+
+  if (port >= (sizeof(g_stm32l4_gpios)/sizeof(g_stm32l4_gpios[0])))
+    {
+      return -1; /* Port does not exist */
+    }
+
+  gpio = &g_stm32l4_gpios[port];
+  if (!gpio->base)
+    {
+      return -1; /* This port is not implemented. */
+    }
+
+  return (stm32l4_gpio_getreg(gpio, STM32L4_GPIO_IDR) >> line) & 1;
 }
 

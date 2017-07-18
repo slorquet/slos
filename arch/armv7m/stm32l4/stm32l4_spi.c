@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <stdint.h>
 
 #include "armv7m.h"
@@ -32,7 +33,7 @@ struct stm32l4_spi_s /* Stored in RAM */
  *==============================================================================
  */
 
-struct spi_master_s *stm32l4_spi_init(int spiid);
+struct spi_master_s *stm32l4_spi_init(uint32_t spiid);
 int stm32l4_spi_transac(struct spi_master_s *dev, struct spi_transac_s *transac);
 
 /*==============================================================================
@@ -42,7 +43,7 @@ int stm32l4_spi_transac(struct spi_master_s *dev, struct spi_transac_s *transac)
 
 static const struct spi_ops_s g_stm32l4_spiops =
 {
-  stm32l4_spi_transac
+  .transac = stm32l4_spi_transac
 };
 
 #ifdef CONFIG_STM32L4_SPI1
@@ -51,9 +52,48 @@ static const struct stm32l4_spiparams_s g_stm32l4_spi1params =
   .base    = STM32L4_REGBASE_SPI1,
   .ckenreg = STM32L4_RCC_APB2ENR,
   .ckenbit = RCC_APB2ENR_SPI1,
+#if defined(STM32L4_SPI1_MISO_NONE)
   .misopin = 0,
+#elif defined(STM32L4_SPI1_MISO_A6)
+  .misopin = GPIO_PORT_A | GPIO_PIN_6 | GPIO_MODE_ALT | GPIO_ALT_5,
+#elif defined(STM32L4_SPI1_MISO_B4)
+  .misopin = GPIO_PORT_B | GPIO_PIN_4 | GPIO_MODE_ALT | GPIO_ALT_5,
+#elif defined(STM32L4_SPI1_MISO_E14)
+  .misopin = GPIO_PORT_E | GPIO_PIN_14 | GPIO_MODE_ALT | GPIO_ALT_5,
+#elif defined(STM32L4_SPI1_MISO_G3)
+  .misopin = GPIO_PORT_G | GPIO_PIN_3 | GPIO_MODE_ALT | GPIO_ALT_5,
+#else
+#error bad definition for SPI1 MISO
+#endif
+
+#if defined(STM32L4_SPI1_MOSI_NONE)
   .mosipin = 0,
+#elif defined(STM32L4_SPI1_MOSI_A7)
+  .mosipin = GPIO_PORT_A | GPIO_PIN_7 | GPIO_MODE_ALT | GPIO_ALT_5,
+#elif defined(STM32L4_SPI1_MOSI_B5)
+  .mosipin = GPIO_PORT_B | GPIO_PIN_5 | GPIO_MODE_ALT | GPIO_ALT_5,
+#elif defined(STM32L4_SPI1_MOSI_E15)
+  .mosipin = GPIO_PORT_E | GPIO_PIN_15 | GPIO_MODE_ALT | GPIO_ALT_5,
+#elif defined(STM32L4_SPI1_MOSI_G4)
+  .mosipin = GPIO_PORT_G | GPIO_PIN_4 | GPIO_MODE_ALT | GPIO_ALT_5,
+#else
+#error bad definition for SPI1 MOSI
+#endif
+
+#if defined(STM32L4_SPI1_SCLK_NONE)
   .sclkpin = 0,
+#elif defined(STM32L4_SPI1_SCLK_A5)
+  .sclkpin = GPIO_PORT_A | GPIO_PIN_5 | GPIO_MODE_ALT | GPIO_ALT_5,
+#elif defined(STM32L4_SPI1_SCLK_B3)
+  .sclkpin = GPIO_PORT_B | GPIO_PIN_3 | GPIO_MODE_ALT | GPIO_ALT_5,
+#elif defined(STM32L4_SPI1_SCLK_E13)
+  .sclkpin = GPIO_PORT_E | GPIO_PIN_13 | GPIO_MODE_ALT | GPIO_ALT_5,
+#elif defined(STM32L4_SPI1_SCLK_G2)
+  .sclkpin = GPIO_PORT_G | GPIO_PIN_2 | GPIO_MODE_ALT | GPIO_ALT_5,
+#else
+#error bad definition for SPI1 SCLK
+#endif
+
   .irq     = STM32L4_IRQ_SPI1
 };
 
@@ -235,6 +275,7 @@ static void stm32l4_spi_unlock(struct stm32l4_spi_s *spi)
 /*----------------------------------------------------------------------------*/
 static int stm32l4_spi_setspeed(struct stm32l4_spi_s *spi, uint32_t speed)
 {
+  val |= ((flags & SPI_FLAGS_MASK_BAUDDIV) >> STM32L4_SPI_FLAGS_SHIFT_BAUDDIV) << SPI_CR1_BR;
   return 0;
 }
 
@@ -247,17 +288,20 @@ static int stm32l4_spi_setwordsize(struct stm32l4_spi_s *spi, uint8_t size)
 /*----------------------------------------------------------------------------*/
 static int stm32l4_spi_setbitorder(struct stm32l4_spi_s *spi, bool msbfirst)
 {
+  val |= ((flags & SPI_FLAGS_MASK_LSBFIRST) >> STM32L4_SPI_FLAGS_SHIFT_LSBFIRST) ? SPI_CR1_LSBFIRST : 0;
   return 0;
 }
 
 /*----------------------------------------------------------------------------*/
-static void stm32l4_spi_setbusmode(struct stm32l4_spi_s *spi, uint8_t cpol, uint8_t cpha)
+static int stm32l4_spi_setbusmode(struct stm32l4_spi_s *spi, uint8_t cpol, uint8_t cpha)
 {
+  val |= ((flags & SPI_FLAGS_MASK_CPOL) >> STM32L4_SPI_FLAGS_SHIFT_CPOL) ? SPI_CR1_CPOL : 0;
+  val |= ((flags & SPI_FLAGS_MASK_CPHA) >> STM32L4_SPI_FLAGS_SHIFT_CPHA) ? SPI_CR1_CPHA : 0;
   return 0;
 }
 
 /*----------------------------------------------------------------------------*/
-static void stm32l4_spi_transfer(struct stm32l4_spi_s *spi, void *txbuf, void *rxbuf, uint32_t len)
+static int stm32l4_spi_transfer(struct stm32l4_spi_s *spi, void *txbuf, void *rxbuf, uint32_t len)
 {
   return 0;
 }
@@ -302,38 +346,49 @@ struct spi_master_s *stm32l4_spi_init(uint32_t spiid)
   switch(spiid)
     {
 #ifdef CONFIG_STM32L4_SPI1
-      case 1: spi = g_stm32l4_spi1; break;
+      case 1: spi = &g_stm32l4_spi1; break;
 #endif
 #ifdef CONFIG_STM32L4_SPI2
-      case 2: spi = g_stm32l4_spi2; break;
+      case 2: spi = &g_stm32l4_spi2; break;
 #endif
 #ifdef CONFIG_STM32L4_SPI3
-      case 3: spi = g_stm32l4_spi3; break;
+      case 3: spi = &g_stm32l4_spi3; break;
 #endif
       default:
         return NULL;
     }
 
-    /* Enable clock to SPI peripheral */
+  /* Configure GPIOs */
 
-    updatereg32(spi->ckenreg, spi->ckenbit, 0);
+  if (spi->params->mosipin)
+    {
+      stm32l4_gpio_init(spi->params->mosipin);
+    }
+  if (spi->params->misopin)
+    {
+      stm32l4_gpio_init(spi->params->misopin);
+    }
+  if (spi->params->sclkpin)
+    {
+      stm32l4_gpio_init(spi->params->sclkpin);
+    }
 
-    /* Define common config, except speed, word size, bit order, but mode */
+  /* Enable clock to SPI peripheral */
 
-    //CR1: BIDI=0, no bidioe, CRCEN=0, CRCNEXT=0, DFF=0, RXONLY=0, SSM=1, SSI=1 (software SS), lsbfirst as given, SPE=1, BR as given, MSTR=1, cpol, cpha as given
-    reg  = spi->base + STM32L4_REGOFF_SPI_CR1;
-    val  = STM32L4_REGMASK_SPI_CR1_SPE | STM32L4_REGMASK_SPI_CR1_MSTR | STM32L4_REGMASK_SPI_CR1_SSM | STM32L4_REGMASK_SPI_CR1_SSI;
-    val |= ((flags & STM32L4_SPI_FLAGS_MASK_LSBFIRST) >> STM32L4_SPI_FLAGS_SHIFT_LSBFIRST) ? STM32L4_REGMASK_SPI_CR1_LSBFIRST : 0;
-    val |= ((flags & STM32L4_SPI_FLAGS_MASK_CPOL) >> STM32L4_SPI_FLAGS_SHIFT_CPOL) ? STM32L4_REGMASK_SPI_CR1_CPOL : 0;
-    val |= ((flags & STM32L4_SPI_FLAGS_MASK_CPHA) >> STM32L4_SPI_FLAGS_SHIFT_CPHA) ? STM32L4_REGMASK_SPI_CR1_CPHA : 0;
-    val |= ((flags & STM32L4_SPI_FLAGS_MASK_BAUDDIV) >> STM32L4_SPI_FLAGS_SHIFT_BAUDDIV) << STM32L4_REGSHIFT_SPI_CR1_BR;
-    putreg32(reg, val);
+  updatereg32(STM32L4_REGBASE_RCC + spi->params->ckenreg, spi->params->ckenbit, 0);
 
-    //CR2: no ints, FRF=0, SSOE=0, no DMA
-    putreg32(spi->base + STM32L4_REGOFF_SPI_CR2, 0x00000000);
+  /* Define common config, except speed, word size, bit order, but mode */
 
-    //I2SCFGR: No I2S, all zero.
-    putreg32(spi->base + STM32L4_REGOFF_SPI_I2SCFGR, 0x00000000);
+  //CR1: BIDI=0, no bidioe, CRCEN=0, CRCNEXT=0, DFF=0, RXONLY=0, SSM=1, SSI=1 (software SS), lsbfirst as given, SPE=1, BR as given, MSTR=1, cpol, cpha as given
+  stm32l4_spi_updatereg(spi, STM32L4_REGOFF_SPI_CR1,
+    SPI_CR1_SPE | SPI_CR1_MSTR | SPI_CR1_SSM | SPI_CR1_SSI;
+    0);
+
+  //CR2: no ints, FRF=0, SSOE=0, no DMA
+  putreg32(spi->params->base + STM32L4_REGOFF_SPI_CR2, 0x00000000);
+
+  //I2SCFGR: No I2S, all zero.
+  putreg32(spi->params->base + STM32L4_REGOFF_SPI_I2SCFGR, 0x00000000);
 
   /* Return instance */
   return &spi->master;

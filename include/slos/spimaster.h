@@ -26,6 +26,8 @@ struct spi_transac_s
   struct spi_msg_s *msgs;
 };
 
+struct spi_master_s;
+
 struct spi_ops_s
 {
   int (*transac)(struct spi_master_s *dev, struct spi_transac_s *transac);
@@ -37,6 +39,6 @@ struct spi_master_s
   uint32_t speed; /* current speed */
   uint8_t  bits;
   uint8_t  options;
-}
+};
 
 #endif /* __SLOS__STDIO__H__ */
