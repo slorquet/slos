@@ -1,10 +1,12 @@
 #include <stddef.h>
 #include <stdint.h>
+#include <errno.h>
 
 #include "armv7m.h"
 #include "stm32l4_rcc.h"
 #include "stm32l4_gpio.h"
 #include "stm32l4_spi.h"
+#include "bits/irq.h"
 #include "bits/stm32l4_periphs.h"
 #include "bits/stm32l4_spi.h"
 
@@ -28,6 +30,7 @@ struct stm32l4_spi_s /* Stored in RAM */
 {
   struct spi_master_s master; /* Must be the first field */
   const struct stm32l4_spiparams_s *params;
+  uint8_t speedbits;
 };
 
 /*==============================================================================
@@ -277,7 +280,7 @@ static inline void stm32l4_spi_putreg(const struct stm32l4_spi_s *spi, uint32_t 
 }
 
 /*----------------------------------------------------------------------------*/
-static inline void stm32l4_spi_updatereg(const struct stm32l4_spi_s *uart, uint32_t regoff, uint32_t setbits, uint32_t clrbits)
+static inline void stm32l4_spi_updatereg(const struct stm32l4_spi_s *spi, uint32_t regoff, uint32_t setbits, uint32_t clrbits)
 {
   updatereg32(spi->params->base + regoff, setbits, clrbits);
 }
@@ -295,28 +298,125 @@ static void stm32l4_spi_unlock(struct stm32l4_spi_s *spi)
 /*----------------------------------------------------------------------------*/
 static int stm32l4_spi_setspeed(struct stm32l4_spi_s *spi, uint32_t speed)
 {
-  val |= ((flags & SPI_FLAGS_MASK_BAUDDIV) >> STM32L4_SPI_FLAGS_SHIFT_BAUDDIV) << SPI_CR1_BR;
+  uint32_t bauddiv;
+  uint32_t pclk;
+  struct stm32l4_clocks_s *clocks;
+  int bits;
+
+  if(spi->master.speed == speed)
+    {
+      return 0;
+    }
+
+  clocks = stm32l4_clock_getinfo();
+
+  if(spi->params->irq == STM32L4_IRQ_SPI1)
+    {
+      pclk = clocks->pclk2; /* SPI1 on APB2 */
+    }
+  else
+    {
+      pclk = clocks->pclk1; /* SPI2/3 are on APB1 */
+    }
+
+  bauddiv = speed / pclk;
+  bits = 0;
+
+  while ( !(bauddiv & 1) )
+    {
+      bauddiv >>= 1;
+      bits     += 1;
+    }
+
+  if(bits>7) bits = 7;
+
+  if(spi->speedbits != bits)
+    {
+      return 0;
+    }
+
+  stm32l4_spi_updatereg(spi, STM32L4_SPI_CR1, bits<<SPI_CR1_BR_SHIFT, SPI_CR1_BR_MASK);
+
+  spi->speedbits = bits;
+  spi->master.speed = pclk / (1<<bits);
+
   return 0;
 }
 
 /*----------------------------------------------------------------------------*/
 static int stm32l4_spi_setwordsize(struct stm32l4_spi_s *spi, uint8_t size)
 {
+  if(spi->master.bits == size)
+    {
+      return 0;
+    }
+
+  if(size<4 || size>16)
+    {
+      return -EINVAL;
+    }
+
+  size -= 1;
+
+  stm32l4_spi_updatereg(spi, STM32L4_SPI_CR2, size << SPI_CR2_DS_SHIFT, SPI_CR2_DS_MASK);
+
+  spi->master.bits = size;
   return 0;
 }
 
 /*----------------------------------------------------------------------------*/
 static int stm32l4_spi_setbitorder(struct stm32l4_spi_s *spi, bool msbfirst)
 {
-  val |= ((flags & SPI_FLAGS_MASK_LSBFIRST) >> STM32L4_SPI_FLAGS_SHIFT_LSBFIRST) ? SPI_CR1_LSBFIRST : 0;
+  if(spi->master.msbfirst == msbfirst)
+    {
+      return 0;
+    }
+
+  if(msbfirst)
+    {
+      stm32l4_spi_updatereg(spi, STM32L4_SPI_CR1, 0, SPI_CR1_LSBFIRST);
+    }
+  else
+    {
+      stm32l4_spi_updatereg(spi, STM32L4_SPI_CR1, SPI_CR1_LSBFIRST, 0);
+    }
+
+  spi->master.msbfirst = msbfirst;
   return 0;
 }
 
 /*----------------------------------------------------------------------------*/
-static int stm32l4_spi_setbusmode(struct stm32l4_spi_s *spi, uint8_t cpol, uint8_t cpha)
+static int stm32l4_spi_setbusmode(struct stm32l4_spi_s *spi, bool cpol, bool cpha)
 {
-  val |= ((flags & SPI_FLAGS_MASK_CPOL) >> STM32L4_SPI_FLAGS_SHIFT_CPOL) ? SPI_CR1_CPOL : 0;
-  val |= ((flags & SPI_FLAGS_MASK_CPHA) >> STM32L4_SPI_FLAGS_SHIFT_CPHA) ? SPI_CR1_CPHA : 0;
+  if(spi->master.cpol == cpol)
+    {
+      goto cpha;
+    }
+  if(cpol)
+    {
+      stm32l4_spi_updatereg(spi, STM32L4_SPI_CR1, 0, SPI_CR1_CPOL);
+    }
+  else
+    {
+      stm32l4_spi_updatereg(spi, STM32L4_SPI_CR1, SPI_CR1_CPOL, 0);
+    }
+  spi->master.cpol = cpol;
+
+cpha:
+  if(spi->master.cpha == cpha)
+    {
+      return 0;
+    }
+  if(cpha)
+    {
+      stm32l4_spi_updatereg(spi, STM32L4_SPI_CR1, 0, SPI_CR1_CPHA);
+    }
+  else
+    {
+      stm32l4_spi_updatereg(spi, STM32L4_SPI_CR1, SPI_CR1_CPHA, 0);
+    }
+  spi->master.cpha = cpha;
+
   return 0;
 }
 
@@ -341,7 +441,8 @@ int stm32l4_spi_transac(struct spi_master_s *dev, struct spi_transac_s *transac)
   if (ret != 0) goto unlock;
   ret = stm32l4_spi_setbitorder(spi, (transac->options & SPI_ORDER_MSBFIRST) == SPI_ORDER_MSBFIRST);
   if (ret != 0) goto unlock;
-  ret = stm32l4_spi_setbusmode (spi, transac->options & SPI_CPOL_1, transac->options & SPI_CPHA_1);
+  ret = stm32l4_spi_setbusmode (spi, (transac->options & SPI_CPOL_1) == SPI_CPOL_1,
+                                     (transac->options & SPI_CPHA_1) == SPI_CPHA_1);
   if (ret != 0) goto unlock;
 
   for (i=0; i < transac->msgcount; i++)
@@ -393,6 +494,10 @@ struct spi_master_s *stm32l4_spi_init(uint32_t spiid)
       stm32l4_gpio_init(spi->params->sclkpin);
     }
 
+  /* Default settings */
+
+  spi->speedbits = 0;
+
   /* Enable clock to SPI peripheral */
 
   updatereg32(STM32L4_REGBASE_RCC + spi->params->ckenreg, spi->params->ckenbit, 0);
@@ -400,15 +505,12 @@ struct spi_master_s *stm32l4_spi_init(uint32_t spiid)
   /* Define common config, except speed, word size, bit order, but mode */
 
   //CR1: BIDI=0, no bidioe, CRCEN=0, CRCNEXT=0, DFF=0, RXONLY=0, SSM=1, SSI=1 (software SS), lsbfirst as given, SPE=1, BR as given, MSTR=1, cpol, cpha as given
-  stm32l4_spi_updatereg(spi, STM32L4_REGOFF_SPI_CR1,
+  stm32l4_spi_updatereg(spi, STM32L4_SPI_CR1,
     SPI_CR1_SPE | SPI_CR1_MSTR | SPI_CR1_SSM | SPI_CR1_SSI,
-    SPI_CR1_BIDIMODE | SPI_CR1_BIDIOE | SPI_CR1_CRCEN | SPI_CR1_CRCNEXT );
+    SPI_CR1_BIDIMODE | SPI_CR1_BIDIOE | SPI_CR1_CRCEN | SPI_CR1_CRCNEXT | SPI_CR1_RXONLY);
 
   //CR2: no ints, FRF=0, SSOE=0, no DMA
-  putreg32(spi->params->base + STM32L4_REGOFF_SPI_CR2, 0x00000000);
-
-  //I2SCFGR: No I2S, all zero.
-  putreg32(spi->params->base + STM32L4_REGOFF_SPI_I2SCFGR, 0x00000000);
+  stm32l4_spi_putreg32(spi, STM32L4_SPI_CR2, 0x00000000);
 
   /* Return instance */
   return &spi->master;

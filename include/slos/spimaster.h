@@ -38,7 +38,9 @@ struct spi_master_s
   struct spi_ops_s *ops;
   uint32_t speed; /* current speed */
   uint8_t  bits;
-  uint8_t  options;
+  uint8_t  msbfirst:1;
+  uint8_t  cpol:1;
+  uint8_t  cpha:1;
 };
 
 #endif /* __SLOS__STDIO__H__ */
