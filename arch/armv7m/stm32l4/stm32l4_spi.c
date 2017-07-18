@@ -3,7 +3,9 @@
 
 #include "armv7m.h"
 #include "stm32l4_rcc.h"
+#include "stm32l4_gpio.h"
 #include "stm32l4_spi.h"
+#include "bits/stm32l4_periphs.h"
 #include "bits/stm32l4_spi.h"
 
 /*==============================================================================
@@ -263,6 +265,24 @@ void stm32l4_spi_transac8(uint32_t spiid, uint32_t len, uint8_t *mosi, uint8_t *
 #endif
 
 /*----------------------------------------------------------------------------*/
+static inline uint32_t stm32l4_spi_getreg(const struct stm32l4_spi_s *spi, uint32_t regoff)
+{
+  return getreg32(spi->params->base + regoff);
+}
+
+/*----------------------------------------------------------------------------*/
+static inline void stm32l4_spi_putreg(const struct stm32l4_spi_s *spi, uint32_t regoff, uint32_t value)
+{
+  putreg32(spi->params->base + regoff, value);
+}
+
+/*----------------------------------------------------------------------------*/
+static inline void stm32l4_spi_updatereg(const struct stm32l4_spi_s *uart, uint32_t regoff, uint32_t setbits, uint32_t clrbits)
+{
+  updatereg32(spi->params->base + regoff, setbits, clrbits);
+}
+
+/*----------------------------------------------------------------------------*/
 static void stm32l4_spi_lock(struct stm32l4_spi_s *spi)
 {
 }
@@ -381,7 +401,7 @@ struct spi_master_s *stm32l4_spi_init(uint32_t spiid)
 
   //CR1: BIDI=0, no bidioe, CRCEN=0, CRCNEXT=0, DFF=0, RXONLY=0, SSM=1, SSI=1 (software SS), lsbfirst as given, SPE=1, BR as given, MSTR=1, cpol, cpha as given
   stm32l4_spi_updatereg(spi, STM32L4_REGOFF_SPI_CR1,
-    SPI_CR1_SPE | SPI_CR1_MSTR | SPI_CR1_SSM | SPI_CR1_SSI;
+    SPI_CR1_SPE | SPI_CR1_MSTR | SPI_CR1_SSM | SPI_CR1_SSI,
     0);
 
   //CR2: no ints, FRF=0, SSOE=0, no DMA
