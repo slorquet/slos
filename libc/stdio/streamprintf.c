@@ -1,3 +1,4 @@
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <slos/stdio.h>
@@ -6,14 +7,14 @@
 /* This is the common routine for all printf-like functions */
 int streamprintf(const struct printf_stream_s *stream, const char *fmt, va_list ap)
 {
-  int written    = 0;  /* Nbr of chars written to stream */
-  int base       = 10; /* Numeric base */
-  bool ucase     = false; /* Uppercase output */
-  bool leading   = false; /* Print leading zeros */
-  int  width     = 0;     /* field width */
-  bool longarg   = false; /* arg is long int */
-  bool notsigned = false; /* interpret arg as unsigned */
-  unsigned long arg;     /* integer to be printed */
+  int  written    = 0; /* Nbr of chars written to stream */
+  int  base;           /* Numeric base */
+  int  width;          /* field width */
+  bool ucase;          /* Uppercase output */
+  bool leading;        /* Print leading zeros */
+  bool longarg;        /* arg is long int */
+  bool notsigned;      /* interpret arg as unsigned */
+  unsigned long arg;   /* integer to be printed */
   char nbuf[10];
 
   while(*fmt)
@@ -33,6 +34,15 @@ int streamprintf(const struct printf_stream_s *stream, const char *fmt, va_list 
 
       ch = *fmt++;
 
+      /* Reset format flags */
+
+      base      = 10;
+      width     = 0;
+      ucase     = false;
+      leading   = false;
+      longarg   = false;
+      notsigned = false;
+
       /* If zero, set leading zero flag */
 
       if(ch=='0')
@@ -42,7 +52,6 @@ int streamprintf(const struct printf_stream_s *stream, const char *fmt, va_list 
         }
 
       /* get field width */
-
       while(ch>='0' && ch <='9')
         {
           width *= 10;
@@ -74,7 +83,7 @@ int streamprintf(const struct printf_stream_s *stream, const char *fmt, va_list 
 
           case 'X': ucase = true;
           case 'p':
-          case 'x': base=16;
+          case 'x': base = 16;
           case 'u': notsigned = true;
           case 'd':
             if(longarg)
@@ -112,3 +121,4 @@ int streamprintf(const struct printf_stream_s *stream, const char *fmt, va_list 
 
   return written;
 }
+
