@@ -8,7 +8,7 @@ void dbg(const char *func, int line, int prio, const char *msg, ...)
   va_list ap;
   va_start(ap,msg);
 
-  kprintf("%s:%d: ", func, line);
+  kprintf("[%d] %s:%d: ", prio, func, line);
   vkprintf(msg, ap);
 
   va_end(ap);
