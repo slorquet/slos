@@ -1,3 +1,8 @@
 VPATH+=stdio
 
-CSRCS+=streamprintf.c kprintf.c
+CSRCS+=streamprintf.c vkprintf.c kprintf.c
+
+ifeq ($(CONFIG_DEBUG),y)
+CSRCS+=dbg.c
+endif
+
