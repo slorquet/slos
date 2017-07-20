@@ -354,21 +354,25 @@ config STM32L4_SPI2
 	bool "SPI2 (unsupported)"
 	default n
 	depends on HAVE_SPI2
+	select STM32L4_SPI
 
 config STM32L4_SPI3
 	bool "SPI3 (unsupported)"
 	default n
 	depends on HAVE_SPI3
+	select STM32L4_SPI
 
 config STM32L4_USART2
 	bool "USART2"
 	default n
 	depends on HAVE_USART2
+	select STM32L4_UART
 
 config STM32L4_USART3
 	bool "USART3"
 	default n
 	depends on HAVE_USART3
+	select STM32L4_UART
 
 config STM32L4_UART4
 	bool "UART4"
@@ -472,6 +476,7 @@ config STM32L4_SPI1
 	bool "SPI1 (unsupported)"
 	default n
 	depends on HAVE_SPI1
+	select STM32L4_SPI
 
 config STM32L4_TIM8
 	bool "TIM8 (unsupported)"
@@ -482,6 +487,7 @@ config STM32L4_USART1
 	bool "USART1"
 	default n
 	depends on HAVE_USART1
+	select STM32L4_UART
 
 config STM32L4_TIM15
 	bool "TIM15 (unsupported)"
@@ -524,10 +530,6 @@ config STM32L4_DMA2
 	bool "DMA2 (unsupported)"
 	default n
 	depends on HAVE_DMA2
-
-config STM32L4_RCC
-	bool "RCC"
-	default y
 
 config STM32L4_FLASH
 	bool "FLASH"
@@ -613,6 +615,11 @@ config STM32L4_RNG
 
 endmenu
 
+config STM32L4_UART
+	bool
+
+if STM32L4_UART
+
 menu "UART config"
 
 choice
@@ -625,7 +632,6 @@ config STM32L4_USART1_KCONSOLE
 config STM32L4_USART2_KCONSOLE
   bool "USART2"
   depends on STM32L4_USART2
-  default y
 
 endchoice
 
@@ -636,14 +642,14 @@ comment "--- USART1 ---"
 choice
   prompt "USART1 TX pin"
 
-config STM32L4_USART1_TX_0
+config STM32L4_USART1_TX_NONE
   bool "None"
 
-config STM32L4_USART1_TX_1
+config STM32L4_USART1_TX_A9
   bool "PA9 (AF7)"
   depends on STM32L4_GPIOA
 
-config STM32L4_USART1_TX_2
+config STM32L4_USART1_TX_B6
   bool "PB6 (AF7)"
   depends on STM32L4_GPIOB
 
@@ -652,14 +658,14 @@ endchoice
 choice
   prompt "USART1 RX pin"
 
-config STM32L4_USART1_RX_0
+config STM32L4_USART1_RX_NONE
   bool "None"
 
-config STM32L4_USART1_RX_1
+config STM32L4_USART1_RX_A10
   bool "PA10 (AF7)"
   depends on STM32L4_GPIOA
 
-config STM32L4_USART1_RX_2
+config STM32L4_USART1_RX_B7
   bool "PB7 (AF7)"
   depends on STM32L4_GPIOB
 
@@ -691,19 +697,19 @@ endif #usart1
 
 if STM32L4_USART2
 
-comment "--- USART2 ---"
+comment "--- USART2 (connected to usb debugger)---"
 
 choice
   prompt "USART2 TX pin"
 
-config STM32L4_USART2_TX_0
+config STM32L4_USART2_TX_NONE
   bool "None"
 
-config STM32L4_USART2_TX_1
-  bool "PA2 (AF7)"
+config STM32L4_USART2_TX_A2
+  bool "PA2 (AF7) - connected to usb debug"
   depends on STM32L4_GPIOA
 
-config STM32L4_USART2_TX_2
+config STM32L4_USART2_TX_D5
   bool "PD5 (AF7)"
   depends on STM32L4_GPIOD
 
@@ -712,18 +718,18 @@ endchoice
 choice
   prompt "USART2 RX pin"
 
-config STM32L4_USART2_RX_0
+config STM32L4_USART2_RX_NONE
   bool "None"
 
-config STM32L4_USART2_RX_1
+config STM32L4_USART2_RX_A3
   bool "PA3 (AF7)"
   depends on STM32L4_GPIOA
 
-config STM32L4_USART2_RX_2
-  bool "PA15 (AF3)"
+config STM32L4_USART2_RX_A15
+  bool "PA15 (AF3) - connected to usb debug"
   depends on STM32L4_GPIOA
 
-config STM32L4_USART2_RX_3
+config STM32L4_USART2_RX_D6
   bool "PD6 (AF7)"
   depends on STM32L4_GPIOD
 
@@ -754,6 +760,96 @@ config STM32L4_USART2_STOPBITS
 endif #usart2
 
 endmenu #uart config
+
+endif #uart
+
+config STM32L4_SPI
+	bool
+
+if STM32L4_SPI
+
+menu "SPI configuration"
+
+if STM32L4_SPI1
+
+comment "--- SPI1 ---"
+
+choice
+  prompt "SPI1 MOSI pin"
+
+config STM32L4_SPI1_MOSI_NONE
+  bool "None"
+
+config STM32L4_SPI1_MOSI_A7
+  bool "PA7 (AF5)"
+  depends on STM32L4_GPIOA
+
+config STM32L4_SPI1_MOSI_B5
+  bool "PB5 (AF5)"
+  depends on STM32L4_GPIOB
+
+config STM32L4_SPI1_MOSI_E15
+  bool "PE15 (AF5)"
+  depends on STM32L4_GPIOE
+
+config STM32L4_SPI1_MOSI_G4
+  bool "PG4 (AF5)"
+  depends on STM32L4_GPIOG
+
+endchoice
+
+choice
+  prompt "SPI1 MISO pin"
+
+config STM32L4_SPI1_MISO_NONE
+  bool "None"
+
+config STM32L4_SPI1_MISO_A6
+  bool "PA6 (AF5)"
+  depends on STM32L4_GPIOA
+
+config STM32L4_SPI1_MISO_B4
+  bool "PB4 (AF5)"
+  depends on STM32L4_GPIOB
+
+config STM32L4_SPI1_MISO_E14
+  bool "PE14 (AF5)"
+  depends on STM32L4_GPIOE
+
+config STM32L4_SPI1_MISO_G3
+  bool "PG3 (AF5)"
+  depends on STM32L4_GPIOG
+
+endchoice
+choice
+  prompt "SPI1 SCLK pin"
+
+config STM32L4_SPI1_SCLK_NONE
+  bool "None"
+
+config STM32L4_SPI1_SCLK_A5
+  bool "PA5 (AF5)"
+  depends on STM32L4_GPIOA
+
+config STM32L4_SPI1_SCLK_B3
+  bool "PB3 (AF5)"
+  depends on STM32L4_GPIOB
+
+config STM32L4_SPI1_SCLK_E13
+  bool "PE13 (AF5)"
+  depends on STM32L4_GPIOE
+
+config STM32L4_SPI1_SCLK_G2
+  bool "PG2 (AF5)"
+  depends on STM32L4_GPIOG
+
+endchoice
+
+endif #spi1
+
+endmenu #spi config
+
+endif #stm32l4_spi
 
 config STM32L4_CLOCKHOOK_MAX
   int "Maximum number of clock change hooks"

@@ -114,20 +114,20 @@ static const struct stm32l4_uartparams_s g_stm32l4_usart1params =
 #else
   .is_kconsole = 0,
 #endif
-#if defined( CONFIG_STM32L4_USART1_TX_0)
+#if defined( CONFIG_STM32L4_USART1_TX_NONE)
   .txpin      = 0,
-#elif defined( CONFIG_STM32L4_USART1_TX_1)
+#elif defined( CONFIG_STM32L4_USART1_TX_A9)
   .txpin      = GPIO_PORT_A | GPIO_PIN_9 | GPIO_MODE_ALT | GPIO_ALT_7,
-#elif defined( CONFIG_STM32L4_USART1_TX_2)
+#elif defined( CONFIG_STM32L4_USART1_TX_B6)
   .txpin      = GPIO_PORT_B | GPIO_PIN_6 | GPIO_MODE_ALT | GPIO_ALT_7,
 #else
 #error invalid usart1 tx config
 #endif
-#if defined( CONFIG_STM32L4_USART1_RX_0)
+#if defined( CONFIG_STM32L4_USART1_RX_NONE)
   .rxpin      = 0,
-#elif defined( CONFIG_STM32L4_USART1_RX_1)
+#elif defined( CONFIG_STM32L4_USART1_RX_A10)
   .rxpin      = GPIO_PORT_A | GPIO_PIN_10 | GPIO_MODE_ALT | GPIO_ALT_7,
-#elif defined( CONFIG_STM32L4_USART1_RX_2)
+#elif defined( CONFIG_STM32L4_USART1_RX_B7)
   .rxpin      = GPIO_PORT_B | GPIO_PIN_7 | GPIO_MODE_ALT | GPIO_ALT_7,
 #else
 #error invalid usart1 rx config
@@ -184,22 +184,22 @@ static const struct stm32l4_uartparams_s g_stm32l4_usart2params =
 #else
   .is_kconsole = 0,
 #endif
-#if defined( CONFIG_STM32L4_USART2_TX_0)
+#if defined( CONFIG_STM32L4_USART2_TX_NONE)
   .txpin      = 0,
-#elif defined( CONFIG_STM32L4_USART2_TX_1)
+#elif defined( CONFIG_STM32L4_USART2_TX_A2)
   .txpin      = GPIO_PORT_A | GPIO_PIN_2 | GPIO_MODE_ALT | GPIO_ALT_7,
-#elif defined( CONFIG_STM32L4_USART2_TX_2)
+#elif defined( CONFIG_STM32L4_USART2_TX_D5)
   .txpin      = GPIO_PORT_D | GPIO_PIN_5 | GPIO_MODE_ALT | GPIO_ALT_7,
 #else
 #error invalid usart2 tx config
 #endif
-#if defined( CONFIG_STM32L4_USART2_RX_0)
+#if defined( CONFIG_STM32L4_USART2_RX_NONE)
   .rxpin      = 0,
-#elif defined( CONFIG_STM32L4_USART2_RX_1)
+#elif defined( CONFIG_STM32L4_USART2_RX_A3)
   .rxpin      = GPIO_PORT_A | GPIO_PIN_3 | GPIO_MODE_ALT | GPIO_ALT_7,
-#elif defined( CONFIG_STM32L4_USART2_RX_2)
+#elif defined( CONFIG_STM32L4_USART2_RX_A15)
   .rxpin      = GPIO_PORT_A | GPIO_PIN_15 | GPIO_MODE_ALT | GPIO_ALT_3,
-#elif defined( CONFIG_STM32L4_USART2_RX_3)
+#elif defined( CONFIG_STM32L4_USART2_RX_D6)
   .rxpin      = GPIO_PORT_D | GPIO_PIN_6 | GPIO_MODE_ALT | GPIO_ALT_7,
 #else
 #error invalid usart2 rx config
