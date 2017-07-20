@@ -4,22 +4,28 @@
 #include <config.h>
 #include <stdint.h>
 
-struct heap_s
-{
-  void *   base; /* Address of first byte in heap */
-  uint32_t len;  /* Total number of bytes in heap */
-  uint32_t avail; /* Number of free bytes in the heap */
-  uint32_t hcount; /* Number of allocated handles */
-  uint32_t hmax; /* Largest allocated handle */
-};
-
 struct heapentry_s
 {
-  uint64_t handle: 16; /* Handle index, max 65536 handles, zero if free. */
-  uint64_t size  : 20; /* Block size in units of 4 bytes, max 1M units. */
-  uint64_t offset: 18; /* Offset between beginning of pool and block data. */
-  uint64_t locked:  1; /* TRUE if block cannot be moved. */
-  uint64_t big   :  1; /* TRUE if block granularity is 16 bytes, else 4 bytes. */
+  void    *addr;       /* Block address. */
+  uint32_t size  : 31; /* Block size in units of 4 bytes, max 2GB*4 = 8GB */
+  uint32_t locked:  1; /* TRUE if block cannot be moved. */
+};
+
+struct freeblock_s
+{
+  struct freeblock_s *next;
+  uint32_t size;
+};
+
+struct heap_s
+{
+  void               *base;   /* Address of first byte in heap */
+  uint32_t            total;  /* Total number of bytes in heap */
+  uint32_t            avail;  /* Available bytes */
+  struct freeblock_s *ffree;  /* Address of the first free zone */
+  struct freeblock_s *lfree;  /* Last free block, its size is reduced when handles are allocated */
+  uint32_t            hcount; /* Number of allocated handles */
+  uint32_t            hmax;   /* Largest allocated handle index */
 };
 
 typedef uint32_t handle_t;
