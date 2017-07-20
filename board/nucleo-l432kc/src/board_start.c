@@ -11,6 +11,8 @@
 #include "stm32l4_spi.h"
 #include "stm32l4_flash.h"
 
+#include <slos/mm/mm.h>
+
 /*==============================================================================
  * Definitions
  *==============================================================================
@@ -25,6 +27,9 @@
  */
 static uint32_t ctr;
 extern uint32_t *_userflash_start;
+
+struct heap_s heap;
+uint8_t heap_data[1000];
 
 /*==============================================================================
  * Functions
@@ -56,17 +61,15 @@ void board_start(void)
   kprintf("package: %d, Flash size %dKB\n",sig.package, sig.flashsize);
 
   armv7m_systick_callback(systick_irq, NULL);
+
+
 }
 
 /*----------------------------------------------------------------------------*/
-void board_main(void)
+void eraseflash(void)
 {
-  uint32_t i;
-  uint32_t state = 0;
   uint32_t start, end;
   bool ret;
-
-  /* Loop blinking led */
 
   start = (uint32_t)&_userflash_start;
   end   = stm32l4_flash_end();
@@ -81,6 +84,20 @@ void board_main(void)
       start += STM32L4_FLASH_ERASESIZE;
     }
   kprintf("Done.\n");
+
+}
+
+/*----------------------------------------------------------------------------*/
+void board_main(void)
+{
+  uint32_t i;
+  uint32_t state = 0;
+
+  heap_init(&heap, heap_data, sizeof(heap_data));
+
+  heap_alloc(&heap, 10);
+
+  /* Loop blinking led */
   while(1)
     {
       stm32l4_gpio_write(LED, state);
