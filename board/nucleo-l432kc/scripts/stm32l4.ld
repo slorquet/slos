@@ -32,8 +32,6 @@ SECTIONS
     _userflash_start = .; /* This symbol is the beginning of the next sector after the code */
 
 
-
-
     . = 0x20000000;
 
     .stack ALIGN(4) : {
