@@ -8,8 +8,8 @@ BIN=slos
 
 LDFLAGS= -T board/$(CONFIG_BOARD)/scripts/$(CONFIG_BOARD_LDSCRIPT) -Map System.map
 
-LIBS=arch board c
-SUBDIRS=arch board libc
+LIBS=arch board c mm
+SUBDIRS=arch board libc mm
 
 LDLIBS=$(addprefix -l, $(LIBS))
 
