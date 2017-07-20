@@ -510,7 +510,7 @@ struct spi_master_s *stm32l4_spi_init(uint32_t spiid)
     SPI_CR1_BIDIMODE | SPI_CR1_BIDIOE | SPI_CR1_CRCEN | SPI_CR1_CRCNEXT | SPI_CR1_RXONLY);
 
   //CR2: no ints, FRF=0, SSOE=0, no DMA
-  stm32l4_spi_putreg32(spi, STM32L4_SPI_CR2, 0x00000000);
+  stm32l4_spi_putreg(spi, STM32L4_SPI_CR2, 0x00000000);
 
   /* Return instance */
   return &spi->master;
