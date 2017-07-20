@@ -19,7 +19,7 @@ handle_t heap_alloc(struct heap_s *heap, uint32_t size)
 
   size = (size+0x03) & ~0x03;
 
-  info("round to %d bytes\n", size);
+  info("round size to %u bytes\n", size);
 
   /* Make sure the heap can store the requested size */
 
@@ -31,6 +31,7 @@ handle_t heap_alloc(struct heap_s *heap, uint32_t size)
   /* Find a free zone big enough for allocation */
   for(cur = heap->ffree; cur != NULL; cur = cur->next)
     {
+      info("free block at %p size %u next %p\n", cur, cur->size, cur->next);
       if(cur->size > size)
         {
           break;
@@ -38,29 +39,46 @@ handle_t heap_alloc(struct heap_s *heap, uint32_t size)
     }
   if(!cur)
     {
+      err("no freeblock\n");
       return -ENOMEM; /* TODO: compress heap then retry */
     }
 
-  /* Reserve mem */
+
+  /* Reserve mem at the beginning of the selected free block */
   addr = cur;
+  info("will allocate block at %p\n", cur);
 
   /* Remember freeblock contents */
   pnx = cur->next;
   psz = cur->size;
 
+  info("free block size afer alloc: %d bytes\n", psz - size);
   /* current block is now smaller and starts farther */
-
-  cur = (struct freeblock_s*)((uint8_t*)cur + size);
-  cur->next = pnx;
-  cur->size = psz - size;
-
-  /* Link block */
-  if(heap->ffree == cur)
+  if (psz-size > sizeof(struct freeblock_s))
     {
+      /* There is still room for allocations in this freeblock */
+      cur = (struct freeblock_s*)((uint8_t*)cur + size); /* Now the free block starts farther */
+      cur->next = pnx; /* it is still in the same place in the linked list of free blocks */
+      cur->size = psz - size; /* and its size is now smaller */
+      info("enough room to keep a free block, now at %p, size %d\n", cur, cur->size);
+    }
+  else
+    {
+      /* No more room in this freeblock -> it disappears */
+      cur = cur->next; /* the cur block is replaced by the next in chain */
+      info("not enough room to keep a free block, replacing by next: %p\n", cur->next);
+    }
+
+  /* If the cur block is the first one of the chain, update the first block*/
+  if(heap->ffree == addr)
+    {
+      info("cur block is first one, updating head, new first block at %p\n", cur);
       heap->ffree = cur;
     }
 
-  /* Try to reuse an old entry */
+  /* If the cur block is the last block, update the pointer to the last block */
+  if(cur == NULL)
+  /* Try to reuse an old handle entry */
 
   for (i=0; i<heap->hmax; i++)
     {
@@ -79,6 +97,9 @@ handle_t heap_alloc(struct heap_s *heap, uint32_t size)
 
   i = heap->hmax + 1;
   heap->hmax = i;
+
+  /* Doing this, we consume some bytes in the last freeblock */
+  heap->avail -= sizeof(struct heapentry_s);
 
 found:
 

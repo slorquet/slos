@@ -60,7 +60,7 @@ void board_start(void)
   kprintf("Lot num: [%s]\n", sig.lotnum);
   kprintf("package: %d, Flash size %dKB\n",sig.package, sig.flashsize);
 
-  armv7m_systick_callback(systick_irq, NULL);
+//  armv7m_systick_callback(systick_irq, NULL);
 
 
 }
@@ -92,10 +92,32 @@ void board_main(void)
 {
   uint32_t i;
   uint32_t state = 0;
+  handle_t ha,hb;
 
   heap_init(&heap, heap_data, sizeof(heap_data));
 
-  heap_alloc(&heap, 10);
+  /* Heap 1000 bytes, zero handles, 1000 bytes available */
+  /* One freeblock, 1000 bytes */
+
+  ha = heap_alloc(&heap, 10);
+
+  /* Allocated one handle, remains 1000 - 12 - 16 = 972 bytes */
+  /* One freeblock, 974 bytes */
+
+  hb = heap_alloc(&heap, 20);
+
+  /* Allocated one more handle, remains 972 - 20 - 16 = 936 bytes */
+  /* One free block, 938 bytes */
+
+  heap_free(&heap, ha);
+
+  /* One 10-bytes hole created at address zero */
+  /* Two freeblocks:
+   * - one at base size 12 bytes
+   * - one at base + 30
+   * This releases 12 bytes
+   */
+
 
   /* Loop blinking led */
   while(1)
