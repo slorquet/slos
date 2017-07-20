@@ -15,6 +15,7 @@ struct printf_stream_s
 extern const struct printf_stream_s konsole;
 
 /* kernel debug */
+int vkprintf(const char *fmt, va_list ap);
 int kprintf(const char *fmt, ...);
 
 /* common printf code */

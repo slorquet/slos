@@ -1,5 +1,8 @@
 mainmenu "slos configuration"
 
+config DEBUG
+	bool "Enable debug messages"
+
 menu "Arch options"
 source arch/Kconfig
 endmenu
