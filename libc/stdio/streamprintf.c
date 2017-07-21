@@ -106,7 +106,7 @@ int streamprintf(const struct printf_stream_s *stream, const char *fmt, va_list 
             }
 
           /* print value */
-          ltoa(nbuf, 10, arg, base);
+          ultoa(nbuf, 10, arg, base);
           if(ucase)
             {
               int i;
