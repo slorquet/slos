@@ -3,7 +3,7 @@ include $(TOPDIR)/tools/Dequote.mk
 include $(TOPDIR)/arch/$(CONFIG_ARCH)/Arch.defs
 -include $(TOPDIR)/Make.defs
 
-CSRCS:=heap_init.c heap_alloc.c heap_free.c
+CSRCS:=heap_init.c heap_dump.c heap_alloc.c heap_free.c
 
 #sysincludes must be last system include dir.
 SYSINCLUDES=$(shell $(CC) --print-file-name=include)

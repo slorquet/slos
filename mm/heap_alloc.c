@@ -9,11 +9,18 @@
 handle_t heap_alloc(struct heap_s *heap, uint32_t size)
 {
   uint32_t i;
-  struct heapentry_s *entry = (struct heapentry_s*) ((uint8_t*)heap->base + heap->total - sizeof(struct heapentry_s));
+  struct heapentry_s *entries = (struct heapentry_s*) ((uint8_t*)heap->base + heap->total - sizeof(struct heapentry_s));
   struct freeblock_s *cur;
   void *addr;
   struct freeblock_s *pnx;
   uint32_t psz;
+
+  /* Ensure minimum size */
+
+  if (size < 8)
+    {
+      size = 8;
+    }
 
   /* Round up the size to the upper 4 bytes */
 
@@ -82,7 +89,7 @@ handle_t heap_alloc(struct heap_s *heap, uint32_t size)
 
   for (i=0; i<heap->hmax; i++)
     {
-      if (!entry[-i].addr)
+      if (!entries[-i].addr)
         {
           goto found;
         }
@@ -95,8 +102,8 @@ handle_t heap_alloc(struct heap_s *heap, uint32_t size)
       return -ENOMEM;
     }
 
-  i = heap->hmax + 1;
-  heap->hmax = i;
+  i = heap->hmax;
+  heap->hmax = i + 1;
 
   /* Doing this, we consume some bytes in the last freeblock */
   heap->avail -= sizeof(struct heapentry_s);
@@ -104,10 +111,10 @@ handle_t heap_alloc(struct heap_s *heap, uint32_t size)
 found:
 
   /* Okay */
-
-  entry[i].size   = size;
-  entry[i].addr   = addr;
-  entry[i].locked = 0;
+  info("entries at %p, entry at %p\n", entries, &entries[-i]);
+  entries[-i].size   = size;
+  entries[-i].addr   = addr;
+  entries[-i].locked = 0;
 
   return i;
 }

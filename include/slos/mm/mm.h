@@ -59,6 +59,7 @@ void heap_unlock(handle_t handle);
 /* Release a block of memory */
 int heap_free(struct heap_s *heap, handle_t handle);
 
+void heap_dump(struct heap_s *heap);
 
 #endif /* __SLOS__MM__MM__H__ */
 
