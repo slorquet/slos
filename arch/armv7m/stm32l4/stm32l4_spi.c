@@ -156,6 +156,8 @@ static struct stm32l4_spi_s g_stm32l4_spi3 =
 };
 #endif
 
+/* TODO use this when the cpu clocks change */
+#if 0
 static struct stm32l4_spi_s * g_stm32l4_spis[] = {
 #ifdef CONFIG_STM32L4_SPI1
   &g_stm32l4_spi1,
@@ -167,6 +169,7 @@ static struct stm32l4_spi_s * g_stm32l4_spis[] = {
   &g_stm32l4_spi3,
 #endif
 };
+#endif
 
 /* Create an enum to count uarts, because sizeof(uarts[0]) will not work if there are no uarts */
 enum
@@ -459,9 +462,6 @@ unlock:
 /*----------------------------------------------------------------------------*/
 struct spi_master_s *stm32l4_spi_init(uint32_t spiid)
 {
-  uint32_t base;
-  uint32_t reg;
-  uint32_t val;
   struct stm32l4_spi_s *spi;
 
   switch(spiid)

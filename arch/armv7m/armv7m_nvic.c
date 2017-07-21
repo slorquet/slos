@@ -11,8 +11,6 @@ static void*               args    [14+ARCH_CHIP_NIRQS]; /* Args for vectors 2..
 /*----------------------------------------------------------------------------*/
 void armv7m_irq_init(void)
 {
-  int i;
-
   /* Initialize all irq handlers to non-defined state */
   /* BSS initialized to zero: not required */
 #if 0

@@ -530,7 +530,7 @@ static int stm32l4_uart_read(struct uart_s *uart, uint8_t *buf, int len)
 /* Control port details */
 static int stm32l4_uart_ioctl(struct uart_s *uart, int command, void* params)
 {
-  struct stm32l4_uart_s *dev = (struct stm32l4_uart_s *)uart;
+  //struct stm32l4_uart_s *dev = (struct stm32l4_uart_s *)uart;
   
   return -ENOSYS;
 }
@@ -582,7 +582,7 @@ static int kputs(const char *data, void *arg)
       return 0;
     }
 
-  return g_stm32l4_kconsole->uart.ops->write(&g_stm32l4_kconsole->uart, data, strlen(data));
+  return g_stm32l4_kconsole->uart.ops->write(&g_stm32l4_kconsole->uart, (const uint8_t*)data, strlen(data));
 }
 
 /*----------------------------------------------------------------------------*/
@@ -593,6 +593,6 @@ static void kputc(const char data, void *arg)
       return;
     }
 
-  g_stm32l4_kconsole->uart.ops->write(&g_stm32l4_kconsole->uart, &data, 1);
+  g_stm32l4_kconsole->uart.ops->write(&g_stm32l4_kconsole->uart, (const uint8_t*)&data, 1);
 }
 

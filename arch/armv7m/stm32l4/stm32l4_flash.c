@@ -45,8 +45,6 @@ static inline void stm32l4_flash_updatereg(uint32_t regoff, uint32_t set, uint32
 /*----------------------------------------------------------------------------*/
 void stm32l4_flash_init(void)
 {
-  uint32_t reg;
-
   /* Disable the dual bank feature if available */
 
 #if defined(CONFIG_ARCH_CHIPFAMILY_STM32L4X6)
@@ -142,7 +140,6 @@ bool stm32l4_flash_write(uint32_t destaddr, uint8_t *sourcedata, uint32_t len)
 {
   /* retrieve current write element size from CR */
   uint32_t offset;
-  uint32_t reg;
 
   /* check that memory to write has the correct size */
 

@@ -142,7 +142,7 @@ static inline void stm32l4_gpio_updatereg(const struct stm32l4_gpio_s *gpio, uin
 /*----------------------------------------------------------------------------*/
 void stm32l4_gpio_init(uint32_t gpiodesc)
 {
-  uint32_t reg,val;
+  uint32_t val;
   const struct stm32l4_gpio_s *gpio;
   uint32_t line = (gpiodesc & GPIO_FLAGS_LINE_MASK) >> GPIO_FLAGS_LINE_SHIFT;
   uint32_t port = (gpiodesc & GPIO_FLAGS_PORT_MASK) >> GPIO_FLAGS_PORT_SHIFT;
