@@ -3,14 +3,14 @@
 #include <stddef.h>
 #include <errno.h>
 #include <slos/debug.h>
-#include <slos/mm/mm.h>
+#include <slos/heap.h>
 
 /* Initialize a heap for block allocation. */
 handle_t heap_alloc(struct heap_s *heap, uint32_t size)
 {
   uint32_t i;
   struct heapentry_s *entries = (struct heapentry_s*) ((uint8_t*)heap->base + heap->total - sizeof(struct heapentry_s));
-  struct freeblock_s *cur;
+  struct freeblock_s *cur, *prev;
   void *addr;
   struct freeblock_s *pnx;
   uint32_t psz;
@@ -36,11 +36,12 @@ handle_t heap_alloc(struct heap_s *heap, uint32_t size)
     }
 
   /* Find a free zone big enough for allocation */
-  for(cur = heap->ffree; cur != NULL; cur = cur->next)
+  for(cur = heap->ffree, prev=NULL; cur != NULL; prev = cur, cur = cur->next)
     {
       info("free block at %p size %u next %p\n", cur, cur->size, cur->next);
-      if(cur->size > size)
+      if(cur->size >= size)
         {
+          info("is usable");
           break;
         }
     }
@@ -60,8 +61,8 @@ handle_t heap_alloc(struct heap_s *heap, uint32_t size)
   psz = cur->size;
 
   info("free block size afer alloc: %d bytes\n", psz - size);
-  /* current block is now smaller and starts farther */
-  if (psz-size > sizeof(struct freeblock_s))
+  /* current block still exists, is now smaller and starts farther */
+  if (psz - size > sizeof(struct freeblock_s))
     {
       /* There is still room for allocations in this freeblock */
       cur = (struct freeblock_s*)((uint8_t*)cur + size); /* Now the free block starts farther */
@@ -76,18 +77,26 @@ handle_t heap_alloc(struct heap_s *heap, uint32_t size)
       info("not enough room to keep a free block, replacing by next: %p\n", cur->next);
     }
 
-  /* If the cur block is the first one of the chain, update the first block*/
-  if(heap->ffree == addr)
+  /* cur may have changed, maintain prev block pointer */
+  if (prev)
     {
-      info("cur block is first one, updating head, new first block at %p\n", cur);
+      prev->next = cur;
+      info("prev block next ptr updated\n");
+    }
+  else
+    {
       heap->ffree = cur;
     }
 
-  /* If the cur block is the last block, update the pointer to the last block */
-  if(cur == NULL)
+  /* cur may have changed, maintain last block pointer */
+  if (!cur->next)
+    {
+      heap->lfree = cur;
+    }
+
   /* Try to reuse an old handle entry */
 
-  for (i=0; i<heap->hmax; i++)
+  for (i=0; i<heap->hcmax; i++)
     {
       if (!entries[-i].addr)
         {
@@ -102,12 +111,12 @@ handle_t heap_alloc(struct heap_s *heap, uint32_t size)
       return -ENOMEM;
     }
 
-  i = heap->hmax;
-  heap->hmax = i + 1;
+  i           = heap->hcmax;
+  heap->hcmax = i + 1;
 
   /* Doing this, we consume some bytes in the last freeblock */
-  heap->avail -= sizeof(struct heapentry_s);
-
+  heap->avail       -= sizeof(struct heapentry_s);
+  heap->lfree->size -= sizeof(struct heapentry_s);
 found:
 
   /* Okay */
@@ -115,6 +124,7 @@ found:
   entries[-i].size   = size;
   entries[-i].addr   = addr;
   entries[-i].locked = 0;
+  heap->hcount +=1;
 
   return i;
 }

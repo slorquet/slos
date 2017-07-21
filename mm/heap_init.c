@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <slos/debug.h>
-#include <slos/mm/mm.h>
+#include <slos/heap.h>
 
 /* Initialize a heap for block allocation. */
 int heap_init(struct heap_s *heap, void *base, uint32_t len)
@@ -15,7 +15,7 @@ int heap_init(struct heap_s *heap, void *base, uint32_t len)
   heap->ffree->size = len;
   heap->lfree = heap->ffree;
   heap->hcount = 0;
-  heap->hmax   = 0;
+  heap->hcmax  = 0;
 
   info("heap_init at %X, %d bytes\n", base, len);
   return 0;

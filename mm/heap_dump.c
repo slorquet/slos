@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <errno.h>
 #include <slos/debug.h>
-#include <slos/mm/mm.h>
+#include <slos/heap.h>
 
 /* Initialize a heap for block allocation. */
 void heap_dump(struct heap_s *heap)
@@ -14,9 +14,9 @@ void heap_dump(struct heap_s *heap)
 
   info("------------------------------\n");
   info("--- HEAP DUMP -----\n");
-  info("base %p total %u\n", heap->base, heap->total);
-  info("hcount %u hmax %u\n", heap->hcount, heap->hmax);
-  for(i=0;i<heap->hmax;i++)
+  info("base %p total %u avail %u\n", heap->base, heap->total, heap->avail);
+  info("hcount %u hmax %u\n", heap->hcount, heap->hcmax);
+  for(i=0;i<heap->hcmax;i++)
     {
       if (!entries[-i].addr)
         {

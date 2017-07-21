@@ -25,7 +25,7 @@ struct heap_s
   struct freeblock_s *ffree;  /* Address of the first free zone */
   struct freeblock_s *lfree;  /* Last free block, its size is reduced when handles are allocated */
   uint32_t            hcount; /* Number of allocated handles */
-  uint32_t            hmax;   /* Largest allocated handle index */
+  uint32_t            hcmax;  /* Largest count of allocated handles */
 };
 
 typedef uint32_t handle_t;
@@ -41,23 +41,23 @@ uint32_t heap_avail(struct heap_s *heap);
 /* Allocae a memory block */
 handle_t heap_alloc(struct heap_s *heap, uint32_t size);
 
-/* Find the handle of a block by its pointer */
-handle_t heap_find(void *ptr);
-
 /* Return the size of a block */
-uint32_t heap_size(handle_t handle);
-
-/* lock a block of memory, preventing it from being moved */
-void heap_lock(handle_t handle);
+uint32_t heap_size(struct heap_s *heap, handle_t handle);
 
 /* Return the memory address of a block. block should be locked */
-void *heap_deref(handle_t handle);
+void *heap_deref(struct heap_s *heap, handle_t handle);
+
+/* lock a block of memory, preventing it from being moved */
+void heap_lock(struct heap_s *heap, handle_t handle);
 
 /* Unlock a locked memory block */
-void heap_unlock(handle_t handle);
+void heap_unlock(struct heap_s *heap, handle_t handle);
 
 /* Release a block of memory */
 int heap_free(struct heap_s *heap, handle_t handle);
+
+/* Find the handle of a block by its pointer */
+handle_t heap_find(struct heap_s *heap, void *ptr);
 
 void heap_dump(struct heap_s *heap);
 
