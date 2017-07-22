@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <slos/debug.h>
 #include <slos/heap.h>
+#include "heap_internal.h"
 
 /* Initialize a heap for block allocation. */
 int heap_free(struct heap_s *heap, handle_t handle)

@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <slos/debug.h>
 #include <slos/heap.h>
+#include "heap_internal.h"
 
 /* Return the address of an allocated block */
 void *heap_deref(struct heap_s *heap, handle_t handle)
@@ -13,7 +14,7 @@ void *heap_deref(struct heap_s *heap, handle_t handle)
   if(handle > heap->hcmax)
     {
       err("invalid handle\n");
-      return 0;
+      return NULL;
     }
 
   return entries[-handle].addr;

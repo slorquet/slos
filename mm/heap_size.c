@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <slos/debug.h>
 #include <slos/heap.h>
+#include "heap_internal.h"
 
 /* Return the address of an allocated block */
 uint32_t heap_size(struct heap_s *heap, handle_t handle)

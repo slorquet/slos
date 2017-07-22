@@ -1,21 +1,8 @@
-#ifndef __SLOS__MM__MM__H__
-#define __SLOS__MM__MM__H__
+#ifndef __SLOS__HEAP__H__
+#define __SLOS__HEAP__H__
 
 #include <config.h>
 #include <stdint.h>
-
-struct heapentry_s
-{
-  void    *addr;       /* Block address. */
-  uint32_t size  : 31; /* Block size in units of 4 bytes, max 2GB*4 = 8GB */
-  uint32_t locked:  1; /* TRUE if block cannot be moved. */
-};
-
-struct freeblock_s
-{
-  struct freeblock_s *next;
-  uint32_t size;
-};
 
 struct heap_s
 {
