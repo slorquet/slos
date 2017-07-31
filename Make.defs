@@ -1,9 +1,24 @@
 RM=rm -f
 
+ifeq ($(CONFIG_CLANG),y)
+#use clang
+LD=arm-none-eabi-ld
+#LD=llvm-link
+CC=clang --target=arm-none-eabi -O2
+AS=arm-none-eabi-as
+AR=llvm-ar
+LIBGCC=$(shell arm-none-eabi-gcc --print-libgcc-file-name)
+
+else
+#use gcc
+
 LD=arm-none-eabi-ld -nostdlib
-CC=arm-none-eabi-gcc -nostdinc -nostdlib -g -Wall
+CC=arm-none-eabi-gcc -nostdinc -nostdlib -g -Wall -O2
 AS=arm-none-eabi-as
 AR=arm-none-eabi-ar
+LIBGCC=$(shell $(CC) --print-libgcc-file-name)
+
+endif
 
 OBJS=$(CSRCS:.c=.o) $(ASRCS:.s=.o)
 
@@ -12,17 +27,6 @@ $(1)_$(2):
 	$(Q) $(MAKE) -C $(1) $(2) TOPDIR="$(TOPDIR)"
 endef
 
-#http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
-DEPDIR=.d
-$(shell mkdir -p $(DEPDIR) >/dev/null)
-DEPFLAGS = -MT $@ -MD -MP -MF $(DEPDIR)/$*.Td
-
 %.o:%.c
-%.o:%.c $(DEPDIR)/%.d
-	@#echo compiling $<
-	$(CC) $(DEPFLAGS) -c $(CFLAGS) -o $@ $<
-	@mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d
-
-$(DEPDIR)/%.d: ;
-.PRECIOUS: $(DEPDIR)/%.d
-
+	#echo compiling $<
+	$(CC) -c $(CFLAGS) -o $@ $<

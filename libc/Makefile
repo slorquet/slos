@@ -7,6 +7,7 @@ CSRCS:=
 include stdio/Make.defs
 include stdlib/Make.defs
 include string/Make.defs
+include aeabi/Make.defs
 
 #sysincludes must be last system include dir.
 SYSINCLUDES=$(shell $(CC) --print-file-name=include)

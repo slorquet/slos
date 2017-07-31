@@ -1,0 +1,5 @@
+VPATH+=aeabi
+
+#helpers for clang
+CSRCS+=__aeabi_memcpy4.c __aeabi_memclr4.c __aeabi_memclr.c
+

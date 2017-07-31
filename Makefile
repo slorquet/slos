@@ -15,7 +15,6 @@ LDLIBS=$(addprefix -l, $(LIBS))
 
 MAINOBJ=arch/$(CONFIG_ARCH)/arch_start.o
 
-LIBGCC=$(shell $(CC) --print-libgcc-file-name)
 
 default: $(BIN)
 
