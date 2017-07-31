@@ -1,3 +1,5 @@
 VPATH+=string
 
 CSRCS+=strlen.c
+CSRCS+=memset.c memcpy.c
+
