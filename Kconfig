@@ -1,5 +1,8 @@
 mainmenu "slos configuration"
 
+config CLANG
+	bool "Use CLANG/LLVM instead of arm-none-eabi-gcc"
+
 config DEBUG
 	bool "Enable debug messages"
 

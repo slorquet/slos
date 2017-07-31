@@ -4,7 +4,7 @@ ifeq ($(CONFIG_CLANG),y)
 #use clang
 LD=arm-none-eabi-ld
 #LD=llvm-link
-CC=clang --target=arm-none-eabi -O2
+CC=clang --target=arm-none-eabi -nostdinc -nostdlib -g -Wall -O2
 AS=arm-none-eabi-as
 AR=llvm-ar
 LIBGCC=$(shell arm-none-eabi-gcc --print-libgcc-file-name)
