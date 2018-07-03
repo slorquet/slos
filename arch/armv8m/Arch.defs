@@ -2,7 +2,7 @@
 
 CFLAGS+=-mthumb
 
-CFLAGS+=-march=armv8-m
+#march depends on the chip
 
 ifeq ($(CONFIG_CLANG),y)
 CFLAGS+=--target=thumbv8m-none-eabi

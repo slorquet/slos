@@ -117,7 +117,8 @@ void __attribute__((naked)) armv8m_irqentry(void)
     "push {lr}       \n" /* Backup the LR, this is the only one that must not be messed up */
     "mrs  r1, ipsr   \n" /* Get the IRQ number */
     "bl   armv8m_irq \n" /* Call into C with args in r0,r1 */
-    "pop  {lr}       \n" /* Restore LR */
+    "pop  {r1}       \n" /* Restore LR via R1*/
+    "mov  lr, r1     \n" /* ARMv6m cannot directly pop LR */
     "mov  sp, r0     \n" /* Get new SP from C code */
     "bx   lr         \n" /* Magic EXC_RETURN */
     :::

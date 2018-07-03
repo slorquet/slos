@@ -1,5 +1,8 @@
 This folder is for armv8/cortexm23
 
+Toolchain must be recent enough to support -march=armv8-m. Example:
+https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads
+
 If the cpu has no secure extension or is built in single mode (only secure or
 non secure), then it boots like a cortex m4
 

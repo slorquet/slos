@@ -1,2 +1,4 @@
+#cortex m23 is a baseline device
+CFLAGS+=-march=armv8-m.base
 CFLAGS+=-mcpu=cortex-m23
 
