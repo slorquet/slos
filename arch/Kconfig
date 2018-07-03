@@ -2,13 +2,19 @@ choice
 	prompt "CPU architecture"
 
 config ARCH_ARMV7M
-	bool "armv7m"
+	bool "armv7m (Cortex-M3, Cortex-M4)"
+
+config ARCH_ARMV8M
+	bool "armv8m (Cortex-M23)"
 
 endchoice
 
 config ARCH
 	string
 	default "armv7m" if ARCH_ARMV7M
+	default "armv8m" if ARCH_ARMV8M
 
 source arch/armv7m/Kconfig
+source arch/armv8m/Kconfig
+
 

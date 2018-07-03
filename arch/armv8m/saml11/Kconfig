@@ -1,0 +1,12 @@
+if ARCH_CHIP_FAMILY_SAML11
+
+choice
+	prompt "SAML11 model"
+
+config ARCH_CHIP_SAML11E16
+	bool "SAML11E16"
+
+endchoice
+
+endif #ARCH_CHIP_FAMILY_SAML11
+

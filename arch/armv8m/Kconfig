@@ -1,0 +1,23 @@
+if ARCH_ARMV8M
+
+#specific config to tell apart ARMV8-M (cortex M23) chips
+
+choice
+	prompt "CPU family"
+
+config ARCH_CHIP_FAMILY_SAML11
+	bool "SAML11 (Cortex M23)"
+
+endchoice
+
+#this is the name of the subdir
+config ARCH_CHIP_FAMILY
+	string
+	default "saml11" if ARCH_CHIP_FAMILY_SAML11
+
+source arch/armv8m/saml11/Kconfig
+
+config ARMV8M_SYSTICK
+	bool "Enable SYSTICK"
+
+endif

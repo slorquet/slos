@@ -1,0 +1,2 @@
+CFLAGS+=-mcpu=cortex-m23
+

@@ -1,0 +1,11 @@
+config BOARD_SAML11XPLAINED
+	bool "saml11-xplained"
+	depends on ARCH_CHIP_SAML11E16
+
+if BOARD_SAML11XPLAINED
+
+config BOARD_SAML11XPLAINED_DUMMY
+	bool "Dummy SAML11-XPLAINED setting for tests"
+
+endif
+

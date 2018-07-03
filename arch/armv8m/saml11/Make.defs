@@ -1,0 +1,10 @@
+CHIP_CSRCS=saml11_start.c saml11_gpio.c saml11_uart.c
+
+#ifeq ($(CONFIG_STM32L4_FLASH),y)
+#CHIP_CSRCS += saml11_flash.c
+#endif
+#
+#ifeq ($(CONFIG_STM32L4_SPI),y)
+#CHIP_CSRCS += saml11_spi.c
+#endif
+

@@ -1,0 +1,8 @@
+#architecture compilation options
+
+CFLAGS+=-mthumb
+
+CFLAGS+=-march=armv8-m
+
+include $(TOPDIR)/arch/$(CONFIG_ARCH)/$(CONFIG_ARCH_CHIP_FAMILY)/Chip.defs
+
