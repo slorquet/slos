@@ -8,5 +8,7 @@ else
 CFLAGS+=-march=armv7-m
 endif
 
-include $(TOPDIR)/arch/$(CONFIG_ARCH)/$(CONFIG_ARCH_CHIP_FAMILY)/Chip.defs
+ifeq ($(CONFIG_CLANG),y)
+CFLAGS+=--target=thumbv7m-none-eabi
+endif
 

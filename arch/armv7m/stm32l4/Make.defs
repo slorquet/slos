@@ -1,8 +1,6 @@
 CHIP_CSRCS=stm32l4_start.c stm32l4_gpio.c stm32l4_rcc.c stm32l4_uart.c
 
-ifeq ($(CONFIG_STM32L4_FLASH),y)
 CHIP_CSRCS += stm32l4_flash.c
-endif
 
 ifeq ($(CONFIG_STM32L4_SPI),y)
 CHIP_CSRCS += stm32l4_spi.c

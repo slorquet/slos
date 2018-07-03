@@ -9,6 +9,7 @@
 #include "stm32l4_gpio.h"
 #include "stm32l4_uart.h"
 #include "stm32l4_spi.h"
+
 #include "stm32l4_flash.h"
 
 #include <slos/heap.h>
@@ -84,7 +85,6 @@ void eraseflash(void)
       start += STM32L4_FLASH_ERASESIZE;
     }
   kprintf("Done.\n");
-
 }
 
 /*----------------------------------------------------------------------------*/

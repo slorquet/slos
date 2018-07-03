@@ -4,6 +4,7 @@
 include $(TOPDIR)/tools/Dequote.mk
 -include $(TOPDIR)/Make.defs
 include Arch.defs
+include $(CONFIG_ARCH_CHIP_FAMILY)/Chip.defs
 include $(CONFIG_ARCH_CHIP_FAMILY)/Make.defs
 
 VPATH += $(CONFIG_ARCH_CHIP_FAMILY)

@@ -531,10 +531,6 @@ config STM32L4_DMA2
 	default n
 	depends on HAVE_DMA2
 
-config STM32L4_FLASH
-	bool "FLASH"
-	default n
-
 config STM32L4_CRC
 	bool "CRC (unsupported)"
 	default n
@@ -853,5 +849,6 @@ endif #stm32l4_spi
 
 config STM32L4_CLOCKHOOK_MAX
   int "Maximum number of clock change hooks"
+  default 0
 
 endif
