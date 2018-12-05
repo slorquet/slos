@@ -145,7 +145,7 @@ config HAVE_OPAMP
 	bool
 	default n
 
-config HAVE_DAC
+config HAVE_DAC1
 	bool
 	default n
 
@@ -215,7 +215,7 @@ config ARCH_CHIPFAMILY_STM32L4X6
 	select HAVE_LPUART1
 	select HAVE_LPTIM1
 	select HAVE_OPAMP
-	select HAVE_DAC
+	select HAVE_DAC1
 	select HAVE_CAN1
 	select HAVE_I2C3
 	select HAVE_I2C2
@@ -262,7 +262,7 @@ config ARCH_CHIPFAMILY_STM32L4X3
 	select HAVE_LPUART1
 	select HAVE_LPTIM1
 	select HAVE_OPAMP
-	select HAVE_DAC
+	select HAVE_DAC1
 	select HAVE_USBFS
 	select HAVE_CAN1
 	select HAVE_CRS

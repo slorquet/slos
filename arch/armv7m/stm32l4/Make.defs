@@ -6,3 +6,7 @@ ifeq ($(CONFIG_STM32L4_SPI),y)
 CHIP_CSRCS += stm32l4_spi.c
 endif
 
+ifeq ($(CONFIG_STM32L4_DAC1),y)
+CHIP_CSRCS += stm32l4_dac.c
+endif
+
