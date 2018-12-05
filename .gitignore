@@ -8,4 +8,5 @@ board/Kconfig
 board/*/src/*.o
 arch/*/*.o
 /**/.d
+/**/.o
 

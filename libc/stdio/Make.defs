@@ -1,6 +1,7 @@
 VPATH+=stdio
 
 CSRCS+=streamprintf.c vkprintf.c kprintf.c
+CSRCS+=printf.c
 
 ifeq ($(CONFIG_DEBUG),y)
 CSRCS+=dbg.c

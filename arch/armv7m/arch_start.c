@@ -87,4 +87,8 @@ void arch_start(void)
   /* Start the OS (for now, in the board code) */
 
   board_main();
+
+  /* Start the OS */
+
+  os_start();
 }
